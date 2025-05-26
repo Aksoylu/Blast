@@ -1,0 +1,25 @@
+{
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "description": "Hello World!",
+  "main": "main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix react-ui\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "npm run build --prefix react-ui"
+  },
+  "author": "Jane Doe",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "electron": "^36.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0",
+    "wait-on": "^7.0.0"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.10.9",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "framer-motion": "^12.12.2"
+  }
+}
