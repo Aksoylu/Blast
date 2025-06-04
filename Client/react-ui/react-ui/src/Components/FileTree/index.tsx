@@ -10,38 +10,98 @@ export interface FileTreeProps {
 }
 
 export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
-  const handleDrop = (draggedId: string, targetId: string) => {
-    if (draggedId === targetId) return;
 
-    const moveNode = (nodes, nodeId) => {
-      let nodeToMove;
-      const filtered = nodes.filter((node) => {
-        if (node.id === nodeId) {
-          nodeToMove = node;
-          return false;
-        }
-        if (node.children) {
-          const result = moveNode(node.children, nodeId);
-          node.children = result.nodes;
-          if (result.nodeToMove) nodeToMove = result.nodeToMove;
-        }
-        return true;
-      });
+  const isDescendant = (nodes: TreeNodeProps[], parentId: string, childId: string): boolean => {
+    for (const node of nodes) {
+      if (node.id === parentId) {
+        return containsNode(node, childId);
+      }
+      if (node.children) {
+        if (isDescendant(node.children, parentId, childId)) return true;
+      }
+    }
+    return false;
+  };
+
+  const containsNode = (node: TreeNodeProps, id: string): boolean => {
+    if (node.id === id) return true;
+    if (!node.children) return false;
+    return node.children.some(child => containsNode(child, id));
+  };
+
+  const findNodeById = (nodes: TreeNodeProps[], id: string): TreeNodeProps | null => {
+    for (const node of nodes) {
+      if (node.id === id) return node;
+      if (node.children) {
+        const found = findNodeById(node.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const handleDrop = (draggedId: string, targetId: string) => {
+    // Interrupt moving node operation if target node is its self
+    if (draggedId === targetId) {
+       return; 
+    }
+
+    // Interrupt moving node operation if target node is picked nodes child node
+    if (isDescendant(data, draggedId, targetId)) {
+      return;
+    }
+
+    // Interrupt moving node operation if current node is a collection.
+    // Because that moving collections is not permitted by business logic
+    const currentNode = findNodeById(data, draggedId);
+    if(currentNode?.isCollection)
+    {
+      return;
+    }
+
+    // Interrupt moving node operation if target node is not an folder
+    const targetNode = findNodeById(data, targetId);
+    if (!targetNode || !targetNode.isFolder) {
+      return;
+    }
+
+    const moveNode = (nodes, draggedId) => {
+      let nodeToMove = null;
+
+      const filtered = nodes
+        .map(node => {
+          if (node.id === draggedId) {
+            nodeToMove = node;
+            return null;
+          }
+
+          if (node.children) {
+            const result = moveNode(node.children, draggedId);
+            node.children = result.nodes;
+            if (result.nodeToMove) nodeToMove = result.nodeToMove;
+          }
+
+          return node;
+        })
+        .filter(Boolean);
+
       return { nodes: filtered, nodeToMove };
     };
 
     const insertNode = (nodes, targetId, nodeToInsert) => {
-      return nodes.map((node) => {
+      return nodes.map(node => {
         if (node.id === targetId && node.isFolder) {
-          const children = node.children || [];
-          return { ...node, children: [...children, nodeToInsert] };
+          const children = node.children ? [...node.children, nodeToInsert] : [nodeToInsert];
+          return { ...node, children };
         }
+
         if (node.children) {
           return {
             ...node,
             children: insertNode(node.children, targetId, nodeToInsert),
           };
         }
+
         return node;
       });
     };
@@ -57,7 +117,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
 
       <VStack align="start" spacing={1}>
         {data.map((node, index) => (
-        <TreeNodeItem key={node.id} node={node} onDrop={handleDrop} />
+          <TreeNodeItem key={node.id} node={node} onDrop={handleDrop} />
         ))}
       </VStack>
     </DndProvider>

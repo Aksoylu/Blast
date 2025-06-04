@@ -7,6 +7,7 @@ import { useDrag, useDrop } from 'react-dnd';
 export interface TreeNodeProps {
   id: string;
   name: string;
+  isCollection?: boolean;
   isFolder: boolean;
   children?: TreeNodeProps[];
 }
