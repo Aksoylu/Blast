@@ -3,6 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import * as ReactDOM from 'react-dom/client'
 import Layout from './Pages/Layout'
 import './i18n';
+import './index.css';
 
 const rootElement = document.getElementById('root')
 ReactDOM.createRoot(rootElement).render(

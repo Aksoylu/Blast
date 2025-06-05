@@ -7,6 +7,7 @@ import { FileTree } from '../Components/FileTree';
 import { useState } from 'react';
 import { TreeNodeProps } from '../Components/FileTree/TreeNode';
 import { WorkspaceItem } from '../Components/WorkspaceBrowser/WorkspaceItem';
+import { ResizablePanel } from '../Components/ResizablePanel';
 
 const workspace_1 = [
   {
@@ -50,8 +51,12 @@ export const Home = () => {
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
   return (
-    <Box p={4}>
-      <WorkspaceItem data={treeData} onTreeChange={setTreeData}/>
-    </Box>
+    <ResizablePanel
+      leftPanel={<WorkspaceItem data={treeData} onTreeChange={setTreeData} />}
+      leftPanelWidth={400}
+
+      rightPanel={<div>right panel</div>}    
+      minimumPanelWidth={300}
+    />
   )
 }
