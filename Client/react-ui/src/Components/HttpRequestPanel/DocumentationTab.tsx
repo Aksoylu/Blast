@@ -15,7 +15,7 @@ export const DocumentationTab = ({ }: DocumentationTabProps) => {
     const ref = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<number | undefined>(undefined);
 
-    const calculatedHeight = height ? `${height - 17}px` : "auto";
+    const calculatedHeight = height ? `${height - 15}px` : "auto";
     useEffect(() => {
         function updateHeight() {
             if (ref.current) {
