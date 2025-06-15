@@ -14,6 +14,7 @@ import { DocumentationTab } from './DocumentationTab';
 
 import { HttpRequestObject } from '../../Models/HttpRequestObject';
 import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
+import { ParametersTab } from './ParametersTab';
 
 export interface HttpRequestPanelProps {
     requestData: HttpRequestObject;
@@ -33,7 +34,7 @@ export const HttpRequestPanel = ({ }) => {
     };
 
     return (<Box >
-        <Box maxW="100%">
+        <Box maxW="100%" maxH="100%">
             <Flex justifyContent="space-between" alignItems="center" width="100%">
                 <RequestBreadcrumb />
                 <Box>
@@ -44,7 +45,7 @@ export const HttpRequestPanel = ({ }) => {
             </Flex>
         </Box>
         <Tabs isFitted>
-            <TabList mb='1em'>
+            <TabList>
                 <Tab>Parameters</Tab>
                 <Tab>Headers</Tab>
                 <Tab>Body</Tab>
@@ -54,7 +55,7 @@ export const HttpRequestPanel = ({ }) => {
             <TabPanels>
                 <TabPanel p={0} h="100%" display="flex" flexDirection="column">
                     <Box flex="1" overflow="auto">
-                        Query Parameters
+                        <ParametersTab/>
                     </Box>
                 </TabPanel>
                 <TabPanel>
@@ -75,7 +76,7 @@ export const HttpRequestPanel = ({ }) => {
                     </Box>
                 </TabPanel>
 
-                <TabPanel flex="1" overflow="auto">
+                <TabPanel  p={0} h="100%" display="flex" flexDirection="column">
                     <DocumentationTab />
                 </TabPanel>
             </TabPanels>

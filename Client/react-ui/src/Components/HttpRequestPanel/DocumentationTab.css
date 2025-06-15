@@ -9,15 +9,42 @@
 }
 
 [data-color-mode='light'] .w-md-editor-toolbar {
-  background-color: rgba(255, 255, 255, 0) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 [data-color-mode='light'] .w-md-editor-text-input {
-  background-color: rgba(255, 255, 255, 0)  !important;
+  background-color: rgba(0, 0, 0, 0) !important;
   color: #000 !important;
 }
 
 [data-color-mode='light'] .wmde-markdown-color {
-  background-color: rgba(255, 255, 122, 0); /* Açık renk */
+  background-color: rgba(0, 0, 0, 0);
   color: #111;
+}
+
+/* DARK MODE CUSTOMIZATION */
+
+
+[data-color-mode='dark'] .w-md-editor {
+  background-color: rgba(255, 247, 247, 0) !important;
+  color: #ffffff !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin-top: 0px;
+  padding-top: 0px;
+
+}
+
+[data-color-mode='dark'] .w-md-editor-toolbar {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+[data-color-mode='dark'] .w-md-editor-text-input {
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: #ffffff !important;
+}
+
+[data-color-mode='dark'] .wmde-markdown-color {
+  background-color: rgba(0, 0, 0, 0);
+  color: #ffffff;
 }

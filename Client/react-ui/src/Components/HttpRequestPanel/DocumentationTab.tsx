@@ -15,12 +15,13 @@ export const DocumentationTab = ({ }: DocumentationTabProps) => {
     const ref = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<number | undefined>(undefined);
 
-    const calculatedHeight = height ? `${height}px` : "auto";
+    const calculatedHeight = height ? `${height - 17}px` : "auto";
     useEffect(() => {
         function updateHeight() {
             if (ref.current) {
                 const offsetTop = ref.current.getBoundingClientRect().top;
-                setHeight(window.innerHeight - offsetTop);
+                const detectedHeight = (window.innerHeight - offsetTop) ;
+                setHeight(detectedHeight);
             }
         }
         updateHeight();
@@ -32,22 +33,16 @@ export const DocumentationTab = ({ }: DocumentationTabProps) => {
 
     return (
         <Box position="relative"
-            border="1px solid blue" ref={ref}
+            ref={ref}
             height={calculatedHeight}>
             <div data-color-mode={colorMode} style={{
-                width:"100%",
                 height:"100%",
-                minHeight:"400px",
-                position: "absolute",
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
+                minHeight:"100%",
             }}>
 
                 <MDEditor
+                    height="100%"
                     value={value}
-                    color="red"
                     onChange={(i) => {
                         setValue(i ?? "");
                     }} />
