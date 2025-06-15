@@ -10,25 +10,25 @@ export const EnvironmentSelector = ({ }) => {
             icon={<HamburgerIcon />}
             variant='outline'
         />
-        <Text>test</Text>
+        <Text>Example Workspace 1</Text>
         <MenuList>
             <MenuItem icon={<AddIcon />}>
-                Create new configuration
+                Add new workspace
             </MenuItem>
             <MenuDivider />
 
             <MenuItem icon={<FiCheck />}>
-                New Window
+                Example Workspace 1
             </MenuItem>
             <MenuItem pl="9">
-                Empty menu item
+                Example Workspace 2
             </MenuItem>
 
             <MenuItem pl="9">
-                Empty menu item
+                Example Workspace 3
             </MenuItem>
             <MenuItem pl="9">
-                Empty menu item
+                Example Workspace 4
             </MenuItem>
         </MenuList>
     </Menu>);

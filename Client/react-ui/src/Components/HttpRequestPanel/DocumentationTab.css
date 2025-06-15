@@ -1,0 +1,23 @@
+/* LIGHT MODE CUSTOMIZATION */
+[data-color-mode='light'] .w-md-editor {
+  background-color: rgba(255, 247, 247, 0) !important;
+  color: #222 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+[data-color-mode='light'] .w-md-editor-toolbar {
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+
+[data-color-mode='light'] .w-md-editor-text-input {
+  background-color: rgba(255, 255, 255, 0)  !important;
+  color: #000 !important;
+}
+
+[data-color-mode='light'] .wmde-markdown-color {
+  background-color: rgba(255, 255, 122, 0); /* Açık renk */
+  color: #111;
+}

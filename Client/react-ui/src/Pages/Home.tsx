@@ -1,13 +1,11 @@
 'use client'
 
-import {
-  Box
-} from '@chakra-ui/react'
-import { FileTree } from '../Components/FileTree';
 import { useState } from 'react';
+
 import { TreeNodeProps } from '../Components/FileTree/TreeNode';
-import { WorkspaceItem } from '../Components/WorkspaceBrowser/WorkspaceItem';
+import { WorkspacePanel } from '../Components/WorkspacePanel';
 import { ResizablePanel } from '../Components/ResizablePanel';
+import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 
 const workspace_1 = [
   {
@@ -52,11 +50,11 @@ export const Home = () => {
 
   return (
     <ResizablePanel
-      leftPanel={<WorkspaceItem data={treeData} onTreeChange={setTreeData} />}
-      leftPanelWidth={400}
+      leftPanel={<WorkspacePanel data={treeData} onTreeChange={setTreeData} />}
+      leftPanelWidth={200}
 
-      rightPanel={<div>right panel</div>}    
-      minimumPanelWidth={300}
+      rightPanel={<HttpRequestPanel/>}    
+      minimumPanelWidth={200}
     />
   )
 }

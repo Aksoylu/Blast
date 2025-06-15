@@ -56,12 +56,12 @@ export const ResizablePanel = ({ leftPanel, leftPanelWidth, rightPanel, minimumP
       width="100%"
       position="relative"
     >
-      <Box width={`${leftWidth}px`} p={4}>
+      <Box width={`${leftWidth}px`}>
         {leftPanel}
       </Box>
       <Box
-        width="4px"
-        paddingLeft="2px"
+        width="6px"
+        paddingLeft="4px"
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
       >

@@ -12,7 +12,13 @@ export interface TreeNodeProps {
   children?: TreeNodeProps[];
 }
 
-export const TreeNodeItem: React.FC<{ node: TreeNodeProps; onDrop: (draggedId: string, targetId: string) => void }> = ({ node, onDrop }) => {
+export const TreeNodeItem: React.FC<{
+  node: TreeNodeProps;
+  onDrop: (draggedId: string, targetId: string) => void
+  handleHover?: (hoveredId: string) => void;
+  isContextMenuOpen: boolean;
+
+}> = ({ node, onDrop, handleHover, isContextMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = node.children && node.children.length > 0;
   const ref = useRef<HTMLDivElement>(null);
@@ -21,8 +27,7 @@ export const TreeNodeItem: React.FC<{ node: TreeNodeProps; onDrop: (draggedId: s
     if (hasChildren) setIsOpen(!isOpen);
   };
 
-
-   const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag] = useDrag({
     type: 'TREE_NODE',
     item: { id: node.id },
     collect: (monitor) => ({
@@ -42,6 +47,9 @@ export const TreeNodeItem: React.FC<{ node: TreeNodeProps; onDrop: (draggedId: s
 
   drag(drop(ref));
 
+  const [isMouseOver, setIsMouseOver] = useState(false);
+
+
   return (
     <Box pl={2}>
       <HStack
@@ -49,9 +57,23 @@ export const TreeNodeItem: React.FC<{ node: TreeNodeProps; onDrop: (draggedId: s
         onClick={toggle}
         cursor="pointer"
         bg={isOver ? 'blue.100' : 'transparent'}
+        fontWeight={isMouseOver ? 600 : 300}
         opacity={isDragging ? 0.5 : 1}
         p={1}
         borderRadius="md"
+        onMouseEnter={(e) => {
+          if (isContextMenuOpen)
+            return;
+          e.stopPropagation();
+          handleHover?.(node.id);
+          setIsMouseOver(true);
+        }}
+        onMouseLeave={(e) => {
+          if (isContextMenuOpen)
+            return;
+          e.stopPropagation();
+          setIsMouseOver(false);
+        }}
       >
         {hasChildren ? (
           <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} boxSize={4} />
@@ -66,10 +88,16 @@ export const TreeNodeItem: React.FC<{ node: TreeNodeProps; onDrop: (draggedId: s
       </HStack>
 
       {hasChildren && isOpen && (
-        <Collapse in={isOpen}>
-          <VStack align="start" spacing={1} mt={1}>
+        <Collapse in={isOpen} >
+          <VStack align="start" spacing={1} mt={1} >
             {node.children?.map((child) => (
-              <TreeNodeItem key={child.id} node={child} onDrop={onDrop} />
+              <TreeNodeItem
+                key={child.id}
+                node={child}
+                onDrop={onDrop}
+                handleHover={handleHover}
+                isContextMenuOpen={isContextMenuOpen}
+              />
             ))}
           </VStack>
         </Collapse>

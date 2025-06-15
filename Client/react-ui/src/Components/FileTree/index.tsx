@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { VStack } from '@chakra-ui/react';
+import React, { useRef, useState } from 'react';
+import { Box, HStack, useDisclosure, VStack } from '@chakra-ui/react';
 import { TreeNodeItem, TreeNodeProps } from './TreeNode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ContextMenu } from './ContextMenu';
 
 export interface FileTreeProps {
   data: TreeNodeProps[];
@@ -43,7 +44,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
   const handleDrop = (draggedId: string, targetId: string) => {
     // Interrupt moving node operation if target node is its self
     if (draggedId === targetId) {
-       return; 
+      return;
     }
 
     // Interrupt moving node operation if target node is picked nodes child node
@@ -54,8 +55,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
     // Interrupt moving node operation if current node is a collection.
     // Because that moving collections is not permitted by business logic
     const currentNode = findNodeById(data, draggedId);
-    if(currentNode?.isCollection)
-    {
+    if (currentNode?.isCollection) {
       return;
     }
 
@@ -112,15 +112,41 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
     onTreeChange(newTree);
   };
 
+  const contextMenuDisclosure = useDisclosure();
+  const hoveringNodeIdRef = useRef<string>("");
+
+  const handleHover = (id: string) => {
+    if (!contextMenuDisclosure.isOpen) {
+      hoveringNodeIdRef.current = id;
+    }
+  };
+
+  const items = [
+    { label: "Kopyala", value: "copy" },
+    { label: "Yapıştır", value: "paste" },
+    { label: "Sil", value: "delete" },
+  ];
+
+  const handleSelect = (value: string) => {
+    const nodeId = hoveringNodeIdRef.current;
+
+    if (nodeId !== "") {
+      const node = findNodeById(data, nodeId);
+      alert(`Seçilen işlem: ${value}, ${node?.name} <-> ${node?.id}`);
+    }
+  };
+  //todo: menü kapanınca tüm gereksiz hover olmuş elemanlar resetlenmeli
+
   return (
     <DndProvider backend={HTML5Backend}>
-
-      <VStack align="start" spacing={1}>
-        {data.map((node, index) => (
-          <TreeNodeItem key={node.id} node={node} onDrop={handleDrop} />
-        ))}
-      </VStack>
-    </DndProvider>
+      <ContextMenu menuItems={items} onSelect={handleSelect} disclosure={contextMenuDisclosure} >
+        <VStack align="start" spacing={1} h="100%" w="100%" >
+          {data.map((node, index) => (
+            <TreeNodeItem key={node.id} node={node} onDrop={handleDrop} handleHover={(e) => handleHover(e)} isContextMenuOpen={contextMenuDisclosure.isOpen} />
+          ))}
+        </VStack>
+      </ContextMenu>
+    </DndProvider >
 
   );
 };
