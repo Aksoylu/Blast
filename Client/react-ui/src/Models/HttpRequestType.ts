@@ -1,6 +1,7 @@
-import { HttpRequestTypes } from "#/Constants/Enums/HttpRequestTypes";
+import { HttpRequestTypesEnum } from "../Constants/Enums/HttpRequestTypes";
 
 export class HttpRequestType {
-    type: HttpRequestTypes;
-    value: string;
+    type: HttpRequestTypesEnum;
+    color: string;
+    code: string;
 }

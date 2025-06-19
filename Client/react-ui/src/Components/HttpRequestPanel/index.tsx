@@ -17,12 +17,16 @@ import { HttpRequestObject } from '../../Models/HttpRequestObject';
 import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
 import { ParametersTab } from './ParametersTab';
 import { RequestTypeSelector } from './RequestTypeSelector';
+import { HeadersTab } from './HeadersTab';
 
 export interface HttpRequestPanelProps {
     requestData: HttpRequestObject;
 }
 
 export const HttpRequestPanel = ({ }) => {
+
+
+    
     const saveButton = () => {
         return (<Button colorScheme="blue" variant="ghost" size="sm" leftIcon={<FiSave />}>Save</Button>);
     };
@@ -38,7 +42,7 @@ export const HttpRequestPanel = ({ }) => {
     const requestInputBar = () => {
         return (<Box width="100%" height={10} >
             <Flex justifyContent="right" alignItems="center" width="100%">
-                <RequestTypeSelector/>
+                <RequestTypeSelector />
                 <Input
                     ml={3}
                     variant="unstyled"
@@ -86,9 +90,9 @@ export const HttpRequestPanel = ({ }) => {
                         <ParametersTab />
                     </Box>
                 </TabPanel>
-                <TabPanel>
+                <TabPanel p={0} h="100%" display="flex" flexDirection="column">
                     <Box flex="1" overflow="auto">
-                        Headers
+                        <HeadersTab />
                     </Box>
                 </TabPanel>
 

@@ -2,37 +2,38 @@ import { Box, Button, Flex, FormLabel, Table, TableContainer, Tag, Tbody, Th, Th
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import RowItem from "./RowItem";
-import { HttpQueryParameter } from "#/Models/HttpQueryParameter";
+import { HttpRequestHeader } from "#/Models/HttpRequestHeader";
 
-export interface ParameterTabProps {
+export interface HeadersTabProps {
 
 }
 
 
-export const ParametersTab = ({ }: ParameterTabProps) => {
+export const HeadersTab = ({ }: HeadersTabProps) => {
 
-    const [parameterList, setparameterList] = useState<
-        HttpQueryParameter[]>([]);
+    const [parameterData, setParameterData] = useState<
+        HttpRequestHeader[]>([]);
 
-    const updateRow = (index: number, eventData: HttpQueryParameter) => {
-        setparameterList(prev =>
+    const updateRow = (index: number, eventData: HttpRequestHeader) => {
+        setParameterData(prev =>
             prev.map((row, i) => (i === index ? eventData : row))
         );
     };
 
     const deleteRow = (index: number) => {
-        setparameterList(prev => prev.filter((_, i) => i !== index));
+        setParameterData(prev => prev.filter((_, i) => i !== index));
     };
 
     const onAddButtonClick = () => {
-        const newQueryParameter: HttpQueryParameter = {
+        const newRequestHeader: HttpRequestHeader= {
             IsIncluded: true,
             Key: "",
             Value: "",
-            Description: ""
+            Description: "",
+            IsHardcoded: false
         }
 
-        setparameterList(prev => [...prev, newQueryParameter]);
+        setParameterData(prev => [...prev, newRequestHeader]);
     }
 
     /**
@@ -52,10 +53,21 @@ export const ParametersTab = ({ }: ParameterTabProps) => {
     /**
      * @description: Inner component
      */
-    const parameterTable = () => {
-        const activeParams = parameterList.filter(eachParameter => eachParameter.IsIncluded === true).length;
-        return (<TableContainer>
+    const paramterCounter = () => {
+        const activeParams = parameterData.filter(eachParameter => eachParameter.IsIncluded === true).length;
+        return (<Tag size="sm">{activeParams} header added to request</Tag>);
+    }
 
+    return (<div>
+        <TableContainer>
+            <Box maxW="100%" maxH="100%">
+                <Flex justifyContent="space-between" alignItems="center" width="100%">
+                    <FormLabel pl="12px">Request Headers</FormLabel>
+                    <Box>
+                        {addButton()}
+                    </Box>
+                </Flex>
+            </Box>
             <Table size='sm'>
                 <Thead>
                     <Tr>
@@ -66,10 +78,10 @@ export const ParametersTab = ({ }: ParameterTabProps) => {
                     </Tr>
                 </Thead>
                 <Tbody >
-                    {parameterList.map((eachQueryParameter, index) => (
+                    {parameterData.map((eachRequestHeader, index) => (
                         <RowItem
                             key={index}
-                            data={eachQueryParameter}
+                            data={eachRequestHeader}
                             onChange={(newData) => updateRow(index, newData)}
                             onDelete={() => deleteRow(index)}
                         />
@@ -77,29 +89,8 @@ export const ParametersTab = ({ }: ParameterTabProps) => {
                 </Tbody>
             </Table>
             <Box ml="1" mt="3">
-                <Tag size="sm">{activeParams} parameter active</Tag>
+                {paramterCounter()}
             </Box>
-        </TableContainer>);
-    }
-
-    /**
-     * @todo: render "Not parameters has been set" section if all parameters are empty
-     * @description: Inner component
-     */
-    const emptyPlaceholder = () => {
-        return (<div>boş</div>);
-    }
-
-    return (<div>
-        <Box maxW="100%" maxH="100%">
-            <Flex justifyContent="space-between" alignItems="center" width="100%">
-                <FormLabel pl="12px">Query Parameters</FormLabel>
-                <Box>
-                    {addButton()}
-                </Box>
-            </Flex>
-        </Box>
-        {parameterList.length > 0 && parameterTable()}
-        {parameterList.length == 0 && emptyPlaceholder()}
+        </TableContainer>
     </div>);
 }

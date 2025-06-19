@@ -1,4 +1,4 @@
-export enum HttpRequestTypes {
+export enum HttpRequestTypesEnum {
     POST,
     GET,
     PUT,

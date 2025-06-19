@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { Tr, Td, Checkbox, Input, IconButton, Flex } from "@chakra-ui/react";
 import { FiTrash } from "react-icons/fi";
-import { HttpQueryParameter } from "../../../Models/HttpQueryParameter";
+import { HttpRequestHeader } from "../../../Models/HttpRequestHeader";
 
 export interface RowItemProps {
-    data: HttpQueryParameter;
-    onChange: (updated: HttpQueryParameter) => void;
+    data: HttpRequestHeader;
+    onChange: (event: HttpRequestHeader) => void;
     onDelete: () => void;
 }
 
 const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
-    const handleChange = (field: keyof HttpQueryParameter, value: any) => {
-        onChange({ ...data, [field]: value });
+    const handleChange = (event: keyof HttpRequestHeader, value: any) => {
+        if(data.IsHardcoded)
+        {
+            return;
+        }
+    
+        onChange({ ...data, [event]: value });
     };
 
     const [isHovered, setIsHovered] = useState(false);

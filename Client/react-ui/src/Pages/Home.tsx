@@ -10,33 +10,33 @@ import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 const workspace_1 = [
   {
     id: '1',
-    name: 'src',
+    name: 'Test Folder',
     isCollection: true,
     isFolder: true,
     children: [
-      { id: '2', name: 'index.tsx', isFolder: false },
+      { id: '2', name: 'get isteği', isFolder: false },
       {
         id: '3',
-        name: 'components',
+        name: 'subfolder',
         isFolder: true,
         children: [
-          { id: '4', name: 'Button.tsx', isFolder: false },
+          { id: '4', name: 'put deneme', isFolder: false },
         ],
       },
     ],
   },
   {
     id: '6',
-    name: 'collection 2',
+    name: 'Deneme',
     isCollection: true,
     isFolder: true,
     children: [
-      { id: '7', name: 'index.tsx', isFolder: false }
+      { id: '7', name: 'Post req test', isFolder: false }
     ],
   },
   {
     id: '5',
-    name: 'package.json',
+    name: 'get2',
     isFolder: false,
   },
 ];
