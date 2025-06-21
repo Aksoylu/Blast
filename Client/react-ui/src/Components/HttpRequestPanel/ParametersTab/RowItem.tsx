@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Tr, Td, Checkbox, Input, IconButton, Flex } from "@chakra-ui/react";
 import { FiTrash } from "react-icons/fi";
-import { HttpQueryParameter } from "../../../Models/HttpQueryParameter";
+
+import { HttpQueryParameter } from "#/Models";
 
 export interface RowItemProps {
     data: HttpQueryParameter;

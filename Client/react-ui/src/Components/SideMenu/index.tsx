@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslation } from 'react-i18next'
+
 import {
     Box,
     CloseButton,
@@ -8,6 +10,7 @@ import {
     Text,
     BoxProps,
 } from '@chakra-ui/react'
+
 import {
     FiHome,
     FiTrendingUp,
@@ -17,9 +20,10 @@ import {
     FiFileText
 } from 'react-icons/fi'
 import { IconType } from 'react-icons'
+
+import { Pages } from '#/Enums'
+
 import { SideMenuItem } from './SideMenuItem'
-import { Pages } from '#/Enums/Pages'
-import { useTranslation } from 'react-i18next'
 
 
 

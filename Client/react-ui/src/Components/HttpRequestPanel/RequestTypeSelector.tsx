@@ -1,3 +1,4 @@
+import { useState } from 'react';
 
 import {
     Button,
@@ -10,15 +11,14 @@ import {
     PopoverContent,
     PopoverHeader,
     PopoverTrigger,
-    VStack
+    VStack,
+    useDisclosure
 } from '@chakra-ui/react';
-import { useDisclosure } from '@chakra-ui/react';
 
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 import { HttpRequestTypeData } from '#/Constants';
 import { HttpRequestTypesEnum } from '#/Enums';
-import { useState } from 'react';
 
 export const RequestTypeSelector = () => {
     const ComponentWidth = 135;

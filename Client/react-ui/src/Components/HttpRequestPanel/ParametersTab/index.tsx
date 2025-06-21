@@ -6,7 +6,7 @@ import RowItem from "./RowItem";
 
 import { Box, Button, Center, Flex, Text, Icon, Table, TableContainer, Tag, Tbody, Th, Thead, Tr, VStack } from "@chakra-ui/react";
 
-import { HttpQueryParameter } from "#/Models/HttpQueryParameter";
+import { HttpQueryParameter } from "#/Models";
 
 export interface ParameterTabProps {
     parameterList: HttpQueryParameter[];

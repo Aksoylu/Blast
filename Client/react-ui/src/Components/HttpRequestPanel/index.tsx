@@ -1,3 +1,4 @@
+import { useState } from 'react';
 
 import {
     Box,
@@ -10,21 +11,21 @@ import {
     TabPanels,
     Tabs
 } from '@chakra-ui/react';
+
+import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
+
+import { DefaultHttpHeaders } from '#/Constants';
+import { HttpRequestTypesEnum } from '#/Enums/';
+import { HttpQueryParameter, HttpRequestBody, HttpRequestHeader, HttpRequestType, HttpRequestObject } from '#/Models';
+
 import { RequestBreadcrumb } from './RequestBreadcrumb';
+import { RequestTypeSelector } from './RequestTypeSelector';
+import { ParametersTab } from './ParametersTab';
+import { HeadersTab } from './HeadersTab';
+import { BodyTab } from './BodyTab';
 import { DocumentationTab } from './DocumentationTab';
 
-import { HttpRequestObject } from '../../Models/HttpRequestObject';
-import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
-import { ParametersTab } from './ParametersTab';
-import { RequestTypeSelector } from './RequestTypeSelector';
-import { HeadersTab } from './HeadersTab';
-import { useState } from 'react';
 
-import { HttpRequestTypesEnum } from '#/Enums/';
-
-
-import { HttpQueryParameter, HttpRequestHeader, HttpRequestType } from '#/Models';
-import { DefaultHttpHeaders } from '#/Constants';
 
 export interface HttpRequestPanelProps {
     initialRequestData_: HttpRequestObject | undefined;
@@ -37,12 +38,14 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
             code: 'POST'
         },
         Headers: DefaultHttpHeaders.List(),
-        QueryParameters: []
+        QueryParameters: [],
+        Body: new HttpRequestBody()
     };
 
     const [queryParameters, setQueryParameters] = useState<HttpQueryParameter[]>(initialRequestData.QueryParameters);
-    const [headers, setHeaders] = useState<HttpRequestObject['Headers']>(initialRequestData.Headers);
-    const [requestType, setRequestType] = useState<HttpRequestObject['RequestType']>(initialRequestData.RequestType);
+    const [headers, setHeaders] = useState<HttpRequestHeader[]>(initialRequestData.Headers);
+    const [requestType, setRequestType] = useState<HttpRequestType>(initialRequestData.RequestType);
+    const [requestBody, setRequestBody] = useState<HttpRequestBody>(initialRequestData.Body);
 
     const onQueryParametersUpdated = (eventData: HttpQueryParameter[]) => {
         setQueryParameters(eventData);
@@ -53,7 +56,11 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
     };
 
     const onRequestTypeUpdated = (eventData: HttpRequestType) => {
+        setRequestType(eventData);
+    };
 
+    const onRequestBodyUpdated = (eventData: HttpRequestBody) => {
+        setRequestBody(eventData);
     }
 
 
@@ -61,7 +68,8 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
     const requestData: HttpRequestObject = {
         RequestType: requestType,
         Headers: headers,
-        QueryParameters: queryParameters
+        QueryParameters: queryParameters,
+        Body: requestBody
     };
 
 
@@ -143,7 +151,10 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
 
                 <TabPanel>
                     <Box flex="1" overflow="auto">
-                        Body
+                        <BodyTab
+                            requestBody={requestBody}
+                            setRequestBody={onRequestBodyUpdated}
+                        />
                     </Box>
                 </TabPanel>
 

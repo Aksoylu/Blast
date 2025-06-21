@@ -13,6 +13,10 @@ export interface RowItemProps {
 
 const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const isRowReadonly = data.IsConstant;
+    const rowTextColor = data.IsConstant ? "gray.600" : "primary";
+    const checkBoxColor = data.IsConstant ? "gray" : "blue";
+
 
     const handleChange = (event: keyof HttpRequestHeader, value: any) => {
         if (data.IsConstant) {
@@ -29,10 +33,9 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
 
     // #region Inner Components
     const deleteButton = () => {
-        const visibility = !data.IsConstant && isHovered ? "visible": "hidden";
+        const visibility = !data.IsConstant && isHovered ? "visible" : "hidden";
         const onClick = () => {
-            if(data.IsConstant)
-            {
+            if (data.IsConstant) {
                 return;
             }
 
@@ -59,6 +62,8 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
             <Td border="1px solid" borderColor="gray.700" w="1">
                 <Checkbox
                     ml="1"
+                    readOnly={isRowReadonly}
+                    colorScheme={checkBoxColor}
                     isChecked={data.IsIncluded}
                     onChange={(e) => handleChange("IsIncluded", e.target.checked)}
                 />
@@ -67,8 +72,8 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
                 <Input
                     variant="unstyled"
                     size="sm"
-                    color="gray.600"
-                    readOnly={true}
+                    color={rowTextColor}
+                    readOnly={isRowReadonly}
                     value={data.Key}
                     onChange={(e) => handleChange("Key", e.target.value)}
                 />
@@ -77,6 +82,8 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
                 <Input
                     variant="unstyled"
                     size="sm"
+                    color={rowTextColor}
+                    readOnly={isRowReadonly}
                     value={data.Value}
                     onChange={(e) => handleChange("Value", e.target.value)}
                 />
@@ -86,6 +93,8 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
                     <Input
                         variant="unstyled"
                         size="sm"
+                        color={rowTextColor}
+                        readOnly={isRowReadonly}
                         value={data.Description}
                         onChange={(e) => handleChange("Description", e.target.value)}
                     />
