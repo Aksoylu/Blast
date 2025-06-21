@@ -1,11 +1,6 @@
 'use client'
 
 import {
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel,
     Box,
     Tab,
     TabList,
@@ -15,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import { FileTree, FileTreeProps } from '../FileTree';
 import { SearchBar } from '../SearchBar';
-import { ContextMenu } from '../FileTree/ContextMenu';
 
 
 export const WorkspacePanel: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {

@@ -1,4 +1,4 @@
-import {  HttpRequestTypesEnum } from "./Enums/HttpRequestTypes";
+import {  HttpRequestTypesEnum } from "#/Enums/HttpRequestTypes";
 import { HttpRequestType } from "#/Models/HttpRequestType";
 
 export class HttpRequestTypeData {

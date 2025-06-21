@@ -16,8 +16,8 @@ import { useDisclosure } from '@chakra-ui/react';
 
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
-import { HttpRequestTypeData } from '../../Constants/HttpRequestTypeData';
-import { HttpRequestTypes } from '../../Constants/Enums/HttpRequestTypes';
+import { HttpRequestTypeData } from '#/Constants';
+import { HttpRequestTypesEnum } from '#/Enums';
 import { useState } from 'react';
 
 export const RequestTypeSelector = () => {
@@ -26,21 +26,21 @@ export const RequestTypeSelector = () => {
     const CustomRequestTypeMaxLength = 10;
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedRequestType, setSelectedRequestType] = useState(HttpRequestTypes.POST);
+    const [selectedRequestType, setSelectedRequestType] = useState(HttpRequestTypesEnum.POST);
     const [customRequestType, setCustomRequestType] = useState("");
 
-    const requestTypeDataList = HttpRequestTypeData.List().filter(i => i.type !== HttpRequestTypes.CUSTOM);
+    const requestTypeDataList = HttpRequestTypeData.List().filter(i => i.type !== HttpRequestTypesEnum.CUSTOM);
 
     const foundRequestType = HttpRequestTypeData.GetByType(selectedRequestType);
 
-    const onRegularRequestTypeSelected = (requestType: HttpRequestTypes) => {
+    const onRegularRequestTypeSelected = (requestType: HttpRequestTypesEnum) => {
         setSelectedRequestType(requestType);
         setCustomRequestType("");
         onClose();
     }
 
     const onCustomRequestInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const currentRequestType = HttpRequestTypeData.GetByType(HttpRequestTypes.CUSTOM);
+        const currentRequestType = HttpRequestTypeData.GetByType(HttpRequestTypesEnum.CUSTOM);
         setSelectedRequestType(currentRequestType.type);
 
         let eventData = event.target.value.toUpperCase();
@@ -52,7 +52,7 @@ export const RequestTypeSelector = () => {
     };
 
     const renderPopoverButtonText = () => {
-        return selectedRequestType == HttpRequestTypes.CUSTOM ? customRequestType : foundRequestType.code;
+        return selectedRequestType == HttpRequestTypesEnum.CUSTOM ? customRequestType : foundRequestType.code;
     }
 
     const onCustomRequestInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

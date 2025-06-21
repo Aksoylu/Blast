@@ -18,7 +18,7 @@ import {
 } from 'react-icons/fi'
 import { IconType } from 'react-icons'
 import { SideMenuItem } from './SideMenuItem'
-import { Pages } from '../../Constants/Enums/Pages'
+import { Pages } from '#/Enums/Pages'
 import { useTranslation } from 'react-i18next'
 
 

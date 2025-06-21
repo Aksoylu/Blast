@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+
 import { Tr, Td, Checkbox, Input, IconButton, Flex } from "@chakra-ui/react";
 import { FiTrash } from "react-icons/fi";
-import { HttpRequestHeader } from "../../../Models/HttpRequestHeader";
+
+import { HttpRequestHeader } from "#/Models";
 
 export interface RowItemProps {
     data: HttpRequestHeader;
@@ -10,16 +12,44 @@ export interface RowItemProps {
 }
 
 const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
+    const [isHovered, setIsHovered] = useState(false);
+
     const handleChange = (event: keyof HttpRequestHeader, value: any) => {
-        if(data.IsHardcoded)
-        {
+        if (data.IsConstant) {
             return;
         }
-    
+
         onChange({ ...data, [event]: value });
     };
 
-    const [isHovered, setIsHovered] = useState(false);
+    // eğer constant value ise set edilmesi gereken: 
+    //    color="gray.600"
+    //                readOnly={true}
+
+
+    // #region Inner Components
+    const deleteButton = () => {
+        const visibility = !data.IsConstant && isHovered ? "visible": "hidden";
+        const onClick = () => {
+            if(data.IsConstant)
+            {
+                return;
+            }
+
+            onDelete();
+        }
+
+        return (<IconButton
+            aria-label="Delete row"
+            icon={<FiTrash />}
+            size="sm"
+            variant="ghost"
+            colorScheme="red"
+            ml="2"
+            onClick={onClick}
+            visibility={visibility}
+        />);
+    }
 
     return (
         <Tr
@@ -37,6 +67,8 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
                 <Input
                     variant="unstyled"
                     size="sm"
+                    color="gray.600"
+                    readOnly={true}
                     value={data.Key}
                     onChange={(e) => handleChange("Key", e.target.value)}
                 />
@@ -58,16 +90,7 @@ const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
                         onChange={(e) => handleChange("Description", e.target.value)}
                     />
 
-                    <IconButton
-                        aria-label="Delete row"
-                        icon={<FiTrash />}
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="red"
-                        ml="2"
-                        onClick={onDelete}
-                        visibility={isHovered ? "visible" : "hidden"}
-                    />
+                    {deleteButton()}
                 </Flex>
             </Td>
         </Tr>

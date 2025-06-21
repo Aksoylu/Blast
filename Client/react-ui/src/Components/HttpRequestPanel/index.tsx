@@ -18,15 +18,54 @@ import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
 import { ParametersTab } from './ParametersTab';
 import { RequestTypeSelector } from './RequestTypeSelector';
 import { HeadersTab } from './HeadersTab';
+import { useState } from 'react';
+
+import { HttpRequestTypesEnum } from '#/Enums/';
+
+
+import { HttpQueryParameter, HttpRequestHeader, HttpRequestType } from '#/Models';
+import { DefaultHttpHeaders } from '#/Constants';
 
 export interface HttpRequestPanelProps {
-    requestData: HttpRequestObject;
+    initialRequestData_: HttpRequestObject | undefined;
 }
+export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps) => {
+    const initialRequestData: HttpRequestObject = {
+        RequestType: {
+            type: HttpRequestTypesEnum.POST,
+            color: 'blue',
+            code: 'POST'
+        },
+        Headers: DefaultHttpHeaders.List(),
+        QueryParameters: []
+    };
 
-export const HttpRequestPanel = ({ }) => {
+    const [queryParameters, setQueryParameters] = useState<HttpQueryParameter[]>(initialRequestData.QueryParameters);
+    const [headers, setHeaders] = useState<HttpRequestObject['Headers']>(initialRequestData.Headers);
+    const [requestType, setRequestType] = useState<HttpRequestObject['RequestType']>(initialRequestData.RequestType);
+
+    const onQueryParametersUpdated = (eventData: HttpQueryParameter[]) => {
+        setQueryParameters(eventData);
+    };
+
+    const onHeadersUpdated = (eventData: HttpRequestHeader[]) => {
+        setHeaders(eventData);
+    };
+
+    const onRequestTypeUpdated = (eventData: HttpRequestType) => {
+
+    }
 
 
-    
+    // Tam request objesi (gerekirse)
+    const requestData: HttpRequestObject = {
+        RequestType: requestType,
+        Headers: headers,
+        QueryParameters: queryParameters
+    };
+
+
+    // #region Inner Components
     const saveButton = () => {
         return (<Button colorScheme="blue" variant="ghost" size="sm" leftIcon={<FiSave />}>Save</Button>);
     };
@@ -87,12 +126,18 @@ export const HttpRequestPanel = ({ }) => {
             <TabPanels>
                 <TabPanel p={0} h="100%" display="flex" flexDirection="column">
                     <Box flex="1" overflow="auto">
-                        <ParametersTab />
+                        <ParametersTab
+                            parameterList={queryParameters}
+                            setParameterList={onQueryParametersUpdated}
+                        />
                     </Box>
                 </TabPanel>
                 <TabPanel p={0} h="100%" display="flex" flexDirection="column">
                     <Box flex="1" overflow="auto">
-                        <HeadersTab />
+                        <HeadersTab
+                            headerList={headers}
+                            setHeaderList={onHeadersUpdated}
+                        />
                     </Box>
                 </TabPanel>
 

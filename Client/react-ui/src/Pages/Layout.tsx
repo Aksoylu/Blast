@@ -18,9 +18,9 @@ import { Teams } from './Teams'
 import { Settings } from './Settings'
 import { Configurations } from './Configurations'
 
-import { SideMenu } from '../Components/SideMenu'
-import { Navbar } from '../Components/Navbar'
-import { Pages } from '../Constants/Enums/Pages'
+import { SideMenu,Navbar } from '#/Components';
+
+import { Pages } from '#/Enums'
 import { useTranslation } from 'react-i18next'
 
 export const Layout = () => {

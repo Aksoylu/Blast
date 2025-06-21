@@ -1,48 +1,63 @@
-import { Box, Button, Flex, FormLabel, Table, TableContainer, Tag, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
+
+import { Box, Button, Flex, Table, TableContainer, Tag, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import { FiPlus, FiEyeOff, FiEye } from "react-icons/fi";
+
+import { HttpRequestHeader } from "#/Models";
+
 import RowItem from "./RowItem";
-import { HttpRequestHeader } from "#/Models/HttpRequestHeader";
 
 export interface HeadersTabProps {
-
+    headerList: HttpRequestHeader[];
+    setHeaderList: (updated: HttpRequestHeader[]) => void;
 }
 
+export const HeadersTab = ({ headerList, setHeaderList }: HeadersTabProps) => {
+    // #region  Definitions
+    const [isHardcodedHeadersVisible, setIsHardcodedHeadersVisible] = useState(false);
 
-export const HeadersTab = ({ }: HeadersTabProps) => {
+    const IsConstantHeaders = headerList.filter(eachHeader => eachHeader.IsConstant === true);
+    const activeOptionalHeaders = headerList.filter(eachHeader => eachHeader.IsIncluded === true && eachHeader.IsConstant !== true);
+    const renderedHeaderList = isHardcodedHeadersVisible ? headerList : activeOptionalHeaders;
 
-    const [parameterData, setParameterData] = useState<
-        HttpRequestHeader[]>([]);
-
-    const updateRow = (index: number, eventData: HttpRequestHeader) => {
-        setParameterData(prev =>
-            prev.map((row, i) => (i === index ? eventData : row))
+    // #region  UI Actions
+    const updateRow = (index: number, updated: Partial<HttpRequestHeader>) => {
+        const updatedList = headerList.map((param, i) =>
+            i === index ? { ...param, ...updated } : param
         );
+        setHeaderList(updatedList);
     };
 
     const deleteRow = (index: number) => {
-        setParameterData(prev => prev.filter((_, i) => i !== index));
+        const updatedList = headerList.filter((_, i) => i !== index);
+        setHeaderList(updatedList);
     };
 
-    const onAddButtonClick = () => {
-        const newRequestHeader: HttpRequestHeader= {
-            IsIncluded: true,
-            Key: "",
-            Value: "",
-            Description: "",
-            IsHardcoded: false
-        }
-
-        setParameterData(prev => [...prev, newRequestHeader]);
+    const addRow = (newItem: HttpRequestHeader) => {
+        setHeaderList([...headerList, newItem]);
     }
 
+
+    // #region  Inner Components
     /**
      * @description:Inner Component
-     * @returns 
      */
     const addButton = () => {
+        const onClick = () => {
+            const newRequestHeader: HttpRequestHeader = {
+                IsIncluded: true,
+                Key: "",
+                Value: "",
+                Description: "",
+                IsConstant: false,
+                Explanation: ""
+            }
+
+            addRow(newRequestHeader);
+        }
+
         return (<Button
-            onClick={onAddButtonClick}
+            onClick={onClick}
             ml="12px"
             colorScheme="blue"
             variant="ghost"
@@ -51,19 +66,46 @@ export const HeadersTab = ({ }: HeadersTabProps) => {
     };
 
     /**
-     * @description: Inner component
-     */
-    const paramterCounter = () => {
-        const activeParams = parameterData.filter(eachParameter => eachParameter.IsIncluded === true).length;
-        return (<Tag size="sm">{activeParams} header added to request</Tag>);
-    }
+      * @description:Inner Component
+    */
+    const showIsConstantHeadersButton = () => {
+        const onClick = () => {
+            setIsHardcodedHeadersVisible(true);
+        }
+
+        return (<Button
+            onClick={onClick}
+            ml="12px"
+            color="gray.500"
+            variant="ghost"
+            size="sm"
+            leftIcon={<FiEye />}>Show constant headers</Button>);
+    };
+
+    /**
+     * @description:Inner Component
+    */
+    const hideIsConstantHeadersButton = () => {
+        const onClick = () => {
+            setIsHardcodedHeadersVisible(false);
+        }
+        return (<Button
+            onClick={onClick}
+            ml="12px"
+            color="gray.500"
+            variant="ghost"
+            size="sm"
+            leftIcon={<FiEyeOff />}>Hide constant headers</Button>);
+    };
 
     return (<div>
         <TableContainer>
             <Box maxW="100%" maxH="100%">
                 <Flex justifyContent="space-between" alignItems="center" width="100%">
-                    <FormLabel pl="12px">Request Headers</FormLabel>
+                    <Tag size="sm" color="gray.500">{headerList.length} header added to request ({IsConstantHeaders.length} constant)</Tag>
                     <Box>
+                        {!isHardcodedHeadersVisible && showIsConstantHeadersButton()}
+                        {isHardcodedHeadersVisible && hideIsConstantHeadersButton()}
                         {addButton()}
                     </Box>
                 </Flex>
@@ -78,7 +120,7 @@ export const HeadersTab = ({ }: HeadersTabProps) => {
                     </Tr>
                 </Thead>
                 <Tbody >
-                    {parameterData.map((eachRequestHeader, index) => (
+                    {renderedHeaderList.map((eachRequestHeader, index) => (
                         <RowItem
                             key={index}
                             data={eachRequestHeader}
@@ -88,9 +130,7 @@ export const HeadersTab = ({ }: HeadersTabProps) => {
                     ))}
                 </Tbody>
             </Table>
-            <Box ml="1" mt="3">
-                {paramterCounter()}
-            </Box>
+
         </TableContainer>
     </div>);
 }

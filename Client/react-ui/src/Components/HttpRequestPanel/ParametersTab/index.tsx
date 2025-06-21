@@ -1,47 +1,55 @@
-import { Box, Button, Flex, FormLabel, Table, TableContainer, Tag, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { BsStack } from "react-icons/bs";
+
 import RowItem from "./RowItem";
+
+import { Box, Button, Center, Flex, Text, Icon, Table, TableContainer, Tag, Tbody, Th, Thead, Tr, VStack } from "@chakra-ui/react";
+
 import { HttpQueryParameter } from "#/Models/HttpQueryParameter";
 
 export interface ParameterTabProps {
-
+    parameterList: HttpQueryParameter[];
+    setParameterList: (updated: HttpQueryParameter[]) => void;
 }
 
 
-export const ParametersTab = ({ }: ParameterTabProps) => {
+export const ParametersTab = ({ parameterList, setParameterList }: ParameterTabProps) => {
+    const activeParams = parameterList.filter(p => p.IsIncluded).length;
 
-    const [parameterList, setparameterList] = useState<
-        HttpQueryParameter[]>([]);
-
-    const updateRow = (index: number, eventData: HttpQueryParameter) => {
-        setparameterList(prev =>
-            prev.map((row, i) => (i === index ? eventData : row))
+    const updateRow = (index: number, updated: Partial<HttpQueryParameter>) => {
+        const updatedList = parameterList.map((param, i) =>
+            i === index ? { ...param, ...updated } : param
         );
+        setParameterList(updatedList);
     };
 
     const deleteRow = (index: number) => {
-        setparameterList(prev => prev.filter((_, i) => i !== index));
+        const updatedList = parameterList.filter((_, i) => i !== index);
+        setParameterList(updatedList);
     };
 
-    const onAddButtonClick = () => {
-        const newQueryParameter: HttpQueryParameter = {
-            IsIncluded: true,
-            Key: "",
-            Value: "",
-            Description: ""
-        }
-
-        setparameterList(prev => [...prev, newQueryParameter]);
+    const addRow = (newItem: HttpQueryParameter) => {
+        setParameterList([...parameterList, newItem]);
     }
 
+    // #region  Inner Components
     /**
      * @description:Inner Component
-     * @returns 
      */
     const addButton = () => {
+        const onClick = () => {
+            const newQueryParameter: HttpQueryParameter = {
+                IsIncluded: true,
+                Key: "",
+                Value: "",
+                Description: ""
+            }
+            addRow(newQueryParameter);
+        }
+
         return (<Button
-            onClick={onAddButtonClick}
+            onClick={onClick}
             ml="12px"
             colorScheme="blue"
             variant="ghost"
@@ -53,7 +61,6 @@ export const ParametersTab = ({ }: ParameterTabProps) => {
      * @description: Inner component
      */
     const parameterTable = () => {
-        const activeParams = parameterList.filter(eachParameter => eachParameter.IsIncluded === true).length;
         return (<TableContainer>
 
             <Table size='sm'>
@@ -83,17 +90,28 @@ export const ParametersTab = ({ }: ParameterTabProps) => {
     }
 
     /**
-     * @todo: render "Not parameters has been set" section if all parameters are empty
      * @description: Inner component
      */
     const emptyPlaceholder = () => {
-        return (<div>boş</div>);
+        return (<Box>
+            <Center h="200px">
+                <VStack textAlign="center">
+                    <Icon as={BsStack} w={12} h={12} color="gray.400" />
+                    <Text fontSize="xl" fontWeight="semibold" color="gray.500">
+                        You didn't added any query parameter yet.
+                    </Text>
+                    <Text color="gray.400">
+                        You can add by clicking <u>+ New</u> button
+                    </Text>
+                </VStack>
+            </Center>
+        </Box>);
     }
 
     return (<div>
         <Box maxW="100%" maxH="100%">
             <Flex justifyContent="space-between" alignItems="center" width="100%">
-                <FormLabel pl="12px">Query Parameters</FormLabel>
+                <Tag size="sm" color="gray.500">{activeParams} parameter active</Tag>
                 <Box>
                     {addButton()}
                 </Box>
