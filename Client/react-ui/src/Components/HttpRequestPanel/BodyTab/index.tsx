@@ -4,9 +4,11 @@ import { BsRocketTakeoff } from "react-icons/bs";
 
 import { Box, Center, Flex, Text, Icon, Tag, VStack, Select } from "@chakra-ui/react";
 
-import { HttpRequestBody } from "#/Models";
+import { HttpQueryParameter, HttpRequestBody } from "#/Models";
 import { HttpRequestBodyTypeData, HttpBodyRawDataTypeData } from "#/Constants";
-import { HttpRequestBodyTypesEnum } from "#/Enums";
+import { HttpBodyRawDataTypesEnum, HttpRequestBodyTypesEnum } from "#/Enums";
+import { FormDataInput } from "./FormDataInput";
+import { HttpBodyFormData } from "#/Models/HttpBodyFormData";
 
 export interface BodyTabProps {
     requestBody: HttpRequestBody;
@@ -81,6 +83,21 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         </Box>);
     }
 
+    /**
+     * @description: Inner component
+    */
+    const formDataInput = () => {
+        const formDataList = (requestBody.data ?? []) as HttpBodyFormData[];
+        const setFormDataList = (updated: HttpBodyFormData[]) => {
+            updateBody({ data: updated });
+        };
+
+        return (<FormDataInput
+            formDataList={formDataList}
+            setFormDataList={setFormDataList} />
+        );
+    }
+
     return (<div>
         <Box maxW="100%" maxH="100%">
             <Flex justifyContent="left" width="100%">
@@ -88,6 +105,8 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
                 {isRawDataTypeSelectorVisible && rawContentTypeSelector()}
             </Flex>
         </Box>
-        {emptyPlaceholder()}
+        {requestBody.type == HttpRequestBodyTypesEnum.NONE && emptyPlaceholder()}
+        {requestBody.type == HttpRequestBodyTypesEnum.FORMDATA && formDataInput()}
+
     </div>);
 }

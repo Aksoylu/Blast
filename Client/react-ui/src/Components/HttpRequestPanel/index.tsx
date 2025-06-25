@@ -24,12 +24,12 @@ import { ParametersTab } from './ParametersTab';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
 import { DocumentationTab } from './DocumentationTab';
-
-
+import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 export interface HttpRequestPanelProps {
     initialRequestData_: HttpRequestObject | undefined;
 }
+
 export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps) => {
     const initialRequestData: HttpRequestObject = {
         RequestType: {
@@ -100,7 +100,11 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
     }
 
     const sendRequestButton = () => {
-        return (<Button ml={3} colorScheme="blue" size="md" height={10}>
+        const onClick = () => {
+            console.log(requestData);
+        }
+
+        return (<Button ml={3} colorScheme="blue" size="md" height={10} onClick={onClick}>
             Send
         </Button>);
     }
