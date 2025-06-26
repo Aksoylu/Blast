@@ -2,79 +2,22 @@ import React, { useRef, useState } from "react";
 import { Tr, Td, Checkbox, Input, IconButton, Flex, Select, Box, Button, Icon, Text } from "@chakra-ui/react";
 import { FiFile, FiTrash, FiUpload } from "react-icons/fi";
 
-import { HttpBodyFormData } from "#/Models";
+import { HttpBodyFormData, HttpBodyUrlEncodedData } from "#/Models";
 import { HttpBodyFormDataTypeData } from "#/Constants";
 import { HttpBodyFormDataTypesEnum } from "#/Enums";
-import { RowCellFileInput } from "./RowCellFileInput";
 
 export interface RowItemProps {
-    data: HttpBodyFormData;
-    onChange: (updated: HttpBodyFormData) => void;
+    data: HttpBodyUrlEncodedData;
+    onChange: (updated: HttpBodyUrlEncodedData) => void;
     onDelete: () => void;
 }
 
 export const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
-    const FormDataTypes = HttpBodyFormDataTypeData.List();
-
     const [isHovered, setIsHovered] = useState(false);
 
-    const handleChange = (field: keyof HttpBodyFormData, value: any) => {
+    const handleChange = (field: keyof HttpBodyUrlEncodedData, value: any) => {
         onChange({ ...data, [field]: value });
     };
-
-    const onDataTypeChange = (event: any) => {
-        const newDataType =event as HttpBodyFormDataTypesEnum
-        onChange({
-            ...data,
-            DataType: newDataType,
-            Value: ""
-        });
-    }
-
-    // #region  Inner Components
-
-    /**
-     * @description:Inner Component
-     */
-    const dataTypeSelector = () => {
-        return (<Select
-            variant="outline"
-            size="md"
-            value={data.DataType}
-            onChange={(e) => { onDataTypeChange(e.target.value) }}
-        >
-            {FormDataTypes.map((bodyType) => (
-                <option key={bodyType.type} value={bodyType.type}>
-                    {bodyType.code}
-                </option>
-            ))}
-        </Select>);
-    }
-
-    const textInput = () => {
-        const onChange = (e) => {
-            handleChange("Value", e.target.value);
-        }
-
-        return (<Input
-            variant="unstyled"
-            size="sm"
-            value={data.Value}
-            onChange={onChange}
-        />)
-    }
-
-    const fileInput = () => {
-        const onChange = (fileName) => {
-            handleChange("Value", fileName);
-        }
-
-        return (<RowCellFileInput
-            value={data.Value}
-            onChange={onChange}
-        />)
-    }
-
 
     return (
         <Tr
@@ -98,12 +41,12 @@ export const RowItem = ({ data, onChange, onDelete }: RowItemProps) => {
             </Td>
 
             <Td border="1px solid" borderColor="gray.700">
-                {dataTypeSelector()}
-            </Td>
-            <Td border="1px solid" borderColor="gray.700">
-                {data.DataType == HttpBodyFormDataTypesEnum.Text && textInput()}
-                {data.DataType == HttpBodyFormDataTypesEnum.File && fileInput()}
-
+                <Input
+                    variant="unstyled"
+                    size="sm"
+                    value={data.Value}
+                    onChange={(e) => handleChange("Value", e.target.value)}
+                />
             </Td>
             <Td border="1px solid" borderColor="gray.700">
                 <Flex align="center" justify="space-between">

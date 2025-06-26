@@ -9,6 +9,7 @@ import { HttpRequestBodyTypeData, HttpBodyRawDataTypeData } from "#/Constants";
 import { HttpBodyRawDataTypesEnum, HttpRequestBodyTypesEnum } from "#/Enums";
 import { FormDataInput } from "./FormDataInput";
 import { HttpBodyFormData } from "#/Models/HttpBodyFormData";
+import { UrlEncodedDataInput } from "./UrlEncodedDataInput";
 
 export interface BodyTabProps {
     requestBody: HttpRequestBody;
@@ -33,7 +34,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
     const bodyTypeSelector = () => {
         const onChange = (event) => {
             const selectedType = event.target.value;
-            updateBody({ type: selectedType });
+            updateBody({ type: selectedType, data: undefined });
         };
 
         return (<Box width="30%">
@@ -47,6 +48,9 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         </Box>);
     }
 
+    /**
+     * @description: Inner component
+     */
     const rawContentTypeSelector = () => {
         const onChange = (event) => {
             const selectedRawDataType = event.target.value;
@@ -98,6 +102,18 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         );
     }
 
+    const urlEncodedDataInput = () => {
+        const urlEncodedDataList = (requestBody.data ?? []) as HttpBodyFormData[];
+        const setUrlEncodedDataList = (updated: HttpBodyFormData[]) => {
+            updateBody({ data: updated });
+        };
+
+        return (<UrlEncodedDataInput
+            urlEncodedDataList={urlEncodedDataList}
+            setUrlEncodedDataList={setUrlEncodedDataList} />
+        );
+    }
+
     return (<div>
         <Box maxW="100%" maxH="100%">
             <Flex justifyContent="left" width="100%">
@@ -107,6 +123,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         </Box>
         {requestBody.type == HttpRequestBodyTypesEnum.NONE && emptyPlaceholder()}
         {requestBody.type == HttpRequestBodyTypesEnum.FORMDATA && formDataInput()}
+        {requestBody.type == HttpRequestBodyTypesEnum.URLENCODED && urlEncodedDataInput()}
 
     </div>);
 }

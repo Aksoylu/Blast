@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
-import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
-import { FiUpload, FiFile } from "react-icons/fi";
+import { Box, Button, Flex, HStack, Icon, Text, useToast } from "@chakra-ui/react";
+import { FiUpload, FiFile, FiX } from "react-icons/fi";
+import { MessageCodes } from "#/Constants/MessageCodes";
 
 
 export interface RowCellFileInputProps {
@@ -8,37 +9,99 @@ export interface RowCellFileInputProps {
     onChange: (updated: string) => void;
 }
 export const RowCellFileInput: React.FC<RowCellFileInputProps> = ({ value, onChange }) => {
-    const [filePath, setFilePath] = useState<string | null>(value || null);
+    const toast = useToast();
 
-    const handleSelectFile = async () => {
-        const selectedFile = await window.electronAPI.openFileDialog();
-        if (selectedFile) {
-            setFilePath(selectedFile);
-            onChange(selectedFile);
+    const fileName = value ? value.split(/[\\/]/).pop() : "";
+
+    // #region  Inner Components
+    const uploadFileButton = () => {
+        const onClick = async () => {
+            const fileDialogResult = await window.electronAPI.FileDialogService.GetFilePath();
+            if (fileDialogResult.success) {
+                onChange(fileDialogResult.path ?? "");
+            }
+            else {
+                displayFileSelectionError(fileDialogResult.message ?? MessageCodes.UNKNOWN);
+            }
         }
-    };
+
+        return (<Button
+            leftIcon={<FiUpload />}
+            onClick={onClick}
+        >
+            Select File
+        </Button>);
+    }
+
+    const uploadedFileDisplay = () => {
+        const onFileDeleteButtonClick = () => {
+            onChange("");
+        }
+
+        const onFileChangeButtonClick = async () => {
+            const fileDialogResult = await window.electronAPI.FileDialogService.GetFilePath();
+            if (fileDialogResult.success) {
+                onChange(fileDialogResult.path ?? "");
+            }
+            else {
+                displayFileSelectionError(fileDialogResult.message ?? MessageCodes.UNKNOWN);
+            }
+        }
+
+        return (
+            <Flex
+                align="center"
+                gap={2}
+                p={2}
+            >
+                <HStack>
+                    <Icon onClick={onFileChangeButtonClick} cursor="pointer" as={FiFile} color="blue.500" boxSize={5} />
+                    <Text
+                        onClick={onFileChangeButtonClick}
+                        cursor="pointer"
+                        fontSize="sm"
+                        _hover={{
+                            color: "blue.500",
+                        }}
+                    >
+                        {fileName}
+                    </Text>
+
+                    <Icon
+                        onClick={onFileDeleteButtonClick}
+                        cursor="pointer"
+                        as={FiX}
+                        color="red.500"
+                        boxSize={5}
+                        _hover={{
+                            color: "red.500",
+                            transform: "scale(1.2)",
+                            transition: "all 0.2s ease-in-out",
+                        }}
+                    /></HStack>
+            </Flex>
+        );
+    }
+    // #endregion
+
+
+    // #region UI Actions
+    const displayFileSelectionError = (description: string) => {
+        toast({
+            title: "File Error",
+            description: description,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "top-right",
+        });
+    }
+    // #endregion
 
     return (
         <Box>
-            {!filePath ? (
-                <Button leftIcon={<FiUpload />} onClick={handleSelectFile}>
-                    Dosya Yükle
-                </Button>
-            ) : (
-                <Flex
-                    align="center"
-                    gap={2}
-                    border="1px solid"
-                    borderColor="gray.200"
-                    borderRadius="md"
-                    p={2}
-                    cursor="pointer"
-                    onClick={handleSelectFile}
-                >
-                    <Icon as={FiFile} color="blue.500" boxSize={5} />
-                    <Text fontSize="sm">{filePath.split(/[\\/]/).pop()}</Text>
-                </Flex>
-            )}
+            {!value && uploadFileButton()}
+            {value && uploadedFileDisplay()}
         </Box>
     );
 };

@@ -1,35 +1,35 @@
 import { useState } from "react";
-import { FiPlus, FiInbox } from "react-icons/fi";
+import { FiPlus, FiInbox, FiPackage } from "react-icons/fi";
 import { Box, Button, Center, Flex, Text, Icon, Table, TableContainer, Tag, Tbody, Th, Thead, Tr, VStack } from "@chakra-ui/react";
 
 
-import { HttpBodyFormData } from "#/Models";
+import { HttpBodyUrlEncodedData } from "#/Models";
 
 import { RowItem, RowItemProps } from "./RowItem";
 import { HttpBodyFormDataTypesEnum } from "#/Enums";
 
-export interface formDataInputProps {
-    formDataList: HttpBodyFormData[];
-    setFormDataList: (updated: HttpBodyFormData[]) => void;
+export interface UrlEncodedDataInputProps {
+    urlEncodedDataList: HttpBodyUrlEncodedData[];
+    setUrlEncodedDataList: (updated: HttpBodyUrlEncodedData[]) => void;
 }
 
-export const FormDataInput = ({ formDataList, setFormDataList }: formDataInputProps) => {
-    const activeParams = formDataList.filter(p => p.IsIncluded).length;
+export const UrlEncodedDataInput = ({ urlEncodedDataList, setUrlEncodedDataList }: UrlEncodedDataInputProps) => {
+    const activeParams = urlEncodedDataList.filter(p => p.IsIncluded).length;
 
-    const updateRow = (index: number, updated: Partial<HttpBodyFormData>) => {
-        const updatedList = formDataList.map((param, i) =>
+    const updateRow = (index: number, updated: Partial<HttpBodyUrlEncodedData>) => {
+        const updatedList = urlEncodedDataList.map((param, i) =>
             i === index ? { ...param, ...updated } : param
         );
-        setFormDataList(updatedList);
+        setUrlEncodedDataList(updatedList);
     };
 
     const deleteRow = (index: number) => {
-        const updatedList = formDataList.filter((_, i) => i !== index);
-        setFormDataList(updatedList);
+        const updatedList = urlEncodedDataList.filter((_, i) => i !== index);
+        setUrlEncodedDataList(updatedList);
     };
 
-    const addRow = (newItem: HttpBodyFormData) => {
-        setFormDataList([...formDataList, newItem]);
+    const addRow = (newItem: HttpBodyUrlEncodedData) => {
+        setUrlEncodedDataList([...urlEncodedDataList, newItem]);
     }
 
     // #region  Inner Components
@@ -38,9 +38,8 @@ export const FormDataInput = ({ formDataList, setFormDataList }: formDataInputPr
      */
     const addButton = () => {
         const onClick = () => {
-            const newFormData: HttpBodyFormData = {
+            const newFormData: HttpBodyUrlEncodedData = {
                 IsIncluded: true,
-                DataType: HttpBodyFormDataTypesEnum.Text,
                 Key: "",
                 Value: "",
                 Description: "",
@@ -68,16 +67,15 @@ export const FormDataInput = ({ formDataList, setFormDataList }: formDataInputPr
                     <Tr>
                         <Th borderBottom="1px solid" borderColor="gray.700"></Th>
                         <Th borderBottom="1px solid" borderColor="gray.700">Key</Th>
-                        <Th borderBottom="1px solid" borderColor="gray.700">Type</Th>
                         <Th borderBottom="1px solid" borderColor="gray.700">Value</Th>
                         <Th borderBottom="1px solid" borderColor="gray.700">Description</Th>
                     </Tr>
                 </Thead>
                 <Tbody >
-                    {formDataList.map((eachQueryParameter, index) => (
+                    {urlEncodedDataList.map((eachData, index) => (
                         <RowItem
                             key={index}
-                            data={eachQueryParameter}
+                            data={eachData}
                             onChange={(newData) => updateRow(index, newData)}
                             onDelete={() => deleteRow(index)}
                         />
@@ -97,9 +95,9 @@ export const FormDataInput = ({ formDataList, setFormDataList }: formDataInputPr
         return (<Box>
             <Center h="200px">
                 <VStack textAlign="center">
-                    <Icon as={FiInbox} w={12} h={12} color="gray.400" />
+                    <Icon as={FiPackage} w={12} h={12} color="gray.400" />
                     <Text fontSize="xl" fontWeight="semibold" color="gray.500">
-                        You didn't added any <u>FormData</u> item to request body yet.
+                        You didn't added any <u>Url-Encoded</u> item to request body yet.
                     </Text>
                     <Text color="gray.400">
                         You can add by clicking <u>+ New</u> button
@@ -118,7 +116,7 @@ export const FormDataInput = ({ formDataList, setFormDataList }: formDataInputPr
                 </Box>
             </Flex>
         </Box>
-        {formDataList.length > 0 && dataTable()}
-        {formDataList.length == 0 && emptyPlaceholder()}
+        {urlEncodedDataList.length > 0 && dataTable()}
+        {urlEncodedDataList.length == 0 && emptyPlaceholder()}
     </div>);
 }

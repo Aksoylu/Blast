@@ -5,13 +5,10 @@ import Layout from './Pages/Layout'
 import './i18n';
 import './index.css';
 
+import type NativeBridge from "#/NativeBridge/index.d.ts";
 
 declare global {
-    interface Window {
-        electronAPI: {
-            openFileDialog: () => Promise<string | null>;
-        };
-    }
+    interface Window extends NativeBridge {}
 }
 
 const rootElement = document.getElementById('root')

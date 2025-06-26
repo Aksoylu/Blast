@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 
 const { FileSystemService } = require("./native-bridge/FileSystemService");
+const { FileDialogService } = require("./native-bridge/FileDialogService");
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -20,7 +21,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-    ipcMain.handle('dialog:openFile', FileSystemService.ReadFile);
+    ipcMain.handle('FileSystemService:ReadFileAsBinary', FileSystemService.ReadFileAsBinary);
+    ipcMain.handle('FileSystemService:IsFileExist', FileSystemService.IsFileExist);
+    ipcMain.handle('FileDialogService:ReadFileAsBinary', FileDialogService.ReadFileContentAsBinary);
+    ipcMain.handle('FileDialogService:GetFilePath', FileDialogService.GetFilePath);
 
     createWindow();
 
