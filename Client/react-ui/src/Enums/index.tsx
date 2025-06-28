@@ -4,3 +4,4 @@ export { HttpBodyRawDataTypesEnum } from "./HttpBodyRawDataTypes";
 export { HttpBodyFormDataTypesEnum } from "./HttpBodyFormDataTypes";
 
 export { Pages } from "./Pages";
+export { MonacoEditorThemes } from "./MonacoEditorThemes";

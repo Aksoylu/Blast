@@ -24,4 +24,8 @@ export class HttpBodyRawDataTypeData {
     public static List(): HttpBodyRawDataType[] {
         return HttpBodyRawDataTypeData.items;
     }
+
+    public static GetAsMonacoLanguage(type: HttpBodyRawDataTypesEnum): string {
+        return "json";
+    }
 }
