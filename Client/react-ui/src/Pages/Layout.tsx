@@ -21,7 +21,6 @@ import { Configurations } from './Configurations'
 import { SideMenu,Navbar } from '#/Components';
 
 import { Pages } from '#/Enums'
-import { useTranslation } from 'react-i18next'
 
 export const Layout = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

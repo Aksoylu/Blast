@@ -1,15 +1,14 @@
-import { ChangeEventHandler, useState } from "react";
-import { FiPlus } from "react-icons/fi";
 import { BsRocketTakeoff } from "react-icons/bs";
 
-import { Box, Center, Flex, Text, Icon, Tag, VStack, Select } from "@chakra-ui/react";
+import { Box, Center, Flex, Text, Icon, VStack, Select } from "@chakra-ui/react";
 
-import { HttpQueryParameter, HttpRequestBody } from "#/Models";
+import { HttpBodyRawData, HttpRequestBody, HttpBodyFormData } from "#/Models";
 import { HttpRequestBodyTypeData, HttpBodyRawDataTypeData } from "#/Constants";
-import { HttpBodyRawDataTypesEnum, HttpRequestBodyTypesEnum } from "#/Enums";
+import { HttpRequestBodyTypesEnum } from "#/Enums";
+
 import { FormDataInput } from "./FormDataInput";
-import { HttpBodyFormData } from "#/Models/HttpBodyFormData";
 import { UrlEncodedDataInput } from "./UrlEncodedDataInput";
+import { RawDataInput } from "./RawDataInput";
 
 export interface BodyTabProps {
     requestBody: HttpRequestBody;
@@ -102,6 +101,9 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         );
     }
 
+    /**
+     * @description: Inner component
+    */
     const urlEncodedDataInput = () => {
         const urlEncodedDataList = (requestBody.data ?? []) as HttpBodyFormData[];
         const setUrlEncodedDataList = (updated: HttpBodyFormData[]) => {
@@ -111,6 +113,20 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         return (<UrlEncodedDataInput
             urlEncodedDataList={urlEncodedDataList}
             setUrlEncodedDataList={setUrlEncodedDataList} />
+        );
+    }
+
+    /**
+     * @description: Inner component
+    */
+    const rawDataInput = () => {
+        const rawData = requestBody.data as HttpBodyRawData;
+        const setRawData = (updated: HttpBodyRawData) => {
+            updateBody({ data: updated });
+        };
+        return (<RawDataInput
+            rawData={rawData}
+            setRawData={setRawData} />
         );
     }
 
@@ -124,6 +140,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         {requestBody.type == HttpRequestBodyTypesEnum.NONE && emptyPlaceholder()}
         {requestBody.type == HttpRequestBodyTypesEnum.FORMDATA && formDataInput()}
         {requestBody.type == HttpRequestBodyTypesEnum.URLENCODED && urlEncodedDataInput()}
+        {requestBody.type == HttpRequestBodyTypesEnum.RAW && rawDataInput()}
 
     </div>);
 }

@@ -1,12 +1,9 @@
-import { useState } from "react";
-import { FiPlus, FiInbox, FiPackage } from "react-icons/fi";
 import { Box, Button, Center, Flex, Text, Icon, Table, TableContainer, Tag, Tbody, Th, Thead, Tr, VStack } from "@chakra-ui/react";
-
+import { FiPlus, FiPackage } from "react-icons/fi";
 
 import { HttpBodyUrlEncodedData } from "#/Models";
 
-import { RowItem, RowItemProps } from "./RowItem";
-import { HttpBodyFormDataTypesEnum } from "#/Enums";
+import { RowItem } from "./RowItem";
 
 export interface UrlEncodedDataInputProps {
     urlEncodedDataList: HttpBodyUrlEncodedData[];
