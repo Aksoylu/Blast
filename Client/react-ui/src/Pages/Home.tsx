@@ -53,7 +53,7 @@ export const Home = () => {
       leftPanel={<WorkspacePanel data={treeData} onTreeChange={setTreeData} />}
       leftPanelWidth={200}
 
-      rightPanel={<HttpRequestPanel/>}    
+      rightPanel={<HttpRequestPanel initialRequestData_={undefined}/>}    
       minimumPanelWidth={200}
     />
   )

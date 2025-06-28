@@ -1,14 +1,16 @@
 import { BsRocketTakeoff } from "react-icons/bs";
 
-import { Box, Center, Flex, Text, Icon, VStack, Select } from "@chakra-ui/react";
+import { Box, Center, Flex, Text, Icon, VStack, Select, Button } from "@chakra-ui/react";
 
 import { HttpBodyRawData, HttpRequestBody, HttpBodyFormData } from "#/Models";
 import { HttpRequestBodyTypeData, HttpBodyRawDataTypeData } from "#/Constants";
-import { HttpRequestBodyTypesEnum } from "#/Enums";
+import { HttpRequestBodyTypesEnum, SupportedDataFormatsEnum } from "#/Enums";
 
 import { FormDataInput } from "./FormDataInput";
 import { UrlEncodedDataInput } from "./UrlEncodedDataInput";
-import { RawDataInput } from "./RawDataInput";
+import { RawDataInput, RawDataInputRef } from "./RawDataInput";
+import { FiGitMerge } from "react-icons/fi";
+import { useRef } from "react";
 
 export interface BodyTabProps {
     requestBody: HttpRequestBody;
@@ -20,6 +22,8 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
     const BodyRawDataTypes = HttpBodyRawDataTypeData.List();
 
     const isRawDataTypeSelectorVisible = requestBody.type == HttpRequestBodyTypesEnum.RAW;
+
+    const rawDataInputFieldRef = useRef<RawDataInputRef>(null);
 
     const updateBody = (updated: Partial<HttpRequestBody>) => {
         const newData = { ...requestBody, ...updated };
@@ -52,7 +56,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
      */
     const rawContentTypeSelector = () => {
         const onChange = (event) => {
-            const selectedRawDataType = event.target.value;
+            const selectedRawDataType = event.target.value as SupportedDataFormatsEnum;
             updateBody({ rawDataType: selectedRawDataType });
         };
 
@@ -66,6 +70,36 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
                     ))}
                 </Select>
             </Box>
+        );
+    }
+
+    /**
+     * @description: Inner component
+     */
+    const beautifyRawContentButton = () => {
+        if (requestBody.rawDataType == undefined || requestBody.rawDataType == SupportedDataFormatsEnum.TEXT) {
+            return (<></>);
+        }
+
+        const onClick = () => {
+            if (rawDataInputFieldRef != null) {
+                rawDataInputFieldRef.current?.formatCode();
+            }
+        }
+
+        return (
+            <Box pt={1} pl={2} width="20%">
+
+                <Button
+                    onClick={onClick}
+                    colorScheme="blue"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<FiGitMerge />}>
+                    Beautify
+                </Button>
+            </Box >
+
         );
     }
 
@@ -116,17 +150,22 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
         );
     }
 
+
+
     /**
      * @description: Inner component
     */
     const rawDataInput = () => {
         const rawData = requestBody.data as HttpBodyRawData;
+        const rawDataType = requestBody.rawDataType as SupportedDataFormatsEnum;
         const setRawData = (updated: HttpBodyRawData) => {
             updateBody({ data: updated });
         };
         return (<RawDataInput
+            ref={rawDataInputFieldRef}
             rawData={rawData}
-            setRawData={setRawData} />
+            setRawData={setRawData}
+            rawDataType={rawDataType} />
         );
     }
 
@@ -135,6 +174,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
             <Flex justifyContent="left" width="100%">
                 {bodyTypeSelector()}
                 {isRawDataTypeSelectorVisible && rawContentTypeSelector()}
+                {isRawDataTypeSelectorVisible && beautifyRawContentButton()}
             </Flex>
         </Box>
         {requestBody.type == HttpRequestBodyTypesEnum.NONE && emptyPlaceholder()}

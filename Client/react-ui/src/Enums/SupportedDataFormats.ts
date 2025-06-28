@@ -1,4 +1,4 @@
-export enum HttpBodyRawDataTypesEnum
+export enum SupportedDataFormatsEnum
 {
     TEXT,
     JSON,
