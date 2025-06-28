@@ -1,7 +1,9 @@
-import * as React from 'react'
-import { ChakraProvider } from '@chakra-ui/react'
-import * as ReactDOM from 'react-dom/client'
-import Layout from './Pages/Layout'
+import * as React from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import * as ReactDOM from 'react-dom/client';
+import { loader } from '@monaco-editor/react';
+
+import Layout from './Pages/Layout';
 import './i18n';
 import './index.css';
 
@@ -12,10 +14,16 @@ declare global {
 }
 
 const rootElement = document.getElementById('root')
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <ChakraProvider>
-      <Layout />
-    </ChakraProvider>
-  </React.StrictMode>,
-)
+
+// todo: set loading screen here
+rootElement!.innerHTML = `<div style="font-family:sans-serif;padding:2rem;text-align:center">Loading...</div>`;
+
+loader.init().then(monaco => {
+  ReactDOM.createRoot(rootElement!).render(
+    <React.StrictMode>
+      <ChakraProvider>
+        <Layout />
+      </ChakraProvider>
+    </React.StrictMode>
+  )
+})

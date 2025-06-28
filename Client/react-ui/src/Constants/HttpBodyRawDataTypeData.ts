@@ -1,27 +1,43 @@
-import { HttpBodyRawDataTypesEnum } from "#/Enums";
+import { SupportedDataFormatsEnum } from "#/Enums";
 import { HttpBodyRawDataType } from "#/Models";
 
 export class HttpBodyRawDataTypeData {
-    static items: HttpBodyRawDataType[] = [
+    static readonly items: HttpBodyRawDataType[] = [
         {
-            type: HttpBodyRawDataTypesEnum.TEXT,
+            type: SupportedDataFormatsEnum.TEXT,
             code: "TEXT"
         },
         {
-            type: HttpBodyRawDataTypesEnum.HTML,
+            type: SupportedDataFormatsEnum.HTML,
             code: "HTML"
         },
         {
-            type: HttpBodyRawDataTypesEnum.JSON,
+            type: SupportedDataFormatsEnum.JSON,
             code: "JSON"
         },
         {
-            type: HttpBodyRawDataTypesEnum.XML,
+            type: SupportedDataFormatsEnum.XML,
             code: "XML"
         }
     ];
 
+    static readonly monacoLanguageMap = {
+        [SupportedDataFormatsEnum.TEXT]: "text",
+        [SupportedDataFormatsEnum.HTML]: "html",
+        [SupportedDataFormatsEnum.JSON]: "json",
+        [SupportedDataFormatsEnum.XML]: "xml"   
+    }
+
     public static List(): HttpBodyRawDataType[] {
         return HttpBodyRawDataTypeData.items;
+    }
+
+    public static GetAsMonacoLanguage(type: SupportedDataFormatsEnum | undefined): string {
+        if(type === undefined)
+        {
+            return HttpBodyRawDataTypeData.monacoLanguageMap[SupportedDataFormatsEnum.TEXT];
+        }
+
+        return HttpBodyRawDataTypeData.monacoLanguageMap[type];
     }
 }

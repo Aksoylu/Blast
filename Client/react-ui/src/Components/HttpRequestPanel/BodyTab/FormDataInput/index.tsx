@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { FiPlus, FiInbox } from "react-icons/fi";
 import { Box, Button, Center, Flex, Text, Icon, Table, TableContainer, Tag, Tbody, Th, Thead, Tr, VStack } from "@chakra-ui/react";
 
-
 import { HttpBodyFormData } from "#/Models";
 
-import { RowItem, RowItemProps } from "./RowItem";
+import { RowItem } from "./RowItem";
 import { HttpBodyFormDataTypesEnum } from "#/Enums";
 
 export interface formDataInputProps {

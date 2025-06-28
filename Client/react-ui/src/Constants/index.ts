@@ -4,3 +4,4 @@ export { HttpRequestTypeData } from "./HttpRequestTypeData";
 export { HttpRequestBodyTypeData } from "./HttpRequestBodyTypeData";
 export { HttpBodyRawDataTypeData } from "./HttpBodyRawDataTypeData";
 export { HttpBodyFormDataTypeData } from "./HttpBodyFormDataTypeData";
+export { MonacoEditorStyling } from "./MonacoEditorStyling";

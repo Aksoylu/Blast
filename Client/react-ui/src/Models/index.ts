@@ -8,4 +8,5 @@ export { HttpRequestHeader } from "./HttpRequestHeader";
 export { HttpRequestObject } from "./HttpRequestObject";
 export { HttpRequestBody } from "./HttpRequestBody";
 export { HttpBodyFormData } from "./HttpBodyFormData";
-export {HttpBodyUrlEncodedData} from "./HttpBodyUrlEncodedData";
+export { HttpBodyUrlEncodedData } from "./HttpBodyUrlEncodedData";
+export { HttpBodyRawData } from "./HttpBodyRawData";
