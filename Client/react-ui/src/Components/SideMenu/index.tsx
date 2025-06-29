@@ -17,7 +17,8 @@ import {
     FiCompass,
     FiStar,
     FiSettings,
-    FiFileText
+    FiFileText,
+    FiFolder
 } from 'react-icons/fi'
 import { IconType } from 'react-icons'
 
@@ -39,9 +40,9 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
     { key: Pages.Home, icon: FiHome , translationKey: "page_home"},
-    { key: Pages.Teams, icon: FiTrendingUp, translationKey: "page_teams"},
-    { key: Pages.Configurations, icon: FiCompass, translationKey: "page_configurations"},
-    { key: Pages.Settings, icon: FiFileText, translationKey: "page_settings"}
+    { key: Pages.Teams, icon: FiCompass, translationKey: "page_teams"},
+    { key: Pages.Configurations, icon: FiFolder, translationKey: "page_configurations"},
+    { key: Pages.Settings, icon: FiSettings, translationKey: "page_settings"}
 ];
 
 export const SideMenu = ({ onClose, onSelectPage, ...rest }: SideMenuProps) => {
@@ -58,11 +59,11 @@ export const SideMenu = ({ onClose, onSelectPage, ...rest }: SideMenuProps) => {
             bg={useColorModeValue('white', 'gray.900')}
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-            w={{ base: 'full', md: 60 }}
+            w={{ base: 'full', md: 40 }}
             pos="fixed"
             h="full"
             {...rest}>
-            <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+            <Flex h="20" alignItems="center" mx="4" justifyContent="space-between">
                 <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
                     Blast
                 </Text>
@@ -73,8 +74,7 @@ export const SideMenu = ({ onClose, onSelectPage, ...rest }: SideMenuProps) => {
                 <SideMenuItem key={link.key} icon={link.icon} onClick={() => {
                     onMenuItemClick(link.key);
                 }}>
-                    
-                    {t(link.translationKey)}
+                    <div style={{fontSize: 12}}>{t(link.translationKey)}</div>
                 </SideMenuItem>
             ))}
         </Box>

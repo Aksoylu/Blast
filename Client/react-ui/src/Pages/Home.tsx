@@ -41,9 +41,6 @@ const workspace_1 = [
   },
 ];
 
-const workspaces = [
-  workspace_1
-]
 
 export const Home = () => {
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);

@@ -52,7 +52,7 @@ export const ResizablePanel = ({ leftPanel, leftPanelWidth, rightPanel, minimumP
     <Box
       ref={containerRef}
       display="flex"
-      height="100vh"
+      height="100%"
       width="100%"
       position="relative"
     >
