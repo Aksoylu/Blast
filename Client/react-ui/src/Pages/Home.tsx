@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Box, useColorMode, VStack } from '@chakra-ui/react';
+import Split from 'react-split';
 
 import { TreeNodeProps } from '../Components/FileTree/TreeNode';
 import { WorkspacePanel } from '../Components/WorkspacePanel';
-import { ResizablePanel } from '../Components/ResizablePanel';
 import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
+
+import "./Home.css";
 
 const workspace_1 = [
   {
@@ -43,15 +46,40 @@ const workspace_1 = [
 
 
 export const Home = () => {
+  const { colorMode } = useColorMode();
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
-  return (
-    <ResizablePanel
-      leftPanel={<WorkspacePanel data={treeData} onTreeChange={setTreeData} />}
-      leftPanelWidth={200}
+  const leftPanelRatio = 15;
+  const rightPanelRatio = 85;
 
-      rightPanel={<HttpRequestPanel initialRequestData_={undefined}/>}    
-      minimumPanelWidth={200}
-    />
+  const screenWidth = window.innerWidth
+  const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
+  const minimumRightPanelSize = screenWidth * (35 / 100);
+
+  //#region UI Hooks
+  useEffect(() => {
+    const splitPanelDividers = document.querySelectorAll('.gutter')
+
+    const dividerColor = colorMode === "dark" ? "#4A5568" : "#CBD5E0";
+
+    splitPanelDividers.forEach(divider => {
+      divider.setAttribute("style", `background-color:${dividerColor}`);
+    });
+
+  }, [colorMode]);
+
+  //#endregion
+
+  return (
+    <Split
+      className="horizontal-split"
+      sizes={[leftPanelRatio, rightPanelRatio]}
+      minSize={[minimumleftPanelSize, minimumRightPanelSize]}
+      direction="horizontal"
+      gutterSize={4}
+    >
+      <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
+      <Box height="100%" pl={3}><HttpRequestPanel initialRequestData_={undefined} /></Box>
+    </Split>
   )
 }
