@@ -26,7 +26,7 @@ export interface HttpResponsePanelProps {
 
 export const HttpResponsePanel = ({ }: HttpResponsePanelProps) => {
     return (
-        <Box height="100vh" display="flex" flexDirection="column">
+        <Box height="100%" display="flex" flexDirection="column">
             <Box height="100%" bg="blue.100">HttpResponsePanel</Box>
         </Box>
     );

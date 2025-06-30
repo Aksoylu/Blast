@@ -49,13 +49,13 @@ export const Home = () => {
   const { colorMode } = useColorMode();
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
-  
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
 
   const leftPanelRatio = 15;
   const rightPanelRatio = 85;
-  
+
   const defaultTopPanelHeight = 300;
   const defaultBottomPanelHeight = 100;
 
@@ -68,7 +68,7 @@ export const Home = () => {
 
   const updateHeight = () => {
     const topOffset = wrapperRef.current?.getBoundingClientRect().top || 0;
-    const windowHeight = window.innerHeight;
+    const windowHeight = window.innerHeight - 10;
     const verticalSplitterHeight = windowHeight - topOffset;
     setVerticalSplitterHeight(verticalSplitterHeight);
 
@@ -99,7 +99,7 @@ export const Home = () => {
   //#endregion
 
   return (
-    <Box ref={wrapperRef} width="100%" height="100%" position="relative" >
+    <Box ref={wrapperRef} width="100%" height="100%" position="relative">
       <Box
         height={`${verticalSplitterHeight}px`}
         display="flex"
@@ -123,7 +123,7 @@ export const Home = () => {
               gutterSize={4}
               direction="vertical"
             >
-              <Box height="100%"><HttpRequestPanel initialRequestData_={undefined} /></Box>
+              <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /></Box>
               <Box height="100%" bg="blue.100">Bottom Panel</Box>
             </Split>
           </Box>
