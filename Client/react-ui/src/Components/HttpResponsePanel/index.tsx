@@ -12,7 +12,7 @@ import {
     Tabs
 } from '@chakra-ui/react';
 
-import { FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
+import { FiLayout, FiRefreshCw, FiSave, FiUpload } from 'react-icons/fi';
 import Split from 'react-split';
 
 import { DefaultHttpHeaders } from '#/Constants';
@@ -22,12 +22,16 @@ import { HttpQueryParameter, HttpRequestBody, HttpRequestHeader, HttpRequestType
 import "./index.css";
 
 export interface HttpResponsePanelProps {
+    onChangeLayoutButtonClick: () => void;
 }
 
-export const HttpResponsePanel = ({ }: HttpResponsePanelProps) => {
+export const HttpResponsePanel = ({ onChangeLayoutButtonClick }: HttpResponsePanelProps) => {
     return (
         <Box height="100%" display="flex" flexDirection="column">
-            <Box height="100%" bg="blue.100">HttpResponsePanel</Box>
+            <Button colorScheme="blue" variant="ghost" size="sm" leftIcon={<FiLayout />} onClick={() => {
+                onChangeLayoutButtonClick();
+            }} />
+            <Box height="100%">HttpResponsePanel</Box>
         </Box>
     );
 }

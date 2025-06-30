@@ -9,6 +9,7 @@ import { WorkspacePanel } from '../Components/WorkspacePanel';
 import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 
 import "./Home.css";
+import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
 
 const workspace_1 = [
   {
@@ -49,6 +50,7 @@ export const Home = () => {
   const { colorMode } = useColorMode();
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
+  const [mainPanelLayoutType, setMainPanelLayoutType] = useState<'vertical' | 'horizontal'>("vertical");
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
@@ -56,8 +58,8 @@ export const Home = () => {
   const leftPanelRatio = 15;
   const rightPanelRatio = 85;
 
-  const defaultTopPanelHeight = 300;
-  const defaultBottomPanelHeight = 100;
+  const minimumRequestPanelHeight = 300;
+  const defaultResponsePanelHeight = 100;
 
   const screenWidth = window.innerWidth
   const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
@@ -67,16 +69,16 @@ export const Home = () => {
   // #region UI Functions
 
   const updateHeight = () => {
+    updateGutterColors();
+
     const topOffset = wrapperRef.current?.getBoundingClientRect().top || 0;
     const windowHeight = window.innerHeight - 10;
     const verticalSplitterHeight = windowHeight - topOffset;
     setVerticalSplitterHeight(verticalSplitterHeight);
 
   };
-  // #endregion
 
-  //#region UI Hooks
-  useEffect(() => {
+  const updateGutterColors = () => {
     const splitPanelDividers = document.querySelectorAll('.gutter')
 
     const dividerColor = colorMode === "dark" ? "#4A5568" : "#CBD5E0";
@@ -84,6 +86,13 @@ export const Home = () => {
     splitPanelDividers.forEach(divider => {
       divider.setAttribute("style", `background-color:${dividerColor}`);
     });
+
+  }
+  // #endregion
+
+  //#region UI Hooks
+  useEffect(() => {
+    updateGutterColors();
 
   }, [colorMode]);
 
@@ -95,8 +104,43 @@ export const Home = () => {
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-
+  const onChangeLayoutButtonClick = () => {
+    const newLayoutType = mainPanelLayoutType == "vertical" ? "horizontal" : "vertical";
+    setMainPanelLayoutType(newLayoutType);
+  }
   //#endregion
+
+  const verticalLayout = () => {
+    return (<Box height="100%" width="100%" pl={3}>
+      <Split
+        className="vertical-split"
+        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
+        minSize={[100, 25]}
+        gutterSize={4}
+        direction="vertical"
+      >
+        <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
+        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+      </Split>
+    </Box>
+    );
+  }
+
+  const horizontalLayout = () => {
+    return (<Box width="100%" pl={3}>
+      <Split
+        className="horizontal-split"
+        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
+        minSize={[150, 25]}
+        gutterSize={4}
+        direction="horizontal"
+      >
+        <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
+        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+      </Split>
+    </Box>
+    );
+  }
 
   return (
     <Box ref={wrapperRef} width="100%" height="100%" position="relative">
@@ -114,19 +158,9 @@ export const Home = () => {
           gutterSize={2}
         >
           <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
-          <Box height="100%" pl={3}>
-            <Split
+          {mainPanelLayoutType == "vertical" && verticalLayout()}
+          {mainPanelLayoutType == "horizontal" && horizontalLayout()}
 
-              className="vertical-split"
-              sizes={[defaultTopPanelHeight, defaultBottomPanelHeight]}
-              minSize={[100, 25]}
-              gutterSize={4}
-              direction="vertical"
-            >
-              <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /></Box>
-              <Box height="100%" bg="blue.100">Bottom Panel</Box>
-            </Split>
-          </Box>
         </Split>
       </Box>
     </Box>

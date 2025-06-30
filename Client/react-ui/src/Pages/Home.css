@@ -3,9 +3,11 @@
   width: 100%;
 }
 
-.horizontal-split > .gutter {
-  background-color: #313131;
+.horizontal-split> .gutter {
   cursor: col-resize;
+  width: 3px;
+  z-index: 1;
+  background-color: #CBD5E0;
 }
 
 .gutter.gutter-horizontal {
@@ -13,17 +15,18 @@
 }
 
 .vertical-split {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.vertical-split > div {
+.vertical-split>div {
   overflow: hidden;
 }
 
 .vertical-split>.gutter {
-    cursor: row-resize;
-    height: 4px;
-    z-index: 1;
+  cursor: row-resize;
+  height: 4px;
+  z-index: 1;
+  background-color: #4A5568;
 }
