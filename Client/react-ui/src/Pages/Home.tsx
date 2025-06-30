@@ -49,12 +49,31 @@ export const Home = () => {
   const { colorMode } = useColorMode();
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
+  
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
+
   const leftPanelRatio = 15;
   const rightPanelRatio = 85;
+  
+  const defaultTopPanelHeight = 300;
+  const defaultBottomPanelHeight = 100;
 
   const screenWidth = window.innerWidth
   const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
   const minimumRightPanelSize = screenWidth * (35 / 100);
+
+
+  // #region UI Functions
+
+  const updateHeight = () => {
+    const topOffset = wrapperRef.current?.getBoundingClientRect().top || 0;
+    const windowHeight = window.innerHeight;
+    const verticalSplitterHeight = windowHeight - topOffset;
+    setVerticalSplitterHeight(verticalSplitterHeight);
+
+  };
+  // #endregion
 
   //#region UI Hooks
   useEffect(() => {
@@ -68,18 +87,49 @@ export const Home = () => {
 
   }, [colorMode]);
 
+
+  useLayoutEffect(() => {
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
+
   //#endregion
 
   return (
-    <Split
-      className="horizontal-split"
-      sizes={[leftPanelRatio, rightPanelRatio]}
-      minSize={[minimumleftPanelSize, minimumRightPanelSize]}
-      direction="horizontal"
-      gutterSize={4}
-    >
-      <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
-      <Box height="100%" pl={3}><HttpRequestPanel initialRequestData_={undefined} /></Box>
-    </Split>
+    <Box ref={wrapperRef} width="100%" height="100%" position="relative" >
+      <Box
+        height={`${verticalSplitterHeight}px`}
+        display="flex"
+        width="100%"
+        position="relative"
+      >
+        <Split
+          className="horizontal-split"
+          sizes={[leftPanelRatio, rightPanelRatio]}
+          minSize={[minimumleftPanelSize, minimumRightPanelSize]}
+          direction="horizontal"
+          gutterSize={2}
+        >
+          <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
+          <Box height="100%" pl={3}>
+            <Split
+
+              className="vertical-split"
+              sizes={[defaultTopPanelHeight, defaultBottomPanelHeight]}
+              minSize={[100, 25]}
+              gutterSize={4}
+              direction="vertical"
+            >
+              <Box height="100%"><HttpRequestPanel initialRequestData_={undefined} /></Box>
+              <Box height="100%" bg="blue.100">Bottom Panel</Box>
+            </Split>
+          </Box>
+        </Split>
+      </Box>
+    </Box>
+
   )
 }
