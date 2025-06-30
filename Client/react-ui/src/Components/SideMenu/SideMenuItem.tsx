@@ -16,7 +16,7 @@ export const SideMenuItem = ({ icon, children, ...rest }: SideMenuItemProps) => 
       <Flex
         align="center"
         p="4"
-        mx="4"
+        mx="0"
         borderRadius="lg"
         role="group"
         cursor="pointer"
@@ -28,7 +28,7 @@ export const SideMenuItem = ({ icon, children, ...rest }: SideMenuItemProps) => 
         {icon && (
           <Icon
             mr="4"
-            fontSize="16"
+            fontSize={24}
             _groupHover={{
               color: 'white',
             }}

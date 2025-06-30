@@ -12,7 +12,7 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
 
     return (
         <Flex
-            ml={{ base: 0, md: 60 }}
+            ml={{ base: 0, md: 40 }}
             px={{ base: 4, md: 4 }}
             height="20"
             alignItems="center"
@@ -70,7 +70,6 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
                             borderColor={useColorModeValue('gray.200', 'gray.700')}>
                             <MenuItem>Profile</MenuItem>
                             <MenuItem>Settings</MenuItem>
-                            <MenuItem>Billing</MenuItem>
                             <MenuDivider />
                             <MenuItem>Sign out</MenuItem>
                         </MenuList>

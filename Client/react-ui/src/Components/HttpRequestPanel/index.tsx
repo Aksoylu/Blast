@@ -24,7 +24,6 @@ import { ParametersTab } from './ParametersTab';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
 import { DocumentationTab } from './DocumentationTab';
-import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 export interface HttpRequestPanelProps {
     initialRequestData_: HttpRequestObject | undefined;
@@ -109,71 +108,72 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
         </Button>);
     }
 
-    return (<Box >
-        <Box maxW="100%" maxH="100%">
-            <Flex justifyContent="space-between" alignItems="center" width="100%">
-                <RequestBreadcrumb />
-                <Box>
-                    {saveButton()}
-                    {syncButton()}
-                    {exportButton()}
-                </Box>
-            </Flex>
-        </Box>
+    return (
+        <Box height="100%" width="100%">
+            <Box>
+                <Flex justifyContent="space-between" alignItems="center" width="100%">
+                    <RequestBreadcrumb />
+                    <Box>
+                        {saveButton()}
+                        {syncButton()}
+                        {exportButton()}
+                    </Box>
+                </Flex>
 
-        <Flex justifyContent="right" alignItems="center" width="100%" mt={4}>
-            <Box borderRadius={5} border="1px solid" borderColor="gray.700" width="95%" height={10} >
-                {requestInputBar()}
+                <Flex justifyContent="right" alignItems="center" width="100%" mt={4}>
+                    <Box borderRadius={5} border="1px solid" borderColor="gray.700" width="95%" height={10} >
+                        {requestInputBar()}
+                    </Box>
+                    {sendRequestButton()}
+                </Flex>
+
+                <Tabs isFitted>
+                    <TabList>
+                        <Tab>Parameters</Tab>
+                        <Tab>Headers</Tab>
+                        <Tab>Body</Tab>
+                        <Tab>Settings</Tab>
+                        <Tab>Documentation</Tab>
+                    </TabList>
+                    <TabPanels>
+                        <TabPanel p={0} height="100%" display="flex" flexDirection="column">
+                            <Box flex="1" overflow="auto">
+                                <ParametersTab
+                                    parameterList={queryParameters}
+                                    setParameterList={onQueryParametersUpdated}
+                                />
+                            </Box>
+                        </TabPanel>
+                        <TabPanel p={0} height="100%" display="flex" flexDirection="column">
+                            <Box flex="1" overflow="auto">
+                                <HeadersTab
+                                    headerList={headers}
+                                    setHeaderList={onHeadersUpdated}
+                                />
+                            </Box>
+                        </TabPanel>
+
+                        <TabPanel>
+                            <Box flex="1" height="100%" display="flex" flexDirection="column">
+                                <BodyTab
+                                    requestBody={requestBody}
+                                    setRequestBody={onRequestBodyUpdated}
+                                />
+                            </Box>
+                        </TabPanel>
+
+                        <TabPanel>
+                            <Box flex="1" height="100%" display="flex" flexDirection="column">
+                                Settings
+                            </Box>
+                        </TabPanel>
+
+                        <TabPanel p={0} height="100%" display="flex" flexDirection="column">
+                            <DocumentationTab />
+                        </TabPanel>
+                    </TabPanels>
+                </Tabs>
             </Box>
-            {sendRequestButton()}
-        </Flex>
-        <Tabs isFitted>
-            <TabList>
-                <Tab>Parameters</Tab>
-                <Tab>Headers</Tab>
-                <Tab>Body</Tab>
-                <Tab>Settings</Tab>
-                <Tab>Documentation</Tab>
-            </TabList>
-            <TabPanels>
-                <TabPanel p={0} h="100%" display="flex" flexDirection="column">
-                    <Box flex="1" overflow="auto">
-                        <ParametersTab
-                            parameterList={queryParameters}
-                            setParameterList={onQueryParametersUpdated}
-                        />
-                    </Box>
-                </TabPanel>
-                <TabPanel p={0} h="100%" display="flex" flexDirection="column">
-                    <Box flex="1" overflow="auto">
-                        <HeadersTab
-                            headerList={headers}
-                            setHeaderList={onHeadersUpdated}
-                        />
-                    </Box>
-                </TabPanel>
-
-                <TabPanel>
-                    <Box flex="1" overflow="auto">
-                        <BodyTab
-                            requestBody={requestBody}
-                            setRequestBody={onRequestBodyUpdated}
-                        />
-                    </Box>
-                </TabPanel>
-
-                <TabPanel>
-                    <Box flex="1" overflow="auto">
-                        Settings
-                    </Box>
-                </TabPanel>
-
-                <TabPanel p={0} h="100%" display="flex" flexDirection="column">
-                    <DocumentationTab />
-                </TabPanel>
-            </TabPanels>
-        </Tabs>
-
-    </Box>
+        </Box>
     );
 }

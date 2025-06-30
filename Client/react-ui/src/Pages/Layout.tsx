@@ -29,7 +29,7 @@ export const Layout = () => {
   const MotionBox = motion<BoxProps>(Box)
 
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box minH="100vh" overflow="hidden" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SideMenu
         display={{ base: 'none', md: 'block' }}
 
@@ -48,7 +48,7 @@ export const Layout = () => {
       </Drawer>
       <Navbar onOpen={onOpen} />
 
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 40 }} p={2} height="100%" overflow="hidden">
         <AnimatePresence mode="wait">
           <MotionBox
             key={activePage}
