@@ -10,6 +10,8 @@ import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
+import { HttpResponseStatusData } from '#/Constants';
+import { HttpPayloadSizeObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
 
 const workspace_1 = [
   {
@@ -66,6 +68,9 @@ export const Home = () => {
   const minimumRightPanelSize = screenWidth * (35 / 100);
 
 
+  const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(HttpResponseStatusData.FindByCode("100"));
+  const [httpResponseTime, setHttpResponseTime] = useState<HttpResponseTimeObject | undefined>(new HttpResponseTimeObject({ Total: 542 }));
+  const [httpPayloadSize, setHttpPayloadSize] = useState<HttpPayloadSizeObject | undefined>(new HttpPayloadSizeObject({ Total: 320 }));
   // #region UI Functions
 
   const updateHeight = () => {
@@ -120,7 +125,14 @@ export const Home = () => {
         direction="vertical"
       >
         <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+        <Box height="100%" >
+          <HttpResponsePanel
+            onChangeLayoutButtonClick={onChangeLayoutButtonClick}
+            responseStatus={responseHttpStatus}
+            responseTime={httpResponseTime}
+            payloadSize={httpPayloadSize}
+          />
+        </Box>
       </Split>
     </Box>
     );
@@ -136,7 +148,14 @@ export const Home = () => {
         direction="horizontal"
       >
         <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+        <Box height="100%" >
+          <HttpResponsePanel
+            onChangeLayoutButtonClick={onChangeLayoutButtonClick}
+            responseStatus={responseHttpStatus}
+            responseTime={httpResponseTime}
+            payloadSize={httpPayloadSize}
+          />
+        </Box>
       </Split>
     </Box>
     );

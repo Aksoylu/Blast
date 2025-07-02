@@ -10,3 +10,7 @@ export { HttpRequestBody } from "./HttpRequestBody";
 export { HttpBodyFormData } from "./HttpBodyFormData";
 export { HttpBodyUrlEncodedData } from "./HttpBodyUrlEncodedData";
 export { HttpBodyRawData } from "./HttpBodyRawData";
+
+export { HttpResponseStatusObject } from "./HttpResponseStatusObject";
+export { HttpResponseTimeObject } from "./HttpResponseTimeObject";
+export { HttpPayloadSizeObject } from "./HttpPayloadSizeObject";
