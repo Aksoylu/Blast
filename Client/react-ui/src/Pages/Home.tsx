@@ -61,7 +61,9 @@ export const Home = () => {
   const minimumRequestPanelHeight = 300;
   const defaultResponsePanelHeight = 100;
 
-  const screenWidth = window.innerWidth
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+
   const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
   const minimumRightPanelSize = screenWidth * (35 / 100);
 
@@ -69,8 +71,6 @@ export const Home = () => {
   // #region UI Functions
 
   const updateHeight = () => {
-    updateGutterColors();
-
     const topOffset = wrapperRef.current?.getBoundingClientRect().top || 0;
     const windowHeight = window.innerHeight - 10;
     const verticalSplitterHeight = windowHeight - topOffset;
@@ -110,40 +110,24 @@ export const Home = () => {
   }
   //#endregion
 
+  const verticalLayoutConstraints = {
+    workspacePanelRatio: 15,
+    operationPanelRatio: 85,
+
+    minimumWorkspacePanelWidth: screenWidth * (15 / 100),
+    minimumOperationPanelWidth: screenWidth * (35 / 100),
+
+    mainDividerSize: 2,
+
+    requestPanelHeight: 75,
+    responsePanelHeight: 25,
+
+    minimumRequestPanelHeight: 100,
+    minimumResponsePanelHeigth: 20
+  }
+
   const verticalLayout = () => {
-    return (<Box height="100%" width="100%" pl={3}>
-      <Split
-        className="vertical-split"
-        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
-        minSize={[100, 25]}
-        gutterSize={4}
-        direction="vertical"
-      >
-        <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
-      </Split>
-    </Box>
-    );
-  }
-
-  const horizontalLayout = () => {
-    return (<Box width="100%" pl={3}>
-      <Split
-        className="horizontal-split"
-        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
-        minSize={[150, 25]}
-        gutterSize={4}
-        direction="horizontal"
-      >
-        <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
-      </Split>
-    </Box>
-    );
-  }
-
-  return (
-    <Box ref={wrapperRef} width="100%" height="100%" position="relative">
+    return (
       <Box
         height={`${verticalSplitterHeight}px`}
         display="flex"
@@ -152,18 +136,79 @@ export const Home = () => {
       >
         <Split
           className="horizontal-split"
-          sizes={[leftPanelRatio, rightPanelRatio]}
-          minSize={[minimumleftPanelSize, minimumRightPanelSize]}
+          sizes={[verticalLayoutConstraints.workspacePanelRatio, verticalLayoutConstraints.operationPanelRatio]}
+          minSize={[verticalLayoutConstraints.minimumWorkspacePanelWidth, verticalLayoutConstraints.minimumOperationPanelWidth]}
           direction="horizontal"
-          gutterSize={2}
+          gutterSize={verticalLayoutConstraints.mainDividerSize}
         >
           <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
-          {mainPanelLayoutType == "vertical" && verticalLayout()}
-          {mainPanelLayoutType == "horizontal" && horizontalLayout()}
-
+          <Box
+            height={`${verticalSplitterHeight}px`}
+            display="flex"
+            width="100%"
+            position="relative"
+          >
+            <Box height="100%" width="100%" pl={3}>
+              <Split
+                className="vertical-split"
+                sizes={[verticalLayoutConstraints.requestPanelHeight, verticalLayoutConstraints.responsePanelHeight]}
+                minSize={[verticalLayoutConstraints.minimumRequestPanelHeight, verticalLayoutConstraints.minimumResponsePanelHeigth]}
+                gutterSize={4}
+                direction="vertical"
+              >
+                <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
+                <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+              </Split>
+            </Box>
+          </Box>
         </Split>
       </Box>
-    </Box>
+    );
+  }
 
+
+  const horizontalLayoutConstraints = {
+    workspacePanelRatio: 15,
+    requestPanelRatio: 50,
+    responsePanelRatio: 35,
+
+    minimumWorkspacePanelWidth: screenWidth * (15 / 100),
+    minimumRequestPanelWidth: screenWidth * (35 / 100),
+    minimumResponsePanelWidth: 20,
+
+    dividerSize: 2,
+  }
+
+  const horizontalLayout = () => {
+    return (
+      <Box
+        height={`${verticalSplitterHeight}px`}
+        display="flex"
+        width="100%"
+        position="relative"
+      >
+        <Split
+          className="horizontal-split"
+          sizes={[horizontalLayoutConstraints.workspacePanelRatio, horizontalLayoutConstraints.requestPanelRatio, horizontalLayoutConstraints.responsePanelRatio]}
+          minSize={[horizontalLayoutConstraints.minimumWorkspacePanelWidth, horizontalLayoutConstraints.minimumRequestPanelWidth, horizontalLayoutConstraints.minimumResponsePanelWidth]}
+          direction="horizontal"
+          gutterSize={horizontalLayoutConstraints.dividerSize}
+        >
+          <Box height="100%">
+            <WorkspacePanel data={treeData} onTreeChange={setTreeData} />
+          </Box>
+
+          <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
+          <Box height="100%" ><HttpResponsePanel onChangeLayoutButtonClick={onChangeLayoutButtonClick} /> </Box>
+        </Split>
+      </Box>
+    );
+  }
+
+  return (
+    <Box ref={wrapperRef} width="100%" height="100%" position="relative">
+      {mainPanelLayoutType == "vertical" && verticalLayout()}
+      {mainPanelLayoutType == "horizontal" && horizontalLayout()}
+    </Box>
   )
 }
