@@ -55,21 +55,7 @@ export const Home = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
 
-  const leftPanelRatio = 15;
-  const rightPanelRatio = 85;
-
-  const minimumRequestPanelHeight = 300;
-  const defaultResponsePanelHeight = 100;
-
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-
-  const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
-  const minimumRightPanelSize = screenWidth * (35 / 100);
-
-
   // #region UI Functions
-
   const updateHeight = () => {
     const topOffset = wrapperRef.current?.getBoundingClientRect().top || 0;
     const windowHeight = window.innerHeight - 10;
@@ -114,8 +100,8 @@ export const Home = () => {
     workspacePanelRatio: 15,
     operationPanelRatio: 85,
 
-    minimumWorkspacePanelWidth: screenWidth * (15 / 100),
-    minimumOperationPanelWidth: screenWidth * (35 / 100),
+    minimumWorkspacePanelWidth: window.innerWidth * (15 / 100),
+    minimumOperationPanelWidth: window.innerWidth * (35 / 100),
 
     mainDividerSize: 2,
 
@@ -172,8 +158,8 @@ export const Home = () => {
     requestPanelRatio: 50,
     responsePanelRatio: 35,
 
-    minimumWorkspacePanelWidth: screenWidth * (15 / 100),
-    minimumRequestPanelWidth: screenWidth * (35 / 100),
+    minimumWorkspacePanelWidth: window.innerWidth * (15 / 100),
+    minimumRequestPanelWidth: window.innerWidth * (35 / 100),
     minimumResponsePanelWidth: 20,
 
     dividerSize: 2,
