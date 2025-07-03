@@ -13,6 +13,6 @@ export const ResponseTimeBox = ({ responseTime }: ResponseTimeBoxProps) => {
         variant="ghost"
         size="xs"
         leftIcon={<BsClock/>}>
-        {responseTime.Total}
+        {responseTime.Total} ms
     </Button>);
 }

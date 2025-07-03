@@ -11,7 +11,8 @@ import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
 import { HttpResponseStatusData } from '#/Constants';
-import { HttpPayloadSizeObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
+import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
+import { SupportedDataFormatsEnum } from '#/Enums';
 
 const workspace_1 = [
   {
@@ -71,6 +72,29 @@ export const Home = () => {
   const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(HttpResponseStatusData.FindByCode("100"));
   const [httpResponseTime, setHttpResponseTime] = useState<HttpResponseTimeObject | undefined>(new HttpResponseTimeObject({ Total: 542 }));
   const [httpPayloadSize, setHttpPayloadSize] = useState<HttpPayloadSizeObject | undefined>(new HttpPayloadSizeObject({ Total: 320 }));
+  const [httpResponseHeaders, setHttpResponseHeaders] = useState<HttpResponseHeader[]>([
+    new HttpResponseHeader({
+      Key: "date",
+      Value: "Thu, 03 Jul 2025 11:10:43 GMT"
+    }),
+    new HttpResponseHeader({
+      Key: "server",
+      Value: "Apache"
+    }),
+    new HttpResponseHeader({
+      Key: "content-encoding",
+      Value: "gzip"
+    }),
+    new HttpResponseHeader({
+      Key: "content-length",
+      Value: "589"
+    })
+  ]);
+  const [httpResponseBody, setHttpResponseBody] = useState<HttpBodyRawData>(new HttpBodyRawData({
+    type: SupportedDataFormatsEnum.HTML,
+    Value: "hello world"
+  }));
+
   // #region UI Functions
 
   const updateHeight = () => {
@@ -128,10 +152,13 @@ export const Home = () => {
         <Box height="100%" >
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
+
+            responseHeaders={httpResponseHeaders}
+            responseBody={httpResponseBody}
+
             responseStatus={responseHttpStatus}
             responseTime={httpResponseTime}
-            payloadSize={httpPayloadSize}
-          />
+            payloadSize={httpPayloadSize} />
         </Box>
       </Split>
     </Box>
@@ -151,10 +178,13 @@ export const Home = () => {
         <Box height="100%" >
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
+
+            responseBody={httpResponseBody}
+            responseHeaders={httpResponseHeaders}
             responseStatus={responseHttpStatus}
             responseTime={httpResponseTime}
-            payloadSize={httpPayloadSize}
-          />
+            payloadSize={httpPayloadSize} 
+            />
         </Box>
       </Split>
     </Box>
