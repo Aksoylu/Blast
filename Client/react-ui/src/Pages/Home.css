@@ -21,8 +21,16 @@
 }
 
 .vertical-split>div {
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
+
+.horizontal-split>div {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+
 
 .vertical-split>.gutter {
   cursor: row-resize;
