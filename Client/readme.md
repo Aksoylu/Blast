@@ -1,5 +1,4 @@
 # TODO
-1) Need to fix collusion between horizontal splitted request-response panels and workspace panel
-    Note: you can fix it by changing stack of entire layout
-2) Need to fix HttpRequestPanel Tab's overflow hidden problems
-3) statefully implementation and storage of current window situation by every request
+1) Request time, payload size and network details should be placed on popup of "ResponseStatusCodeBox"
+2) Home page, container of requestpanel & responsepanel scrolls should be disabled when one of panels reached its full size (means disabling another in current time)
+3) Monaco editors height should be aligned when split panel change

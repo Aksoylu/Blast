@@ -7,8 +7,8 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import vkbeautify from 'vkbeautify';
 
 export interface BodyTabProps {
-    rawData: HttpBodyRawData;
-    rawDataType?: SupportedDataFormatsEnum;
+    data: string;
+    dataType: SupportedDataFormatsEnum;
 };
 
 export interface BodyTabRef {
@@ -17,43 +17,30 @@ export interface BodyTabRef {
 
 
 export const BodyTab = forwardRef<BodyTabRef, BodyTabProps>(
-    ({ rawData, rawDataType }, ref) => {
+    ({ data, dataType }, ref) => {
         const parentRef = useRef<HTMLDivElement>(null);
         const editorRef = useRef<any>(null);
         const { colorMode } = useColorMode();
         const monacoInstance = useMonaco();
-        const [monacoEditorHeight, setMonacoEditorHeight] = useState<number | undefined>(undefined);
-        const [monacoEditorLanguage, setMonacoEditorLanguage] = useState<string>("html");
+
         const monacoEditorBorderColor = colorMode == "dark" ? "gray.600" : "gray.300";
 
+        const [monacoEditorHeight, setMonacoEditorHeight] = useState<number | undefined>(undefined);
+        const [monacoEditorLanguage, setMonacoEditorLanguage] = useState<string>("html");
+
+        const [displayedBodyData, setDisplayedBodyData] = useState(data);
 
         // #region UI Actions
 
         const formatCode = () => {
-            if (rawDataType == SupportedDataFormatsEnum.XML) {
-
-                const beautifiedXmlContent = vkbeautify.xml(rawData.Value, 4);
-                // todo
+            if (dataType == SupportedDataFormatsEnum.XML) {
+                const beautifiedXmlContent = vkbeautify.xml(data, 4);
+                setDisplayedBodyData(beautifiedXmlContent);
             }
             else {
                 editorRef.current?.getAction("editor.action.formatDocument").run();
             }
         };
-        // #endregion
-
-        useImperativeHandle(ref, () => ({
-            formatCode,
-        }));
-
-        //#region UI Hooks
-
-        /**
-         * @description: on rawDataType change
-         */
-        useEffect(() => {
-            const message = HttpBodyRawDataTypeData.GetAsMonacoLanguage(rawDataType);
-            setMonacoEditorLanguage(message);
-        }, [rawDataType]);
 
         const updateMonacoEditorHeight = () => {
             if (parentRef.current) {
@@ -62,6 +49,27 @@ export const BodyTab = forwardRef<BodyTabRef, BodyTabProps>(
                 setMonacoEditorHeight(calculatedHeight);
             }
         }
+
+        const updateMonacoEditorTheme = () => {
+            if (!monacoInstance) return;
+            const monacoEditorTheme = colorMode === "dark" ? MonacoEditorThemes.Dark : MonacoEditorThemes.Light;
+            MonacoEditorStyling.SetTheme(monacoInstance, monacoEditorTheme);
+        }
+        // #endregion
+
+
+        //#region UI Hooks
+        useImperativeHandle(ref, () => ({
+            formatCode,
+        }));
+
+        /**
+         * @description: on rawDataType change
+         */
+        useEffect(() => {
+            const message = HttpBodyRawDataTypeData.GetAsMonacoLanguage(dataType);
+            setMonacoEditorLanguage(message);
+        }, [dataType]);
 
 
         useEffect(() => {
@@ -72,23 +80,20 @@ export const BodyTab = forwardRef<BodyTabRef, BodyTabProps>(
         }, []);
 
         useEffect(() => {
-            if (!monacoInstance) return;
-            const monacoEditorTheme = colorMode === "dark" ? MonacoEditorThemes.Dark : MonacoEditorThemes.Light;
-            MonacoEditorStyling.SetTheme(monacoInstance, monacoEditorTheme);
+            updateMonacoEditorTheme();
         }, [colorMode, monacoInstance]);
 
         const handleEditorDidMount: OnMount = (editor, monaco) => {
             editorRef.current = editor;
 
-            const monacoEditorTheme = colorMode === "dark" ? MonacoEditorThemes.Dark : MonacoEditorThemes.Light;
-            MonacoEditorStyling.SetTheme(monacoInstance, monacoEditorTheme);
+            updateMonacoEditorTheme();
         };
         //#endregion
 
         return (
             <Box
                 ref={parentRef}
-                width="95%"
+                width="100%"
                 position="relative"
                 minHeight="0"
                 overflow="hidden"
@@ -103,15 +108,16 @@ export const BodyTab = forwardRef<BodyTabRef, BodyTabProps>(
                     height="95%"
                     width="100%"
                     defaultLanguage={monacoEditorLanguage}
-                    defaultValue={rawData?.Value ?? ""}
+                    defaultValue={displayedBodyData}
                     language={monacoEditorLanguage}
-                    value={rawData?.Value ?? ""}
+                    value={displayedBodyData}
                     onMount={handleEditorDidMount}
                     options={{
                         scrollBeyondLastLine: false,
                         formatOnPaste: true,
                         formatOnType: true,
                         minimap: { enabled: false },
+                        readOnly: true
                     }}
                 />
             </Box>

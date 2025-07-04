@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
 
 import Editor, { OnMount, useMonaco } from "@monaco-editor/react";
 import { Box, useColorMode, useColorModeValue } from "@chakra-ui/react";
@@ -19,7 +19,6 @@ export interface RawDataInputRef {
   formatCode: () => void;
 }
 
-// todo: something breaks resizability. need fix
 export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
   ({ rawData, setRawData, rawDataType }, ref) => {
     const parentRef = useRef<HTMLDivElement>(null);
@@ -38,10 +37,7 @@ export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
 
     const formatCode = () => {
       if (rawDataType == SupportedDataFormatsEnum.XML) {
-
         const beautifiedXmlContent = vkbeautify.xml(rawData.Value, 4);
-        console.log(beautifiedXmlContent);
-
         setRawData({ ...rawData, Value: beautifiedXmlContent })
       }
       else {
@@ -67,7 +63,7 @@ export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
     const updateMonacoEditorHeight = () => {
       if (parentRef.current) {
         const offsetTop = parentRef.current.getBoundingClientRect().top;
-        const calculatedHeight = (window.innerHeight - offsetTop) - 10;
+        const calculatedHeight = (window.innerHeight - (offsetTop * 1.2));
         setMonacoEditorHeight(calculatedHeight);
       }
     }
@@ -75,7 +71,7 @@ export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
     const fillRawData = () => {
       if (!rawData) {
         const newRawData: HttpBodyRawData = {
-          type: SupportedDataFormatsEnum.TEXT,
+          type: SupportedDataFormatsEnum.RAW,
           Value: ""
         }
         setRawData(newRawData);
@@ -84,6 +80,14 @@ export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
 
     useEffect(() => {
       fillRawData();
+      updateMonacoEditorHeight();
+
+      window.addEventListener("resize", updateMonacoEditorHeight);
+      return () => window.removeEventListener("resize", updateMonacoEditorHeight);
+    }, []);
+
+
+    useLayoutEffect(() => {
       updateMonacoEditorHeight();
 
       window.addEventListener("resize", updateMonacoEditorHeight);
@@ -107,19 +111,17 @@ export const RawDataInput = forwardRef<RawDataInputRef, RawDataInputProps>(
     return (
       <Box
         ref={parentRef}
-        width="95%"
-        position="relative"
+        width="100%"
         minHeight="0"
         overflow="hidden"
         border="1px solid"
         height={monacoEditorHeight}
         borderColor={monacoEditorBorderColor}
         borderRadius={5}
-        mt={3}
       >
         <Editor
           key={colorMode}
-          height="95%"
+          height="100%"
           width="100%"
           defaultLanguage={monacoEditorLanguage}
           defaultValue={rawData?.Value ?? ""}

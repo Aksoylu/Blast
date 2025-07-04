@@ -16,13 +16,15 @@ import {
 
 import { FiLayout } from 'react-icons/fi';
 
-import { ResponseStatusCodeBox } from './ResponseStatusCodeBox';
+import { SupportedDataFormatsEnum } from '#/Enums';
+import { HttpResponseBodyTypeData } from '#/Constants';
 import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
+
+
+import { ResponseStatusCodeBox } from './ResponseStatusCodeBox';
 import { ResponseTimeBox } from './ResponseTimeBox';
 import { ResponsePayloadSizeBox } from './ResponsePayloadSizeBox';
 import { ResponsePanelHeader } from './ResponsePanelHeader';
-import { HttpResponseBodyTypeData } from '#/Constants';
-import { HttpResponseBodyTypesEnum } from '#/Enums';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
 
@@ -39,7 +41,7 @@ export interface HttpResponsePanelProps {
 export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick }: HttpResponsePanelProps) => {
     const { colorMode } = useColorMode();
 
-    const [responseBodyType, setResponseBodyType] = useState<HttpResponseBodyTypesEnum>(HttpResponseBodyTypesEnum.RAW);
+    const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
     const [activeHeaderButtons, setActiveHeaderButtons] = useState<JSX.Element[]>([]);
     const [tabIndex, setTabIndex] = useState(0);
 
@@ -126,7 +128,7 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatu
             <Tabs index={tabIndex} onChange={setTabIndex}>
                 <TabPanels>
                     <TabPanel p={0} height="100%" width="100%" display="flex" flexDirection="column">
-                        <BodyTab rawData={responseBody} />
+                        <BodyTab data={responseBody.Value} dataType={responseBodyType} />
                     </TabPanel>
 
                     <TabPanel p={0}>

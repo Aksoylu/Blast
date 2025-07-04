@@ -77,7 +77,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
      * @description: Inner component
      */
     const beautifyRawContentButton = () => {
-        if (requestBody.rawDataType == undefined || requestBody.rawDataType == SupportedDataFormatsEnum.TEXT) {
+        if (requestBody.rawDataType == undefined || requestBody.rawDataType == SupportedDataFormatsEnum.RAW) {
             return (<></>);
         }
 
@@ -170,7 +170,7 @@ export const BodyTab = ({ requestBody, setRequestBody }: BodyTabProps) => {
     }
 
     return (<div>
-        <Box maxW="100%" maxH="100%">
+        <Box maxW="100%" maxH="100%" mb={3}>
             <Flex justifyContent="left" width="100%">
                 {bodyTypeSelector()}
                 {isRawDataTypeSelectorVisible && rawContentTypeSelector()}

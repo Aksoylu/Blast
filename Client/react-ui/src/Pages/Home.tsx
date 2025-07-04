@@ -10,7 +10,7 @@ import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
-import { HttpResponseStatusData } from '#/Constants';
+import { HttpResponseStatusData, ScrollBarBehaviour } from '#/Constants';
 import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
 import { SupportedDataFormatsEnum } from '#/Enums';
 
@@ -91,8 +91,8 @@ export const Home = () => {
     })
   ]);
   const [httpResponseBody, setHttpResponseBody] = useState<HttpBodyRawData>(new HttpBodyRawData({
-    type: SupportedDataFormatsEnum.HTML,
-    Value: "hello world"
+    type: SupportedDataFormatsEnum.JSON,
+    Value: '<abc> test</abc>'
   }));
 
   // #region UI Functions
@@ -104,7 +104,6 @@ export const Home = () => {
     const windowHeight = window.innerHeight - 10;
     const verticalSplitterHeight = windowHeight - topOffset;
     setVerticalSplitterHeight(verticalSplitterHeight);
-
   };
 
   const updateGutterColors = () => {
@@ -137,19 +136,22 @@ export const Home = () => {
     const newLayoutType = mainPanelLayoutType == "vertical" ? "horizontal" : "vertical";
     setMainPanelLayoutType(newLayoutType);
   }
+
+
   //#endregion
 
   const verticalLayout = () => {
-    return (<Box height="100%" width="100%" pl={3}>
+    return (<Box height="100%" width="100%"  pl={3}>
       <Split
         className="vertical-split"
         sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
         minSize={[100, 25]}
         gutterSize={4}
         direction="vertical"
+        //onDragEnd={}
       >
-        <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" >
+        <Box height="100%" sx={ScrollBarBehaviour.Auto}><HttpRequestPanel initialRequestData_={undefined} /> </Box>
+        <Box height="100%" sx={ScrollBarBehaviour.Auto}>
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
 

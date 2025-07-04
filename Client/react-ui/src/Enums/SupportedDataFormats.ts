@@ -1,6 +1,6 @@
 export enum SupportedDataFormatsEnum
 {
-    TEXT,
+    RAW,
     JSON,
     HTML,
     XML
