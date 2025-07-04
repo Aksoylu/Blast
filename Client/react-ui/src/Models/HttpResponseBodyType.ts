@@ -1,7 +1,7 @@
-import { HttpResponseBodyTypes } from "#/Enums";
+import { SupportedDataFormatsEnum } from "#/Enums";
 
 export class HttpResponseBodyType {
-    public type: HttpResponseBodyTypes;
+    public type: SupportedDataFormatsEnum;
     public code: string;
     public Icon: React.ComponentType;
 
