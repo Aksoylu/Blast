@@ -51,25 +51,24 @@ const workspace_1 = [
 
 export const Home = () => {
   const { colorMode } = useColorMode();
-  const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
-
-  const [mainPanelLayoutType, setMainPanelLayoutType] = useState<'vertical' | 'horizontal'>("vertical");
-
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
+  const verticalLayoutRequestPanelRef = useRef<HTMLDivElement>(null);
+  const verticalLayoutResponsePanelRef = useRef<HTMLDivElement>(null);
 
+  const verticalPanelOffsetTolerance = 5;
+  const verticalLayoutMinimifiedResponsePanelSize = 25;
   const leftPanelRatio = 15;
   const rightPanelRatio = 85;
+  const minimumleftPanelSize = window.innerWidth * (leftPanelRatio / 100);
+  const minimumRightPanelSize = window.innerWidth * (35 / 100);
 
-  const minimumRequestPanelHeight = 300;
-  const defaultResponsePanelHeight = 100;
+  const [verticalPanelSize, setVerticalPanelSize] = useState([425, 200]);
+  const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
+  const [mainPanelLayoutType, setMainPanelLayoutType] = useState<'vertical' | 'horizontal'>("vertical");
 
-  const screenWidth = window.innerWidth
-  const minimumleftPanelSize = screenWidth * (leftPanelRatio / 100);
-  const minimumRightPanelSize = screenWidth * (35 / 100);
+  const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
-
-  const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(HttpResponseStatusData.FindByCode("100"));
+  const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(); // HttpResponseStatusData.FindByCode("100")
   const [httpResponseTime, setHttpResponseTime] = useState<HttpResponseTimeObject | undefined>(new HttpResponseTimeObject({ Total: 542 }));
   const [httpPayloadSize, setHttpPayloadSize] = useState<HttpPayloadSizeObject | undefined>(new HttpPayloadSizeObject({ Total: 320 }));
   const [httpResponseHeaders, setHttpResponseHeaders] = useState<HttpResponseHeader[]>([
@@ -138,23 +137,56 @@ export const Home = () => {
   }
 
 
+  const onResizeResponseWindowButtonClick = () => {
+    if (mainPanelLayoutType == "vertical") {
+      if (verticalLayoutRequestPanelRef?.current == null || verticalLayoutResponsePanelRef?.current == null) {
+        return;
+      }
+      const responsePanelHeight = verticalLayoutResponsePanelRef?.current.getBoundingClientRect().height;
+
+      // Means that response panel is minimified. set vertical layout to default heights
+      if (verticalLayoutMinimifiedResponsePanelSize + 5 > responsePanelHeight) {
+        setVerticalPanelSize([425, 200]);
+      }
+      // Means that response panel is not minimified. set it to minimal
+      else if (verticalLayoutMinimifiedResponsePanelSize + verticalPanelOffsetTolerance < responsePanelHeight) {
+        setVerticalPanelSize([600, 25]);
+      }
+    }
+  }
+
   //#endregion
 
+
   const verticalLayout = () => {
-    return (<Box height="100%" width="100%"  pl={3}>
+    const onDragEnd = (updatedPanelSize) => {
+      setVerticalPanelSize(updatedPanelSize);
+      if (verticalLayoutRequestPanelRef.current != null) {
+        const requestPanelHeight = verticalLayoutRequestPanelRef?.current.getBoundingClientRect().height;
+        console.log("RequestPanel Height", requestPanelHeight);
+      }
+
+      if (verticalLayoutResponsePanelRef.current != null) {
+        console.log("ResponsePanel", verticalLayoutResponsePanelRef?.current.getBoundingClientRect().height);
+      }
+    }
+
+    return (<Box height="100%" width="100%" pl={3}>
       <Split
         className="vertical-split"
-        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
+        sizes={verticalPanelSize}
         minSize={[100, 25]}
         gutterSize={4}
         direction="vertical"
-        //onDragEnd={}
+        onDragEnd={onDragEnd}
       >
-        <Box height="100%" sx={ScrollBarBehaviour.Auto}><HttpRequestPanel initialRequestData_={undefined} /> </Box>
-        <Box height="100%" sx={ScrollBarBehaviour.Auto}>
+        <Box height="100%" sx={ScrollBarBehaviour.Auto} ref={verticalLayoutRequestPanelRef}>
+          <HttpRequestPanel initialRequestData_={undefined} />
+        </Box>
+        <Box height="100%" sx={ScrollBarBehaviour.Auto} ref={verticalLayoutResponsePanelRef}>
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
-
+            onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
             responseHeaders={httpResponseHeaders}
             responseBody={httpResponseBody}
 
@@ -171,7 +203,7 @@ export const Home = () => {
     return (<Box width="100%" pl={3}>
       <Split
         className="horizontal-split"
-        sizes={[minimumRequestPanelHeight, defaultResponsePanelHeight]}
+        sizes={[300, 105]}
         minSize={[150, 25]}
         gutterSize={4}
         direction="horizontal"
@@ -180,13 +212,13 @@ export const Home = () => {
         <Box height="100%" >
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
-
+            onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
             responseBody={httpResponseBody}
             responseHeaders={httpResponseHeaders}
             responseStatus={responseHttpStatus}
             responseTime={httpResponseTime}
-            payloadSize={httpPayloadSize} 
-            />
+            payloadSize={httpPayloadSize}
+          />
         </Box>
       </Split>
     </Box>

@@ -109,7 +109,6 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
     }
 
     return (
-        <Box height="100%" width="100%">
             <Box>
                 <Flex justifyContent="space-between" alignItems="center" width="100%">
                     <RequestBreadcrumb />
@@ -120,7 +119,7 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
                     </Box>
                 </Flex>
 
-                <Flex justifyContent="right" alignItems="center" width="100%" mt={4}>
+                <Flex justifyContent="right" alignItems="center" width="100%" pt={4}>
                     <Box borderRadius={5} border="1px solid" borderColor="gray.700" width="95%" height={10} >
                         {requestInputBar()}
                     </Box>
@@ -174,6 +173,5 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
                     </TabPanels>
                 </Tabs>
             </Box>
-        </Box>
     );
 }
