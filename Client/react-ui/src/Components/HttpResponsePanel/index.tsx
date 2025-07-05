@@ -4,6 +4,13 @@ import {
     Box,
     Button,
     Flex,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverHeader,
+    PopoverTrigger,
     Select,
     Spacer,
     Tab,
@@ -24,9 +31,9 @@ import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpRespons
 import { ResponseStatusCodeBox } from './ResponseStatusCodeBox';
 import { ResponseTimeBox } from './ResponseTimeBox';
 import { ResponsePayloadSizeBox } from './ResponsePayloadSizeBox';
-import { ResponsePanelHeader } from './ResponsePanelHeader';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
+import { ResponseHeader } from './ResponseHeader';
 
 export interface HttpResponsePanelProps {
     responseHeaders: HttpResponseHeader[];
@@ -36,9 +43,10 @@ export interface HttpResponsePanelProps {
     payloadSize: HttpPayloadSizeObject | undefined;
 
     onChangeLayoutButtonClick: () => void;
+    onResizeResponseWindowButtonClick: () => void;
 }
 
-export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick }: HttpResponsePanelProps) => {
+export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
     const { colorMode } = useColorMode();
 
     const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
@@ -96,7 +104,10 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatu
         </Box>);
     }
 
-    const changeLayoutButton = () => {
+    /**
+     * @description: Inner component
+     */
+    const changeLayoutButton = (): JSX.Element => {
         return (<Box>
             <Button colorScheme="blue" variant="ghost" size="sm" leftIcon={<FiLayout />} onClick={() => {
                 onChangeLayoutButtonClick();
@@ -116,12 +127,16 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatu
                         </TabList>
                     </Tabs>
 
-
                 </Tabs>
                 <Spacer />
-                {activeHeaderButtons.length === 0 && <ResponsePanelHeader />}
-                {activeHeaderButtons.length > 0 && activeHeaderButtons.map(i => i)}
+                <ResponseHeader 
+                    responseBody={responseBody} 
+                    responseStatus={responseStatus} 
+                    responseTime={responseTime} 
+                    payloadSize={payloadSize}
 
+                    onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
+                />
                 {changeLayoutButton()}
 
             </Flex>
