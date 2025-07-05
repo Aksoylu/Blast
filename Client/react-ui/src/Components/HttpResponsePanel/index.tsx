@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     Flex,
+    HStack,
     Popover,
     PopoverArrow,
     PopoverBody,
@@ -18,7 +19,8 @@ import {
     TabPanel,
     TabPanels,
     Tabs,
-    useColorMode
+    useColorMode,
+    VStack
 } from '@chakra-ui/react';
 
 import { FiLayout } from 'react-icons/fi';
@@ -34,6 +36,7 @@ import { ResponsePayloadSizeBox } from './ResponsePayloadSizeBox';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
 import { ResponseHeader } from './ResponseHeader';
+import { BodyTypeSelector } from './BodyTypeSelector';
 
 export interface HttpResponsePanelProps {
     responseHeaders: HttpResponseHeader[];
@@ -42,68 +45,21 @@ export interface HttpResponsePanelProps {
     responseTime: HttpResponseTimeObject | undefined;
     payloadSize: HttpPayloadSizeObject | undefined;
 
+    layoutDirection: "horizontal" | "vertical";
     onChangeLayoutButtonClick: () => void;
     onResizeResponseWindowButtonClick: () => void;
 }
 
-export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
-    const { colorMode } = useColorMode();
-
+export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, layoutDirection, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
     const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
-    const [activeHeaderButtons, setActiveHeaderButtons] = useState<JSX.Element[]>([]);
     const [tabIndex, setTabIndex] = useState(0);
 
-    useEffect(() => {
-        const activeButtons: JSX.Element[] = [];
-
-        if (responseStatus !== undefined) {
-            activeButtons.push(<ResponseStatusCodeBox StatusData={responseStatus} />);
-        }
-
-        if (responseTime !== undefined) {
-            activeButtons.push(<ResponseTimeBox responseTime={responseTime} />);
-        }
-
-        if (payloadSize !== undefined) {
-            activeButtons.push(<ResponsePayloadSizeBox payloadSize={payloadSize} />);
-        }
-
-        setActiveHeaderButtons(activeButtons);
-    }, [responseStatus, responseTime, payloadSize]);
-
-
-    // #region Inner Components
-    /**
-     * @description: Inner component
-     */
-    const bodyTypeSelector = () => {
-        const onChange = (event) => {
-            const selectedType = event.target.value;
-            setResponseBodyType(selectedType);
-        };
-
-        const hoverColor = colorMode === "dark" ? "gray.600" : "blue.300";
-
-        return (<Box ml={3} pt={1} width={125}>
-            <Select
-                variant="filled"
-                colorScheme={colorMode}
-                borderRadius="md"
-                size="sx"
-                _hover={{ borderColor: hoverColor }}
-                value={responseBodyType}
-                fontSize={"1rem"}
-                onChange={onChange}
-            >
-                {HttpResponseBodyTypeData.List().map((bodyType) => (
-                    <option key={bodyType.type} value={bodyType.type}>
-                        &nbsp;&nbsp;&nbsp;{bodyType.code}
-                    </option>
-                ))}
-            </Select>
-        </Box>);
+    const onResponseBodyTypeChanged = (event: any) => {
+        const selectedType = event.target.value;
+        setResponseBodyType(selectedType);
     }
 
+    // #region Inner Components
     /**
      * @description: Inner component
      */
@@ -115,31 +71,75 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatu
         </Box>);
     }
 
+    const verticalLayout = (): JSX.Element => {
+        return (<Flex justifyContent="left" alignItems="space-between" width="100%" >
+            <Tabs size="sm">
+                <Tabs index={tabIndex} onChange={setTabIndex} size="sm">
+                    <TabList>
+                        <Tab>Body</Tab>
+                        <Tab>Headers</Tab>
+                        <BodyTypeSelector
+                            responseBodyType={responseBodyType}
+                            onResponseBodyTypeChanged={onResponseBodyTypeChanged}
+                        />
+                    </TabList>
+                </Tabs>
+
+            </Tabs>
+            <Spacer />
+            <ResponseHeader
+                responseBody={responseBody}
+                responseStatus={responseStatus}
+                responseTime={responseTime}
+                payloadSize={payloadSize}
+
+                layoutDirection={layoutDirection}
+                onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
+            />
+            {changeLayoutButton()}
+
+        </Flex>);
+    }
+
+    const horizontalLayout = (): JSX.Element => {
+        return (
+            <Box>
+                <Flex  justifyContent="left" alignItems="space-between" width="100%" >
+                    <ResponseHeader
+                        responseBody={responseBody}
+                        responseStatus={responseStatus}
+                        responseTime={responseTime}
+                        payloadSize={payloadSize}
+
+                        layoutDirection={layoutDirection}
+                        onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
+                    />
+                    {changeLayoutButton()}
+                </Flex>
+                <Box width="100%" pt={1} mb={1}>
+                    <Tabs size="sm" >
+                        <Tabs index={tabIndex} onChange={setTabIndex} size="sm" isFitted>
+                            <TabList>
+                                <Tab>Body</Tab>
+                                <Tab>Headers</Tab>
+                                <BodyTypeSelector
+                                    responseBodyType={responseBodyType}
+                                    onResponseBodyTypeChanged={onResponseBodyTypeChanged}
+                                />
+                            </TabList>
+                        </Tabs>
+
+                    </Tabs>
+                </Box>
+            </Box>
+        );
+    }
+
     return (
         <Box height="100%" width="100%">
-            <Flex justifyContent="left" alignItems="space-between" width="100%" >
-                <Tabs size="sm">
-                    <Tabs index={tabIndex} onChange={setTabIndex} size="sm">
-                        <TabList>
-                            <Tab>Body</Tab>
-                            <Tab>Headers</Tab>
-                            {activeHeaderButtons.length > 0 && bodyTypeSelector()}
-                        </TabList>
-                    </Tabs>
+            {layoutDirection == "vertical" && verticalLayout()}
+            {layoutDirection == "horizontal" && horizontalLayout()}
 
-                </Tabs>
-                <Spacer />
-                <ResponseHeader 
-                    responseBody={responseBody} 
-                    responseStatus={responseStatus} 
-                    responseTime={responseTime} 
-                    payloadSize={payloadSize}
-
-                    onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
-                />
-                {changeLayoutButton()}
-
-            </Flex>
             <Tabs index={tabIndex} onChange={setTabIndex}>
                 <TabPanels>
                     <TabPanel p={0} height="100%" width="100%" display="flex" flexDirection="column">

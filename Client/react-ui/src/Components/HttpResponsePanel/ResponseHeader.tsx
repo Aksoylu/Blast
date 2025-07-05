@@ -11,10 +11,12 @@ export interface ResponseHeaderProps {
     responseStatus: HttpResponseStatusObject | undefined;
     responseTime: HttpResponseTimeObject | undefined;
     payloadSize: HttpPayloadSizeObject | undefined;
+
+    layoutDirection: "horizontal" | "vertical";
     onResizeResponseWindowButtonClick: () => void;
 }
 
-export const ResponseHeader = ({ responseBody, responseStatus, responseTime, payloadSize , onResizeResponseWindowButtonClick}: ResponseHeaderProps) => {
+export const ResponseHeader = ({ responseBody, responseStatus, responseTime, payloadSize , layoutDirection, onResizeResponseWindowButtonClick}: ResponseHeaderProps) => {
     // #region Inner Components
     /**
      * @description: Inner component
