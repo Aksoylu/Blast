@@ -63,9 +63,6 @@ export const Home = () => {
   const leftPanelRatio = 15;
   const rightPanelRatio = 85;
 
-
-
-
   const minimumleftPanelSize = window.innerWidth * (leftPanelRatio / 100);
   const minimumRightPanelSize = window.innerWidth * (35 / 100);
 
@@ -75,6 +72,8 @@ export const Home = () => {
   const [horizontalPanelSize, setHorizontalPanelSize] = useState([leftPanelRatio, rightPanelRatio * 0.7, rightPanelRatio * 0.5]);
   const [verticalSplitterHeight, setVerticalSplitterHeight] = useState<number | null>(null);
   const [mainPanelLayoutType, setMainPanelLayoutType] = useState<'vertical' | 'horizontal'>("vertical");
+  const [requestPanelScrollBar, setRequestPanelScrollBar] = useState<any>(ScrollBarBehaviour.Auto);
+  const [responsePanelScrollBar, setResponsePanelScrollBar] = useState<any>(ScrollBarBehaviour.Auto);
 
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
@@ -121,6 +120,14 @@ export const Home = () => {
     setVerticalSplitterHeight(verticalSplitterHeight);
   };
 
+  const updateVerticalScrollBars = () => {
+    const requestPanelOverflow = (verticalPanelSize[0] <= defaultVerticalPanelSize[0] - verticalPanelOffsetTolerance);
+    const responsePanelOverflow = (verticalPanelSize[1] <= defaultVerticalPanelSize[1] - verticalPanelOffsetTolerance);
+
+    setRequestPanelScrollBar(requestPanelOverflow ? ScrollBarBehaviour.Auto : ScrollBarBehaviour.Hidden);
+    setResponsePanelScrollBar(responsePanelOverflow ? ScrollBarBehaviour.Auto : ScrollBarBehaviour.Hidden);
+  }
+
   const updateGutterColors = () => {
     const splitPanelDividers = document.querySelectorAll('.gutter')
 
@@ -131,50 +138,52 @@ export const Home = () => {
     });
 
   }
-  // #endregion
-
-  //#region UI Hooks
-  useEffect(() => {
-    updateGutterColors();
-
-  }, [colorMode]);
-
-
-  useLayoutEffect(() => {
-
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    return () => window.removeEventListener('resize', updateHeight);
-  }, []);
 
   const onChangeLayoutButtonClick = () => {
     const newLayoutType = mainPanelLayoutType == "vertical" ? "horizontal" : "vertical";
     setMainPanelLayoutType(newLayoutType);
   }
 
-
   const onResizeResponseWindowButtonClick = () => {
-    if (mainPanelLayoutType == "vertical") {
-      if (verticalLayoutRequestPanelRef?.current == null || verticalLayoutResponsePanelRef?.current == null) {
-        return;
-      }
-      const responsePanelHeight = verticalLayoutResponsePanelRef?.current.getBoundingClientRect().height;
+    if (mainPanelLayoutType != "vertical") {
+      return;
+    }
+    if (verticalLayoutRequestPanelRef?.current == null || verticalLayoutResponsePanelRef?.current == null) {
+      return;
+    }
 
-      // Means that response panel is minimified. set vertical layout to default heights
-      if (verticalLayoutMinimifiedResponsePanelSize + 5 > responsePanelHeight) {
-        setVerticalPanelSize([425, 200]);
-      }
-      // Means that response panel is not minimified. set it to minimal
-      else if (verticalLayoutMinimifiedResponsePanelSize + verticalPanelOffsetTolerance < responsePanelHeight) {
-        setVerticalPanelSize([600, 25]);
-      }
+    const responsePanelHeight = verticalLayoutResponsePanelRef?.current.getBoundingClientRect().height;
+
+    // Means that response panel is minimified. set vertical layout to default heights
+    if (verticalLayoutMinimifiedResponsePanelSize + 5 > responsePanelHeight) {
+      setVerticalPanelSize([425, 200]);
+    }
+    // Means that response panel is not minimified. set it to minimal
+    else if (verticalLayoutMinimifiedResponsePanelSize + verticalPanelOffsetTolerance < responsePanelHeight) {
+      setVerticalPanelSize([600, 25]);
     }
   }
+
+  // #endregion
+
+  //#region UI Hooks
+  useEffect(() => {
+    updateVerticalScrollBars();
+  }, [verticalPanelSize])
+
+  useEffect(() => {
+    updateGutterColors();
+  }, [colorMode]);
+
+  useLayoutEffect(() => {
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   //#endregion
 
   // #region Render
-
   const verticalLayout = () => {
     const onDragEnd = (updatedPanelSize) => {
       setVerticalPanelSize(updatedPanelSize);
@@ -205,10 +214,10 @@ export const Home = () => {
                 direction="vertical"
                 onDragEnd={onDragEnd}
               >
-                <Box height="100%" sx={verticalPanelSize[0] <= defaultVerticalPanelSize[0] - verticalPanelOffsetTolerance ? ScrollBarBehaviour.Auto : ScrollBarBehaviour.Hidden} ref={verticalLayoutRequestPanelRef}>
+                <Box height="100%" sx={requestPanelScrollBar} ref={verticalLayoutRequestPanelRef}>
                   <HttpRequestPanel initialRequestData_={undefined} />
                 </Box>
-                <Box height="100%" sx={verticalPanelSize[1] <= defaultVerticalPanelSize[1] - verticalPanelOffsetTolerance ? ScrollBarBehaviour.Auto : ScrollBarBehaviour.Hidden} ref={verticalLayoutResponsePanelRef}>
+                <Box height="100%" sx={responsePanelScrollBar} ref={verticalLayoutResponsePanelRef}>
                   <HttpResponsePanel
                     renderLayout='vertical'
                     onChangeLayoutButtonClick={onChangeLayoutButtonClick}
