@@ -16,3 +16,4 @@ export { HttpResponseTimeObject } from "./HttpResponseTimeObject";
 export { HttpResponseBodyType } from "./HttpResponseBodyType";
 export { HttpResponseHeader } from "./HttpResponseHeader";
 export { HttpPayloadSizeObject } from "./HttpPayloadSizeObject";
+export {HttpResponseNetworkObject} from "./HttpResponseNetworkObject";
