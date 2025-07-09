@@ -191,6 +191,7 @@ export const Home = () => {
         </Box>
         <Box height="100%" sx={ScrollBarBehaviour.Auto} ref={verticalLayoutResponsePanelRef}>
           <HttpResponsePanel
+            renderLayout='vertical'
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
             onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
 
@@ -212,13 +213,15 @@ export const Home = () => {
       <Split
         className="horizontal-split"
         sizes={[300, 105]}
-        minSize={[150, 25]}
+        minSize={[150, 250]}
         gutterSize={4}
         direction="horizontal"
       >
         <Box height="100%" ><HttpRequestPanel initialRequestData_={undefined} /> </Box>
         <Box height="100%" >
           <HttpResponsePanel
+            renderLayout='horizontal'
+
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
             onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
 

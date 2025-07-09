@@ -19,10 +19,7 @@ export interface ResponseHeaderProps {
 }
 
 export const ResponseHeader = ({ responseBody, responseNetworkInfo, responseStatus, responseTime, payloadSize, onResizeResponseWindowButtonClick }: ResponseHeaderProps) => {
-    // #region UI Actions    
-
     // #region Inner Components
-
     /**
      * @description: Inner component
      */

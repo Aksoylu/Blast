@@ -18,7 +18,8 @@ import {
     TabPanel,
     TabPanels,
     Tabs,
-    useColorMode
+    useColorMode,
+    VStack
 } from '@chakra-ui/react';
 
 import { FiLayout } from 'react-icons/fi';
@@ -36,6 +37,8 @@ import { BodyTab } from './BodyTab';
 import { ResponseHeader } from './ResponseHeader';
 
 export interface HttpResponsePanelProps {
+    renderLayout: 'vertical' | 'horizontal';
+
     responseHeaders: HttpResponseHeader[];
     responseBody: HttpBodyRawData;
     responseNetworkInfo: HttpResponseNetworkObject | undefined;
@@ -48,31 +51,11 @@ export interface HttpResponsePanelProps {
     onResizeResponseWindowButtonClick: () => void;
 }
 
-export const HttpResponsePanel = ({ responseHeaders, responseBody, responseNetworkInfo, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
+export const HttpResponsePanel = ({ renderLayout, responseHeaders, responseBody, responseNetworkInfo, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
     const { colorMode } = useColorMode();
 
     const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
-    const [activeHeaderButtons, setActiveHeaderButtons] = useState<JSX.Element[]>([]);
     const [tabIndex, setTabIndex] = useState(0);
-
-    useEffect(() => {
-        const activeButtons: JSX.Element[] = [];
-
-        if (responseStatus !== undefined) {
-            activeButtons.push(<ResponseStatusCodeBox StatusData={responseStatus} />);
-        }
-
-        if (responseTime !== undefined) {
-            activeButtons.push(<ResponseTimeBox responseTime={responseTime} />);
-        }
-
-        if (payloadSize !== undefined) {
-            activeButtons.push(<ResponsePayloadSizeBox payloadSize={payloadSize} />);
-        }
-
-        setActiveHeaderButtons(activeButtons);
-    }, [responseStatus, responseTime, payloadSize]);
-
 
     // #region Inner Components
     /**
@@ -117,25 +100,73 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseNetwo
         </Box>);
     }
 
-    return (
-        <Box height="100%" width="100%">
+    // #region Render
+    const horizontalLayout = () => {
+        return (<Box height="100%" width="100%">
+
+            <Box>
+                <Flex justifyContent="normal" alignItems="stretch" width="100%" >
+                    {changeLayoutButton()}
+                    <ResponseHeader
+                        responseBody={responseBody}
+                        responseNetworkInfo={responseNetworkInfo}
+                        responseStatus={responseStatus}
+                        responseTime={responseTime}
+                        payloadSize={payloadSize}
+
+                        onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
+                    />
+
+                </Flex>
+            </Box>
+            <Box>
+                <Tabs size="sm">
+                    <Tabs index={tabIndex} onChange={setTabIndex} size="sm">
+                        <TabList>
+                            <Tab>Body</Tab>
+                            <Tab>Headers</Tab>
+                            
+                            {responseStatus !== undefined && bodyTypeSelector()}
+                        </TabList>
+                    </Tabs>
+
+                </Tabs>
+            </Box>
+
+            <Tabs index={tabIndex} onChange={setTabIndex}>
+                <TabPanels>
+                    <TabPanel p={0} height="100%" width="100%" display="flex" flexDirection="column">
+                        <BodyTab data={responseBody.Value} dataType={responseBodyType} />
+                    </TabPanel>
+
+                    <TabPanel p={0}>
+                        <HeadersTab headerList={responseHeaders} />
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
+
+        </Box>);
+    }
+
+    const verticalLayout = () => {
+        return (<Box height="100%" width="100%">
             <Flex justifyContent="left" alignItems="space-between" width="100%" >
                 <Tabs size="sm">
                     <Tabs index={tabIndex} onChange={setTabIndex} size="sm">
                         <TabList>
                             <Tab>Body</Tab>
                             <Tab>Headers</Tab>
-                            {activeHeaderButtons.length > 0 && bodyTypeSelector()}
+                            {responseStatus !== undefined && bodyTypeSelector()}
                         </TabList>
                     </Tabs>
 
                 </Tabs>
                 <Spacer />
-                <ResponseHeader 
-                    responseBody={responseBody} 
-                    responseNetworkInfo = {responseNetworkInfo}
-                    responseStatus={responseStatus} 
-                    responseTime={responseTime} 
+                <ResponseHeader
+                    responseBody={responseBody}
+                    responseNetworkInfo={responseNetworkInfo}
+                    responseStatus={responseStatus}
+                    responseTime={responseTime}
                     payloadSize={payloadSize}
 
                     onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
@@ -154,8 +185,8 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseNetwo
                     </TabPanel>
                 </TabPanels>
             </Tabs>
+        </Box>);
+    }
 
-        </Box>
-
-    );
+    return (renderLayout == "horizontal" ? horizontalLayout() : verticalLayout());
 }
