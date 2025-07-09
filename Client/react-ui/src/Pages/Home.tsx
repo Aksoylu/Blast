@@ -11,7 +11,7 @@ import { HttpRequestPanel } from '../Components/HttpRequestPanel/index';
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
 import { HttpResponseStatusData, ScrollBarBehaviour } from '#/Constants';
-import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
+import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
 import { SupportedDataFormatsEnum } from '#/Enums';
 
 const workspace_1 = [
@@ -68,9 +68,15 @@ export const Home = () => {
 
   const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
 
-  const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(); // HttpResponseStatusData.FindByCode("100")
+  const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(HttpResponseStatusData.FindByCode("201")); // HttpResponseStatusData.FindByCode("100")
   const [httpResponseTime, setHttpResponseTime] = useState<HttpResponseTimeObject | undefined>(new HttpResponseTimeObject({ Total: 542 }));
   const [httpPayloadSize, setHttpPayloadSize] = useState<HttpPayloadSizeObject | undefined>(new HttpPayloadSizeObject({ Total: 320 }));
+  const [responseNetworkInfo, setResponseNetworkInfo] = useState<HttpResponseNetworkObject | undefined>(new HttpResponseNetworkObject({
+    HttpVersion: "1.1",
+    LocalAddress: "129.168.2.1",
+    RemoteAddress: "0.0.0.0"
+  }));
+
   const [httpResponseHeaders, setHttpResponseHeaders] = useState<HttpResponseHeader[]>([
     new HttpResponseHeader({
       Key: "date",
@@ -187,8 +193,10 @@ export const Home = () => {
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
             onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
+
             responseHeaders={httpResponseHeaders}
             responseBody={httpResponseBody}
+            responseNetworkInfo={responseNetworkInfo}
 
             responseStatus={responseHttpStatus}
             responseTime={httpResponseTime}
@@ -213,8 +221,11 @@ export const Home = () => {
           <HttpResponsePanel
             onChangeLayoutButtonClick={onChangeLayoutButtonClick}
             onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
-            responseBody={httpResponseBody}
+
             responseHeaders={httpResponseHeaders}
+            responseBody={httpResponseBody}
+            responseNetworkInfo={responseNetworkInfo}
+
             responseStatus={responseHttpStatus}
             responseTime={httpResponseTime}
             payloadSize={httpPayloadSize}

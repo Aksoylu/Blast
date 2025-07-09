@@ -25,7 +25,7 @@ import { FiLayout } from 'react-icons/fi';
 
 import { SupportedDataFormatsEnum } from '#/Enums';
 import { HttpResponseBodyTypeData } from '#/Constants';
-import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
+import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
 
 
 import { ResponseStatusCodeBox } from './ResponseStatusCodeBox';
@@ -38,6 +38,8 @@ import { ResponseHeader } from './ResponseHeader';
 export interface HttpResponsePanelProps {
     responseHeaders: HttpResponseHeader[];
     responseBody: HttpBodyRawData;
+    responseNetworkInfo: HttpResponseNetworkObject | undefined;
+
     responseStatus: HttpResponseStatusObject | undefined;
     responseTime: HttpResponseTimeObject | undefined;
     payloadSize: HttpPayloadSizeObject | undefined;
@@ -46,7 +48,7 @@ export interface HttpResponsePanelProps {
     onResizeResponseWindowButtonClick: () => void;
 }
 
-export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
+export const HttpResponsePanel = ({ responseHeaders, responseBody, responseNetworkInfo, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
     const { colorMode } = useColorMode();
 
     const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
@@ -131,6 +133,7 @@ export const HttpResponsePanel = ({ responseHeaders, responseBody, responseStatu
                 <Spacer />
                 <ResponseHeader 
                     responseBody={responseBody} 
+                    responseNetworkInfo = {responseNetworkInfo}
                     responseStatus={responseStatus} 
                     responseTime={responseTime} 
                     payloadSize={payloadSize}
