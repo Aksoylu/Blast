@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { motion } from 'framer-motion'
 
-import { Home } from './Home'
+import { Home } from './Home/index'
 import { Teams } from './Teams'
 import { Settings } from './Settings'
 import { Configurations } from './Configurations'
