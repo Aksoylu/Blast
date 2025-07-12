@@ -82,6 +82,8 @@ export const Layout = () => {
             <motion.div
               key={key}
               style={{
+                paddingRight: 10,
+                paddingLeft: 10,
                 position: "absolute",
                 width: "100%",
                 height: "100%",
