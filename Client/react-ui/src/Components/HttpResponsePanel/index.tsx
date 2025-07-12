@@ -40,9 +40,9 @@ export interface HttpResponsePanelProps {
     renderLayout: 'vertical' | 'horizontal';
 
     responseHeaders: HttpResponseHeader[];
-    responseBody: HttpBodyRawData;
-    responseNetworkInfo: HttpResponseNetworkObject | undefined;
 
+    responseBody: HttpBodyRawData | undefined;
+    responseNetworkInfo: HttpResponseNetworkObject | undefined;
     responseStatus: HttpResponseStatusObject | undefined;
     responseTime: HttpResponseTimeObject | undefined;
     payloadSize: HttpPayloadSizeObject | undefined;
@@ -54,7 +54,7 @@ export interface HttpResponsePanelProps {
 export const HttpResponsePanel = ({ renderLayout, responseHeaders, responseBody, responseNetworkInfo, responseStatus, responseTime, payloadSize, onChangeLayoutButtonClick, onResizeResponseWindowButtonClick }: HttpResponsePanelProps) => {
     const { colorMode } = useColorMode();
 
-    const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody.type);
+    const [responseBodyType, setResponseBodyType] = useState<SupportedDataFormatsEnum>(responseBody?.type ?? SupportedDataFormatsEnum.RAW);
     const [tabIndex, setTabIndex] = useState(0);
 
     // #region Inner Components
@@ -125,7 +125,7 @@ export const HttpResponsePanel = ({ renderLayout, responseHeaders, responseBody,
                         <TabList>
                             <Tab>Body</Tab>
                             <Tab>Headers</Tab>
-                            
+
                             {responseStatus !== undefined && bodyTypeSelector()}
                         </TabList>
                     </Tabs>
@@ -136,7 +136,7 @@ export const HttpResponsePanel = ({ renderLayout, responseHeaders, responseBody,
             <Tabs index={tabIndex} onChange={setTabIndex}>
                 <TabPanels>
                     <TabPanel p={0} height="100%" width="100%" display="flex" flexDirection="column">
-                        <BodyTab data={responseBody.Value} dataType={responseBodyType} />
+                        <BodyTab data={responseBody?.Value ?? ""} dataType={responseBodyType} />
                     </TabPanel>
 
                     <TabPanel p={0}>
@@ -177,7 +177,7 @@ export const HttpResponsePanel = ({ renderLayout, responseHeaders, responseBody,
             <Tabs index={tabIndex} onChange={setTabIndex}>
                 <TabPanels>
                     <TabPanel p={0} height="100%" width="100%" display="flex" flexDirection="column">
-                        <BodyTab data={responseBody.Value} dataType={responseBodyType} />
+                        <BodyTab data={responseBody?.Value ?? ""} dataType={responseBodyType} />
                     </TabPanel>
 
                     <TabPanel p={0}>

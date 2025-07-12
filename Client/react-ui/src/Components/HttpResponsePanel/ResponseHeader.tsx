@@ -9,7 +9,7 @@ import { QuestionIcon } from "@chakra-ui/icons";
 import { MdOutlineNetworkWifi } from "react-icons/md";
 
 export interface ResponseHeaderProps {
-    responseBody: HttpBodyRawData;
+    responseBody: HttpBodyRawData | undefined;
     responseNetworkInfo: HttpResponseNetworkObject | undefined;
 
     responseStatus: HttpResponseStatusObject | undefined;

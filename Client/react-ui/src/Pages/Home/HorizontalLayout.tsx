@@ -11,6 +11,7 @@ import { HttpResponseStatusData, ScrollBarBehaviour } from '#/Constants';
 import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
 import { SupportedDataFormatsEnum } from '#/Enums';
 import { TreeNodeProps } from '#/Components/FileTree/TreeNode';
+import { useHomePageStore } from './Store';
 
 
 const workspace_1 = [
@@ -57,37 +58,17 @@ export const HorizontalLayout = () => {
     const [layoutHeight, setLayoutHeight] = useState<number | null>(null);
 
     // #region zustand
-    const [treeData, setTreeData] = useState<TreeNodeProps[]>(workspace_1);
-    const [responseHttpStatus, setResponseHttpStatus] = useState<HttpResponseStatusObject | undefined>(HttpResponseStatusData.FindByCode("201")); // HttpResponseStatusData.FindByCode("100")
-    const [httpResponseTime, setHttpResponseTime] = useState<HttpResponseTimeObject | undefined>(new HttpResponseTimeObject({ Total: 542 }));
-    const [httpPayloadSize, setHttpPayloadSize] = useState<HttpPayloadSizeObject | undefined>(new HttpPayloadSizeObject({ Total: 320 }));
-    const [responseNetworkInfo, setResponseNetworkInfo] = useState<HttpResponseNetworkObject | undefined>(new HttpResponseNetworkObject({
-        HttpVersion: "1.1",
-        LocalAddress: "129.168.2.1",
-        RemoteAddress: "0.0.0.0"
-    }));
-    const [httpResponseHeaders, setHttpResponseHeaders] = useState<HttpResponseHeader[]>([
-        new HttpResponseHeader({
-            Key: "date",
-            Value: "Thu, 03 Jul 2025 11:10:43 GMT"
-        }),
-        new HttpResponseHeader({
-            Key: "server",
-            Value: "Apache"
-        }),
-        new HttpResponseHeader({
-            Key: "content-encoding",
-            Value: "gzip"
-        }),
-        new HttpResponseHeader({
-            Key: "content-length",
-            Value: "589"
-        })
-    ]);
-    const [httpResponseBody, setHttpResponseBody] = useState<HttpBodyRawData>(new HttpBodyRawData({
-        type: SupportedDataFormatsEnum.JSON,
-        Value: '<abc> test</abc>'
-    }));
+    const {
+        responseHttpStatus,
+        httpResponseTime,
+        httpPayloadSize,
+        responseNetworkInfo,
+        httpResponseHeaders,
+        httpResponseBody
+    } = useHomePageStore();
+
+    const treeData = useHomePageStore((state) => state.treeData);
+    const setTreeData = useHomePageStore((state) => state.setTreeData);
     // #endregion 
 
     // #region UI Functions
