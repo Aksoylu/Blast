@@ -24,6 +24,7 @@
     "electron-store": "^10.0.1",
     "framer-motion": "^12.12.2",
     "monaco-editor": "^0.52.2",
-    "vkbeautify": "^0.99.3"
+    "vkbeautify": "^0.99.3",
+    "zustand": "^5.0.6"
   }
 }
