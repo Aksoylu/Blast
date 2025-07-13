@@ -2,6 +2,8 @@ export class UserSession {
     AuthToken: string;
 
     UserName: string;
+    Name: string;
+    Surname: string;
     Mail: string;
     Organization: string;
     ProfileImage: string;

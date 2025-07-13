@@ -15,6 +15,19 @@ import path from 'path';
  * @property {string|undefined} [message] - Error message or description
  */
 
+/**
+ * @typedef {Object} DeleteFileResult
+ * @property {boolean} result - Boolean indicates that is operation successfull or not
+ * @property {string|undefined} [message] - Error message or description
+ */
+
+/**
+ * @typedef {Object} OverwriteFileResult
+ * @property {boolean} result - Boolean indicates that is operation successfull or not
+ * @property {string|undefined} [message] - Error message or description
+ */
+
+
 export class FileSystemService {
     /** @type {FileSystemService|null} */
     static _instance = null;
@@ -89,4 +102,33 @@ export class FileSystemService {
         this.#blastPath = blastDir;
         return this.#blastPath;
     }
+
+    /**
+     * @param {string} filePath
+     * @returns {Promise<DeleteFileResult>}
+     */
+    async DeleteFile(filePath) {
+        try {
+            await fs.unlink(filePath);
+            return { result: true };
+        } catch (error) {
+            return { result: false, message: error.message };
+        }
+    }
+
+    /**
+     * @description: Writes file to specified path
+     * @param {string} filePath
+     * @param {string | Buffer} content
+     * @returns {Promise<OverwriteFileResult>}
+     */
+    async WriteFile(filePath, content) {
+        try {
+            await fs.writeFile(filePath, content);
+            return { result: true };
+        } catch (error) {
+            return { result: false, message: error.message };
+        }
+    }
+
 }

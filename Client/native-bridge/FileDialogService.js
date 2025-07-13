@@ -2,10 +2,6 @@ import { dialog } from "electron";
 import * as fs from "fs/promises";
 import path from "path";
 
-const MessageCodes = {
-    "NO_FILE_PATH_SPECIFIED": "FDS0001"
-};
-
 /**
  * @typedef {Object} ReadFileContentAsBinaryResult
  * @property {boolean} success - Indicates whether the operation was successful or not.
@@ -20,6 +16,10 @@ const MessageCodes = {
  * @property {string|undefined} path - Choosed path as string
  * @property {string|undefined} fileName - Choosed file name
  */
+
+const MessageCodes = {
+    "NO_FILE_PATH_SPECIFIED": "FDS0000001"
+};
 
 export class FileDialogService {
     /** @type {FileDialogService|null} */
