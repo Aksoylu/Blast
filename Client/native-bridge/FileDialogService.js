@@ -4,7 +4,7 @@ import path from "path";
 
 const MessageCodes = {
     "NO_FILE_PATH_SPECIFIED": "FDS0001"
-}
+};
 
 /**
  * @typedef {Object} ReadFileContentAsBinaryResult
@@ -22,11 +22,31 @@ const MessageCodes = {
  */
 
 export class FileDialogService {
+    /** @type {FileDialogService|null} */
+    static _instance = null;
+
+    constructor() {
+        if (FileDialogService._instance) {
+            return FileDialogService._instance;
+        }
+        FileDialogService._instance = this;
+    }
+
+    /**
+     * @returns {FileDialogService}
+     */
+    static getInstance() {
+        if (!FileDialogService._instance) {
+            FileDialogService._instance = new FileDialogService();
+        }
+        return FileDialogService._instance;
+    }
+
     /**
      * @description: Shows a file dialog then reads choosed file's content as binary buffer
-     * @returns {Promise<ReadFileResult>}
+     * @returns {Promise<ReadFileContentAsBinaryResult>}
      */
-    static ReadFileContentAsBinary = async () => {
+    async ReadFileContentAsBinary() {
         const result = await dialog.showOpenDialog({
             properties: ['openFile']
         });
@@ -37,9 +57,7 @@ export class FileDialogService {
 
         const filePath = result.filePaths[0];
         try {
-            // Dosyayı Buffer olarak oku
             const content = await fs.readFile(filePath);
-
             return { success: true, content };
         } catch (error) {
             return { success: false, message: error.message };
@@ -50,19 +68,25 @@ export class FileDialogService {
      * @description: Shows a file dialog then gets choosed file's path as string
      * @returns {Promise<GetFilePathResult>}
      */
-    static GetFilePath = async () => {
+    async GetFilePath() {
         const result = await dialog.showOpenDialog({
             properties: ['openFile']
         });
 
-
         if (result.canceled || result.filePaths.length === 0) {
-            return { success: false, message: MessageCodes.NO_FILE_PATH_SPECIFIED, };
+            return {
+                success: false,
+                message: MessageCodes.NO_FILE_PATH_SPECIFIED,
+            };
         }
 
         const filePath = result.filePaths[0];
         const fileName = path.basename(filePath);
 
-        return { success: true, path: filePath, fileName: fileName };
+        return {
+            success: true,
+            path: filePath,
+            fileName: fileName
+        };
     }
 }
