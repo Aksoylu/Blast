@@ -2,6 +2,7 @@ import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Flex, Text, FlexProps, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useColorModeValue, VStack, Button, useColorMode } from "@chakra-ui/react"
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi"
 import { EnvironmentSelector } from "./EnvironmentSelector";
+import { useMainStore } from "#/MainStore";
 
 interface NavbarProps extends FlexProps {
     onOpen: () => void
@@ -9,6 +10,25 @@ interface NavbarProps extends FlexProps {
 
 export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
+
+    const { userSession } = useMainStore();
+
+    /**
+     * @description: Inner component
+     */
+    const renderProfileImage = () => {
+        if (userSession?.ProfileImage === undefined || userSession?.ProfileImage.length === 0) {
+            return (<Avatar
+                size={'sm'}
+                src={"assets/defaultProfilePhoto.png"}
+            />);
+        }
+
+        return (<Avatar
+            size={'sm'}
+            src={userSession?.ProfileImage}
+        />)
+    }
 
     return (
         <Flex
@@ -44,9 +64,7 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
 
                                 <Avatar
                                     size={'sm'}
-                                    src={
-                                        'https://media.licdn.com/dms/image/v2/D4D03AQGLOJAeptkKNg/profile-displayphoto-shrink_800_800/B4DZSHqy.6G4Ac-/0/1737442931161?e=1754524800&v=beta&t=YMJDBXwiLQ2D8GyC2VVdhispFH7QWdu3bNzQvP6HY6I'
-                                    }
+                                    src={userSession?.ProfileImage}
                                 />
 
                                 <VStack
@@ -54,9 +72,9 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="2">
-                                    <Text fontSize="sm">Emrullah</Text>
+                                    <Text fontSize="sm">{userSession?.Name} {userSession?.Surname}</Text>
                                     <Text fontSize="xs" color="gray.600">
-                                        BT Uzman
+                                        {userSession?.UserName}
                                     </Text>
 
                                 </VStack>
@@ -68,6 +86,8 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
                         <MenuList
                             bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'gray.700')}>
+                            <Box pl={3} color="gray.400">{userSession?.Organization}</Box>
+                            <MenuDivider />
                             <MenuItem>Profile</MenuItem>
                             <MenuItem>Settings</MenuItem>
                             <MenuDivider />

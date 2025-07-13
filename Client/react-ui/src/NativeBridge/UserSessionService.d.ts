@@ -1,9 +1,12 @@
-export interface ReadSessionInfoFromStorageResult {
-    AuthToken: string;
+import { UserSession } from "#/Models/UserSession";
 
-    UserName: string;
-    Mail: string;
-    Organization: string;
-    ProfileImage: string;
-    Network: string;
+export interface ReadSessionInfoFromStorageResult {
+  success: boolean;
+  userSession: UserSession;
+  message?: string;
+}
+
+export interface SaveSessionInfoToStorageResult {
+  success: boolean;
+  message?: string;
 }

@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
         GetFilePath: () => ipcRenderer.invoke('FileDialogService:GetFilePath')
     },
     UserSessionService: {
-        ReadSessionInfoFromStorage: () => ipcRenderer.invoke('UserSessionService:ReadSessionInfoFromStorage')
+        ReadSessionInfoFromStorage: () => ipcRenderer.invoke('UserSessionService:ReadSessionInfoFromStorage'),
+        SaveSessionInfoToStorage: (userSession) => ipcRenderer.invoke('UserSessionService:SaveSessionInfoToStorage', userSession)
     }
 });
