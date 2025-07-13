@@ -2,9 +2,6 @@
 import { useEffect, useState } from 'react';
 import { Box, useColorMode, VStack } from '@chakra-ui/react';
 
-import { HttpResponseStatusData } from '#/Constants';
-import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
-import { SupportedDataFormatsEnum } from '#/Enums';
 import { VerticalLayout } from './VerticalLayout';
 import { HorizontalLayout } from './HorizontalLayout';
 

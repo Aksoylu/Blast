@@ -14,6 +14,7 @@ import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpRespons
 import { SupportedDataFormatsEnum } from '#/Enums';
 import { TreeNodeProps } from '#/Components/FileTree/TreeNode';
 import { useHomePageStore } from './Store';
+import { useMainStore } from '#/MainStore';
 
 
 const workspace_1 = [
@@ -176,6 +177,7 @@ export const VerticalLayout = () => {
                             <Box height="100%" sx={responsePanelScrollBar} ref={responsePanelRef}>
                                 <HttpResponsePanel
                                     renderLayout='vertical'
+            
                                     onChangeLayoutButtonClick={onChangeLayoutButtonClick}
                                     onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
 

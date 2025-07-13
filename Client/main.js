@@ -3,6 +3,7 @@ const path = require('path');
 
 const { FileSystemService } = require("./native-bridge/FileSystemService");
 const { FileDialogService } = require("./native-bridge/FileDialogService");
+const { UserSessionService } = require("./native-bridge/UserSessionService");
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -20,11 +21,39 @@ function createWindow() {
     win.loadURL('http://localhost:5173');
 }
 
+/**
+ * Dynamically registers IPC handlers
+ * @param {{ [serviceName: string]: any }} services
+ */
+function registerIpcHandlers(services) {
+    for (const [serviceName, serviceInstance] of Object.entries(services)) {
+        const prototype = Object.getPrototypeOf(serviceInstance);
+
+        const methodNames = Object.getOwnPropertyNames(prototype)
+            .filter(name => typeof serviceInstance[name] === 'function' && name !== 'constructor');
+
+        for (const methodName of methodNames) {
+            if (methodName !== "InjectDependencies") {
+                const channel = `${serviceName}:${methodName}`;
+                const handler = serviceInstance[methodName].bind(serviceInstance);
+
+                ipcMain.handle(channel, handler);
+                console.log(`[IPC Registered] ${channel}`);
+            }
+        }
+    }
+}
+
 app.whenReady().then(() => {
-    ipcMain.handle('FileSystemService:ReadFileAsBinary', FileSystemService.ReadFileAsBinary);
-    ipcMain.handle('FileSystemService:IsFileExist', FileSystemService.IsFileExist);
-    ipcMain.handle('FileDialogService:ReadFileAsBinary', FileDialogService.ReadFileContentAsBinary);
-    ipcMain.handle('FileDialogService:GetFilePath', FileDialogService.GetFilePath);
+    const fileDialogService = FileDialogService.getInstance();
+    const fileSystemService = FileSystemService.getInstance();
+    const userSessionService = UserSessionService.getInstance().InjectDependencies(fileSystemService);
+
+    registerIpcHandlers({
+        FileDialogService: fileDialogService,
+        FileSystemService: fileSystemService,
+        UserSessionService: userSessionService
+    });
 
     createWindow();
 

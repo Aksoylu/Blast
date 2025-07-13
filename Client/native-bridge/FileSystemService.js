@@ -1,8 +1,6 @@
-import * as fs from "fs/promises";
-
-const MessageCodes = {
-     "NO_FILE_PATH_SPECIFIED": "FSS0001"
-}
+import fs from 'fs/promises';
+import os from 'os';
+import path from 'path';
 
 /**
  * @typedef {Object} ReadFileAsBinaryResult
@@ -18,15 +16,37 @@ const MessageCodes = {
  */
 
 export class FileSystemService {
+    /** @type {FileSystemService|null} */
+    static _instance = null;
+
+    /** @type {string|null} */
+    #blastPath = null;
+
+    constructor() {
+        if (FileSystemService._instance) {
+            return FileSystemService._instance;
+        }
+        FileSystemService._instance = this;
+    }
+
     /**
-     * @description: Reads file contents from a given file path.
-     * @param {string} filePath - Full path to the file to read
+     * @returns {FileSystemService}
+     */
+    static getInstance() {
+        if (!FileSystemService._instance) {
+            FileSystemService._instance = new FileSystemService();
+        }
+        return FileSystemService._instance;
+    }
+
+    /**
+     * @param {string} filePath
      * @returns {Promise<ReadFileAsBinaryResult>}
-    */
-    static ReadFileAsBinary = async (filePath) => {
+     */
+    async ReadFileAsBinary(filePath) {
         try {
             if (!filePath) {
-                return { success: false, message: MessageCodes.NO_FILE_PATH_SPECIFIED };
+                return { success: false, message: 'NO_FILE_PATH_SPECIFIED' };
             }
 
             const content = await fs.readFile(filePath);
@@ -37,17 +57,36 @@ export class FileSystemService {
     }
 
     /**
-     * @description Verilen path'te bir dosya mevcut mu kontrol eder.
      * @param {string} filePath
      * @returns {Promise<IsFileExistResult>}
-    */
-    static IsFileExist = async (filePath) => {
+     */
+    async IsFileExist(filePath) {
         try {
             const stat = await fs.stat(filePath);
-
-            return {result: stat.isFile()};
+            return { result: stat.isFile() };
         } catch (error) {
-            return {result: false, message: error};
+            return { result: false, message: error.message };
         }
+    }
+
+    /**
+     * @returns {Promise<string>}
+     */
+    async GetBlastPath() {
+        if (this.#blastPath != null) {
+            return this.#blastPath;
+        }
+
+        const homeDir = os.homedir();
+        const blastDir = path.join(homeDir, '.blast');
+
+        try {
+            await fs.access(blastDir);
+        } catch (error) {
+            await fs.mkdir(blastDir, { recursive: true });
+        }
+
+        this.#blastPath = blastDir;
+        return this.#blastPath;
     }
 }

@@ -21,6 +21,7 @@ import { Configurations } from './Configurations'
 import { SideMenu, Navbar } from '#/Components';
 
 import { Pages } from '#/Enums'
+import { useMainStore } from '#/MainStore'
 
 export const Layout = () => {
   const layoutRef = useRef<HTMLDivElement>(null);
@@ -52,7 +53,6 @@ export const Layout = () => {
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
   //#endregion
-
 
   return (
     <Box minH="100vh" overflow="hidden" bg={useColorModeValue('gray.100', 'gray.900')}>

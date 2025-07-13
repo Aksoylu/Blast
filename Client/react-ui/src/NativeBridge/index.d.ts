@@ -1,15 +1,21 @@
 import type { ReadFileAsBinaryResult, IsFileExistResult } from "./FileSystemService";
 import type { ReadFileContentAsBinaryResult, GetFilePathResult } from "./FileDialogService";
+import type { ReadSessionInfoFromStorageResult } from "./FileDialogService";
 
 export default interface NativeBridge {
     electronAPI: {
         FileSystemService: {
-            ReadFileAsBinary: () => Promise<ReadFileAsBinaryResult>;
-            IsFileExist: () => Promise<IsFileExistResult>;
+            ReadFileAsBinary: (path: string) => Promise<ReadFileAsBinaryResult>;
+            IsFileExist: (path: string) => Promise<IsFileExistResult>;
+            GetBlastPath: () => Promise<string>;
         },
         FileDialogService: {
             ReadFileContentAsBinary: () => Promise<ReadFileContentAsBinaryResult>;
             GetFilePath: () => Promise<GetFilePathResult>;
+        },
+
+        UserSessionService: {
+            ReadSessionInfoFromStorage: () => Promise<ReadSessionInfoFromStorageResult>;
         }
     };
 }
