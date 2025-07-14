@@ -17,6 +17,9 @@ export const App = (): JSX.Element => {
         else {
             // todo: show logout modal
         }
+
+        const localeWorkspaceList = await window.electronAPI.WorkspaceService.GetLocaleWorkspaceList();
+        console.log(localeWorkspaceList);
     }
 
     useEffect(() => {

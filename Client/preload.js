@@ -13,5 +13,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     UserSessionService: {
         ReadSessionInfoFromStorage: () => ipcRenderer.invoke('UserSessionService:ReadSessionInfoFromStorage'),
         SaveSessionInfoToStorage: (userSession) => ipcRenderer.invoke('UserSessionService:SaveSessionInfoToStorage', userSession)
+    },
+    WorkspaceService: {
+        GetLocaleWorkspaceList: () => ipcRenderer.invoke('WorkspaceService:GetLocaleWorkspaceList')
     }
 });

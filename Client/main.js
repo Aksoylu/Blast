@@ -4,6 +4,7 @@ const path = require('path');
 const { FileSystemService } = require("./native-bridge/FileSystemService");
 const { FileDialogService } = require("./native-bridge/FileDialogService");
 const { UserSessionService } = require("./native-bridge/UserSessionService");
+const { WorkspaceService } = require('./native-bridge/WorkspaceService');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -48,11 +49,13 @@ app.whenReady().then(() => {
     const fileDialogService = FileDialogService.getInstance();
     const fileSystemService = FileSystemService.getInstance();
     const userSessionService = UserSessionService.getInstance().InjectDependencies(fileSystemService);
+    const workspaceService = WorkspaceService.getInstance().InjectDependencies(fileSystemService);
 
     registerIpcHandlers({
         FileDialogService: fileDialogService,
         FileSystemService: fileSystemService,
-        UserSessionService: userSessionService
+        UserSessionService: userSessionService,
+        WorkspaceService: workspaceService
     });
 
     createWindow();

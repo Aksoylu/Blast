@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AppPrefences, UserSession } from "./Models";
+import { AppPrefences, UserSession, Workspace } from "./Models";
 
 interface MainStore {
     blastPath?: string;
@@ -10,6 +10,9 @@ interface MainStore {
 
     appPrefences?: AppPrefences;
     setAppPrefences: (appPrefences?: AppPrefences) => void;
+
+    localeWorkSpaceList:  Workspace[];
+    setLocaleWorkSpaceList: (workspaceList?: Workspace[]) => void;
 }
 
 
@@ -22,4 +25,7 @@ export const useMainStore = create<MainStore>((set) => ({
 
     appPrefences: undefined,
     setAppPrefences: (appPrefences) => set({ appPrefences: appPrefences }),
+
+    localeWorkSpaceList: [] as Workspace[],
+    setLocaleWorkSpaceList: (workspaceList) => set({ localeWorkSpaceList: workspaceList })
 }));
