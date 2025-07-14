@@ -20,3 +20,4 @@ export { HttpResponseNetworkObject } from "./HttpResponseNetworkObject";
 
 export { UserSession } from "./UserSession";
 export { AppPrefences } from "./AppPrefences";
+export { Workspace } from "./Workspace";
