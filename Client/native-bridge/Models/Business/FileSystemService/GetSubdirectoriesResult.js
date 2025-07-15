@@ -1,15 +1,15 @@
 export class GetSubdirectoriesResult {
     /** @type {boolean} */
-    result = false;
+    success = false;
 
     /** @type {string[]} */
     directoryList = [];
 
     /** @type {string|undefined} */
     message = "";
-
-    constructor({ result, directoryList, message }) {
-        this.result = result;
+    
+    constructor({ success, directoryList, message }) {
+        this.success = success;
         this.directoryList = directoryList;
         this.message = message;
     }

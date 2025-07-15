@@ -2,7 +2,7 @@ import { Workspace } from "../../Entity/index.js";
 
 export class GetLocaleWorkspaceListResult {
     /** @type {boolean} */
-    result = false;
+    success = false;
 
     /** @type {Workspace[]} */
     workspaceList = [];
@@ -10,8 +10,8 @@ export class GetLocaleWorkspaceListResult {
     /** @type {string|undefined} */
     message = "";
 
-    constructor({ result, workspaceList, message }) {
-        this.result = result;
+    constructor({ success, workspaceList, message }) {
+        this.success = success;
         this.workspaceList = workspaceList;
         this.message = message;
     }

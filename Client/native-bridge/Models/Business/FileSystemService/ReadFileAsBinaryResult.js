@@ -1,6 +1,6 @@
 export class ReadFileAsBinaryResult {
     /** @type {boolean} */
-    result = false;
+    success = false;
 
     /** @type {Buffer|undefined} */
     content = undefined;
@@ -8,8 +8,8 @@ export class ReadFileAsBinaryResult {
     /** @type {string|undefined} */
     message = "";
 
-    constructor({ result, content, message }) {
-        this.result = result;
+    constructor({ success, content, message }) {
+        this.success = success;
         this.content = content;
         this.message = message;
     }
