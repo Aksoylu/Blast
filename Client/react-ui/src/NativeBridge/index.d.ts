@@ -1,4 +1,11 @@
-import type { ReadFileAsBinaryResult, IsFileExistResult } from "./FileSystemService";
+import type {
+    CreateDirectoryResult,
+    DeleteFileResult,
+    GetSubdirectoriesResult,
+    WriteFileResult,
+    ReadFileAsBinaryResult
+} from "./FileSystemService";
+
 import type { ReadFileContentAsBinaryResult, GetFilePathResult } from "./FileDialogService";
 import type { ReadSessionInfoFromStorageResult, SaveSessionInfoToStorageResult } from "./UserSessionService";
 import type { GetLocaleWorkspaceListResult } from "./WorkspaceService";
@@ -6,9 +13,16 @@ import type { GetLocaleWorkspaceListResult } from "./WorkspaceService";
 export default interface NativeBridge {
     electronAPI: {
         FileSystemService: {
-            ReadFileAsBinary: (path: string) => Promise<ReadFileAsBinaryResult>;
-            IsFileExist: (path: string) => Promise<IsFileExistResult>;
             GetBlastPath: () => Promise<string>;
+            IsDirectoryExist: (path: string) => Promise<boolean>;
+            IsFileExist: (path: string) => Promise<boolean>;
+
+            CreateDirectory: (path: string) => Promise<CreateDirectoryResult>;
+            DeleteFile: (path: string) => Promise<DeleteFileResult>;
+            GetSubdirectories: (path: string) => Promise<GetSubdirectoriesResult>;
+            WriteFile: () => Promise<WriteFileResult>;
+            ReadFileAsBinary: (path: string) => Promise<ReadFileAsBinaryResult>;
+
         },
         FileDialogService: {
             ReadFileContentAsBinary: () => Promise<ReadFileContentAsBinaryResult>;
@@ -17,7 +31,7 @@ export default interface NativeBridge {
 
         UserSessionService: {
             ReadSessionInfoFromStorage: () => Promise<ReadSessionInfoFromStorageResult>;
-            SaveSessionInfoToStorage: () => Promise<>;
+            SaveSessionInfoToStorage: () => Promise<SaveSessionInfoToStorageResult>;
         },
         WorkspaceService: {
             GetLocaleWorkspaceList: () => Promise<GetLocaleWorkspaceListResult>;

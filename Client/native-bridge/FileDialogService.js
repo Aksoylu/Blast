@@ -2,20 +2,11 @@ import { dialog } from "electron";
 import * as fs from "fs/promises";
 import path from "path";
 
-/**
- * @typedef {Object} ReadFileContentAsBinaryResult
- * @property {boolean} success - Indicates whether the operation was successful or not.
- * @property {string} [message] - Error message or description
- * @property {Buffer} [content] - Readed file content as binary buffer
- */
+import {
+    ReadFileContentAsBinaryResult,
+    GetFilePathResult
+} from "./Models/Business/index.js";
 
-/**
- * @typedef {Object} GetFilePathResult
- * @property {boolean} success - Indicates whether the operation was successful or not.
- * @property {string} [message] -  Error message or description
- * @property {string|undefined} path - Choosed path as string
- * @property {string|undefined} fileName - Choosed file name
- */
 
 const MessageCodes = {
     "NO_FILE_PATH_SPECIFIED": "FDS0000001"

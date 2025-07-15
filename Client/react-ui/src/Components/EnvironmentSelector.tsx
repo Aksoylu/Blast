@@ -1,8 +1,17 @@
+import { useMainStore } from "#/MainStore";
 import { AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { FiCheck } from "react-icons/fi";
 
 export const EnvironmentSelector = ({ }) => {
+    const { localeWorkSpaceList } = useMainStore();
+
+    const renderWorkspaceSelection = (index: number, workspaceName: string) => {
+        return (<MenuItem icon={<FiCheck />}>
+            {workspaceName}
+        </MenuItem>);
+    }
+
     return (<Menu>
         <MenuButton
             as={IconButton}
@@ -16,20 +25,11 @@ export const EnvironmentSelector = ({ }) => {
                 Add new workspace
             </MenuItem>
             <MenuDivider />
-
-            <MenuItem icon={<FiCheck />}>
-                Example Workspace 1
-            </MenuItem>
-            <MenuItem pl="9">
-                Example Workspace 2
-            </MenuItem>
-
-            <MenuItem pl="9">
-                Example Workspace 3
-            </MenuItem>
-            <MenuItem pl="9">
-                Example Workspace 4
-            </MenuItem>
+            {localeWorkSpaceList.map((workspaceName, index) => {
+                return (<MenuItem icon={<FiCheck />} key={`workspace_${index}`}>
+                    {workspaceName.Name}
+                </MenuItem>);
+            })}
         </MenuList>
     </Menu>);
 }

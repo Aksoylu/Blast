@@ -5,6 +5,7 @@ import Layout from "./Pages/Layout";
 export const App = (): JSX.Element => {
     const setBlastPath = useMainStore((state) => state.setBlastPath);
     const setUserSession = useMainStore((state) => state.setUserSession);
+    const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList)
 
     const initialize = async () => {
         const detectedBlastPath = await window.electronAPI.FileSystemService.GetBlastPath()
@@ -19,7 +20,9 @@ export const App = (): JSX.Element => {
         }
 
         const localeWorkspaceList = await window.electronAPI.WorkspaceService.GetLocaleWorkspaceList();
-        console.log(localeWorkspaceList);
+        if (localeWorkspaceList.success) {
+            setLocaleWorkSpaceList(localeWorkspaceList.workspaceList);
+        }
     }
 
     useEffect(() => {
