@@ -2,7 +2,6 @@ import * as fs from "fs/promises";
 import path from "path";
 
 import { FileSystemService } from "./FileSystemService.js";
-
 import { UserSession } from "./Models/Entity/UserSession.js";
 
 /**
@@ -18,11 +17,14 @@ import { UserSession } from "./Models/Entity/UserSession.js";
  * @property {string|undefined} [message] - Error message or description
  */
 
-const MessageCodes = {
-    "SESSION_NOT_EXIST": "USS0000001"
-};
 
 export class UserSessionService {
+    #ErrorCodes = {
+        ReadSessionInfoFromStorage: {
+            SessionNotExist: "SessionNotExist"
+        }
+    }
+
     /** @type {UserSessionService|null} */
     static _instance = null;
 
@@ -66,8 +68,8 @@ export class UserSessionService {
             const sessionFilePath = path.join(blastPath, 'userSession.json');
 
             const isSessionFileExist = await this.#fileSystemService.IsFileExist(sessionFilePath);
-            if (!isSessionFileExist.result) {
-                return { success: false, message: MessageCodes.SESSION_NOT_EXIST };
+            if (!isSessionFileExist) {
+                throw new Error(this.#ErrorCodes.ReadSessionInfoFromStorage.SessionNotExist)
             }
 
             const jsonString = await fs.readFile(sessionFilePath, 'utf-8');
@@ -79,13 +81,6 @@ export class UserSessionService {
         catch (error) {
             return { success: false, message: error.message };
         }
-    }
-
-    /**
-     * @todo
-     */
-    async ReadUserProfilePhotoFromStorage() {
-
     }
 
     /**

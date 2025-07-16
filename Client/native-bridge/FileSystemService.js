@@ -12,6 +12,12 @@ import {
 
 
 export class FileSystemService {
+    #ErrorCodes = {
+        ReadSessionInfoFromStorage: {
+            SessionNotExist: "SessionNotExist"
+        }
+    }
+
     /** @type {FileSystemService|null} */
     static _instance = null;
 
@@ -123,9 +129,9 @@ export class FileSystemService {
                 .filter(entry => entry.isDirectory())
                 .map(entry => entry.name);
 
-            return new GetSubdirectoriesResult({ success: true, directoryList: foundDirectoryList});
+            return new GetSubdirectoriesResult({ success: true, directoryList: foundDirectoryList });
         } catch (error) {
-            return new GetSubdirectoriesResult({ success: false,  message: error.message });
+            return new GetSubdirectoriesResult({ success: false, message: error.message });
         }
     }
 

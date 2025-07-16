@@ -1,9 +1,9 @@
 export class AppPrefences {
-    theme = "dark";
+    Theme = "dark";
     BackendUrl = "blast.umitaksoylu.com";
 
-    constructor({ theme, BackendUrl }) {
-        this.theme = theme;
+    constructor({ Theme, BackendUrl }) {
+        this.Theme = Theme;
         this.BackendUrl = BackendUrl;
     }
 }

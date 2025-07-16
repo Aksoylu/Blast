@@ -1,9 +1,16 @@
-import * as fs from "fs/promises";
 import path from "path";
 
-import { GetLocaleWorkspaceListResult } from "./Models/Business/index.js";
+import { GetLocaleWorkspaceListResult, CreateLocaleWorkspaceResult } from "./Models/Business/index.js";
+import { Workspace } from "./Models/Entity/Workspace.js";
+
 
 export class WorkspaceService {
+    #ErrorCodes = {
+        CreateLocaleWorkspace: {
+            AlreadyExistWithSameName: "AlreadyExistWithSameName"
+        }
+    }
+
     /** @type {WorkspaceService|null} */
     static _instance = null;
 
@@ -16,6 +23,7 @@ export class WorkspaceService {
         }
         WorkspaceService._instance = this;
     }
+
 
     /**
      * @returns {WorkspaceService}
@@ -37,6 +45,10 @@ export class WorkspaceService {
         return this;
     }
 
+    /**
+     * 
+     * @returns {Promise<GetLocaleWorkspaceListResult>}
+     */
     async GetLocaleWorkspaceList() {
         try {
             const blastPath = await this.#fileSystemService.GetBlastPath();
@@ -49,15 +61,63 @@ export class WorkspaceService {
 
             const getSubDirectoryListResult = await this.#fileSystemService.GetSubdirectories(workspacePath);
             if (!getSubDirectoryListResult.success) {
-                return new GetLocaleWorkspaceListResult({ success: false, workspaceList: [], message: getSubDirectoryListResult.message })
+                throw new Error(getSubDirectoryListResult.message);
             }
-            
-            return new GetLocaleWorkspaceListResult({ success: true, workspaceList: getSubDirectoryListResult.directoryList})
+
+            const workspaceList = [];
+            for (let i = 0; i < getSubDirectoryListResult.directoryList.length; i++) {
+                const eachDirName = getSubDirectoryListResult.directoryList[i];
+                const workspaceName = this.#base64Decode(eachDirName);
+                const newWorkspace = new Workspace({ Name: workspaceName, Storage: "locale", Key: eachDirName });
+
+                workspaceList.push(newWorkspace);
+            }
+
+            return new GetLocaleWorkspaceListResult({ success: true, workspaceList: workspaceList })
         }
         catch (error) {
-            return { success: false, message: error.message };
+            return new GetLocaleWorkspaceListResult({ success: false, message: error.message });
         }
     }
 
+    /**
+     * 
+     * @param {string} workspaceName 
+     * @returns {Promise<CreateLocaleWorkspaceResult>}
+     */
+    async CreateLocaleWorkspace(workspaceName) {
+        try {
+            const blastPath = await this.#fileSystemService.GetBlastPath();
+
+            const workspacePath = path.join(blastPath, 'workspaces');
+            const newWorkspaceDirName = this.#base64Encode(workspaceName);
+            const newWorkspaceDirPath = path.join(workspacePath, newWorkspaceDirName);
+            console.log("newWorkspaceDirPath", newWorkspaceDirPath);
+
+            const getSubDirectoryListResult = await this.#fileSystemService.GetSubdirectories(workspacePath);
+            const existingWorkspaceKeys = getSubDirectoryListResult.success ? getSubDirectoryListResult.directoryList : [];
+            if (existingWorkspaceKeys.includes(newWorkspaceDirName)) {
+                throw new Error(getSubDirectoryListResult.message);
+            }
+
+            const createDirectoryResult = await this.#fileSystemService.CreateDirectory(newWorkspaceDirPath);
+            if (!createDirectoryResult.success) {
+                throw new Error(createDirectoryResult.message);
+            }
+
+            return new CreateLocaleWorkspaceResult({ success: true });
+        }
+        catch (error) {
+            return new CreateLocaleWorkspaceResult({ success: false, message: error.message });
+        }
+    }
+
+    #base64Encode(text) {
+        return Buffer.from(text, 'utf-8').toString('base64');
+    }
+
+    #base64Decode(base64) {
+        return Buffer.from(base64, 'base64').toString('utf-8');
+    }
 
 }

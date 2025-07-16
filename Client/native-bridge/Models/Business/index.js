@@ -1,3 +1,5 @@
+export { BaseOperationResult } from './Base/BaseOperationResult.js';
+
 /** @FileSystemService */
 export { CreateDirectoryResult } from "./FileSystemService/CreateDirectoryResult.js";
 export { DeleteFileResult } from "./FileSystemService/DeleteFileResult.js";
@@ -15,3 +17,4 @@ export { SaveSessionInfoToStorageResult } from "./UserSessionService/SaveSession
 
 /** @WorkspaceService */
 export { GetLocaleWorkspaceListResult } from "./WorkspaceService/GetLocaleWorkspaceListResult.js";
+export { CreateLocaleWorkspaceResult } from "./WorkspaceService/CreateLocaleWorkspaceResult.js";

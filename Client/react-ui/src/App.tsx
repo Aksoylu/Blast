@@ -1,8 +1,10 @@
-import { JSX, useEffect } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useMainStore } from "./MainStore";
 import Layout from "./Pages/Layout";
 
 export const App = (): JSX.Element => {
+    let isInitialized = false;
+
     const setBlastPath = useMainStore((state) => state.setBlastPath);
     const setUserSession = useMainStore((state) => state.setUserSession);
     const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList)
@@ -25,9 +27,9 @@ export const App = (): JSX.Element => {
         }
     }
 
-    useEffect(() => {
+    useEffect( () => {
         initialize();
-    })
+    }, [])
 
     return (<Layout />);
 }

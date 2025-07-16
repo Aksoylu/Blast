@@ -5,12 +5,12 @@ export class Workspace {
     /** @type {"locale"|"remote"} */
     Storage = "locale";
 
-    /** @type {string} */
-    Code = "";
+    /** @type {string} | @description: Directory name or provided backend code */
+    Key = "";
 
-    constructor({ Name, Storage, Code }) {
+    constructor({ Name, Storage, Key }) {
         this.Name = Name;
         this.Storage = Storage;
-        this.Code = Code;
+        this.Key = Key;
     }
 }

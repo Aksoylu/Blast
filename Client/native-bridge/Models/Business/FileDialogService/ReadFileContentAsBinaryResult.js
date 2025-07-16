@@ -1,16 +1,11 @@
-export class ReadFileContentAsBinaryResult {
-    /** @type {boolean} */
-    success = false;
+import { BaseOperationResult } from "../index.js";
 
-    /** @type {string|undefined} */
-    message = "";
-
+export class ReadFileContentAsBinaryResult extends BaseOperationResult {
     /** @type {Buffer|undefined} */
     content = undefined;
 
     constructor({ success, message, content }) {
-        this.success = success;
-        this.message = message;
+        super({ success, message });
         this.content = content;
     }
 }

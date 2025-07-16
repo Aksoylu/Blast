@@ -1,10 +1,6 @@
-export class GetFilePathResult {
-    /** @type {boolean} */
-    success = false;
+import { BaseOperationResult } from "../index.js";
 
-    /** @type {string|undefined} */
-    message = "";
-
+export class GetFilePathResult extends BaseOperationResult {
     /** @type {string|undefined} */
     path = "";
 
@@ -12,8 +8,7 @@ export class GetFilePathResult {
     fileName = "";
 
     constructor({ success, message, path, fileName }) {
-        this.success = success;
-        this.message = message;
+        super({ success, message }); // BaseOperationResult'ın constructor'ını çağır
         this.path = path;
         this.fileName = fileName;
     }
