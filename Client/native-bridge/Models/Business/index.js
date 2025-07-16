@@ -6,6 +6,8 @@ export { DeleteFileResult } from "./FileSystemService/DeleteFileResult.js";
 export { GetSubdirectoriesResult } from "./FileSystemService/GetSubdirectoriesResult.js";
 export { ReadFileAsBinaryResult } from "./FileSystemService/ReadFileAsBinaryResult.js";
 export { WriteFileResult } from "./FileSystemService/WriteFileResult.js";
+export { IsDirectoryExistResult } from "./FileSystemService/IsDirectoryExistResult.js";
+export { IsFileExistResult } from "./FileSystemService/IsFileExistResult.js";
 
 /** @FileDialogService */
 export { GetFilePathResult } from "./FileDialogService/GetFilePathResult.js";

@@ -1,16 +1,10 @@
+import { BaseOperationResult } from "../index.js";
 import { UserSession } from "../../Entity/index.js";
 
-export class ReadSessionInfoFromStorageResult {
-    /** @type {boolean} */
-    success = false;
-
+export class ReadSessionInfoFromStorageResult extends BaseOperationResult {
     userSession = new UserSession();
 
-    /** @type {string|undefined} */
-    message = "";
-
-    constructor({ success, message }) {
-        this.success = success;
-        this.message = message;
+    constructor({ success, message, userSession }) {
+        super({ success, message });
     }
 }

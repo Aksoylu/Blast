@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     FileSystemService: {
         GetBlastPath: () => ipcRenderer.invoke('FileSystemService:GetBlastPath'),
         IsFileExist: (path) => ipcRenderer.invoke('FileSystemService:IsFileExist', path),
-        IsDirectoryExist: () => ipcRenderer.invoke('FileSystemService:IsDirectoryExist', path),
+        IsDirectoryExist: (path) => ipcRenderer.invoke('FileSystemService:IsDirectoryExist', path),
 
         CreateDirectory: (path) => ipcRenderer.invoke('FileSystemService:CreateDirectory', path),
         DeleteFile: (path) => ipcRenderer.invoke('FileSystemService:DeleteFile', path),

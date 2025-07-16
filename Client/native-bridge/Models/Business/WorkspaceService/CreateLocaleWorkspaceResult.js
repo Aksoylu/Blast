@@ -1,12 +1,3 @@
-export class CreateLocaleWorkspaceResult {
-    /** @type {boolean} */
-    success = false;
+import { BaseOperationResult } from "../index.js";
 
-    /** @type {string|undefined} */
-    message = "";
-
-    constructor({ success, message }) {
-        this.success = success;
-        this.message = message;
-    }
-}
+export class CreateLocaleWorkspaceResult extends BaseOperationResult { }

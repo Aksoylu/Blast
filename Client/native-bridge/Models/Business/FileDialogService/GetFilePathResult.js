@@ -8,7 +8,7 @@ export class GetFilePathResult extends BaseOperationResult {
     fileName = "";
 
     constructor({ success, message, path, fileName }) {
-        super({ success, message }); // BaseOperationResult'ın constructor'ını çağır
+        super({ success, message });
         this.path = path;
         this.fileName = fileName;
     }

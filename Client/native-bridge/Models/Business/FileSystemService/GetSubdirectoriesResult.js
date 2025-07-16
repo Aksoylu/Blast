@@ -1,16 +1,11 @@
-export class GetSubdirectoriesResult {
-    /** @type {boolean} */
-    success = false;
+import { BaseOperationResult } from "../index.js";
 
+export class GetSubdirectoriesResult extends BaseOperationResult {
     /** @type {string[]} */
     directoryList = [];
 
-    /** @type {string|undefined} */
-    message = "";
-    
-    constructor({ success, directoryList, message }) {
-        this.success = success;
+    constructor({ success, message, directoryList }) {
+        super({ success, message });
         this.directoryList = directoryList;
-        this.message = message;
     }
 }

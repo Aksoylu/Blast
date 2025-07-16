@@ -1,6 +1,6 @@
 import path from "path";
 
-import { GetLocaleWorkspaceListResult, CreateLocaleWorkspaceResult } from "./Models/Business/index.js";
+import { GetLocaleWorkspaceListResult, CreateLocaleWorkspaceResult, IsDirectoryExistResult } from "./Models/Business/index.js";
 import { Workspace } from "./Models/Entity/Workspace.js";
 
 
@@ -45,19 +45,26 @@ export class WorkspaceService {
         return this;
     }
 
+    async #getWorkspacePath() {
+        const blastPath = await this.#fileSystemService.GetBlastPath();
+
+        const workspacePath = path.join(blastPath, 'workspaces');
+        const isWorkspacePathExist = await this.#fileSystemService.IsDirectoryExist(workspacePath);
+
+        if (!isWorkspacePathExist.success) {
+            await this.#fileSystemService.CreateDirectory(workspacePath);
+        }
+
+        return workspacePath;
+    }
+
     /**
      * 
      * @returns {Promise<GetLocaleWorkspaceListResult>}
      */
     async GetLocaleWorkspaceList() {
         try {
-            const blastPath = await this.#fileSystemService.GetBlastPath();
-
-            const workspacePath = path.join(blastPath, 'workspaces');
-            const isWorkspacePathExist = await this.#fileSystemService.IsDirectoryExist(workspacePath);
-            if (!isWorkspacePathExist.result) {
-                await this.#fileSystemService.CreateDirectory(workspacePath);
-            }
+            const workspacePath = await this.#getWorkspacePath();
 
             const getSubDirectoryListResult = await this.#fileSystemService.GetSubdirectories(workspacePath);
             if (!getSubDirectoryListResult.success) {
@@ -85,22 +92,23 @@ export class WorkspaceService {
      * @param {string} workspaceName 
      * @returns {Promise<CreateLocaleWorkspaceResult>}
      */
-    async CreateLocaleWorkspace(workspaceName) {
+    async CreateLocaleWorkspace(_event, workspaceName) {
         try {
-            const blastPath = await this.#fileSystemService.GetBlastPath();
+            const newWorkspaceKey = this.#base64Encode(workspaceName);
 
-            const workspacePath = path.join(blastPath, 'workspaces');
-            const newWorkspaceDirName = this.#base64Encode(workspaceName);
-            const newWorkspaceDirPath = path.join(workspacePath, newWorkspaceDirName);
-            console.log("newWorkspaceDirPath", newWorkspaceDirPath);
-
-            const getSubDirectoryListResult = await this.#fileSystemService.GetSubdirectories(workspacePath);
-            const existingWorkspaceKeys = getSubDirectoryListResult.success ? getSubDirectoryListResult.directoryList : [];
-            if (existingWorkspaceKeys.includes(newWorkspaceDirName)) {
-                throw new Error(getSubDirectoryListResult.message);
+            const existingWorkspaces = await this.GetLocaleWorkspaceList();
+            if (!existingWorkspaces.success) {
+                throw new Error(existingWorkspaces.message);
             }
 
-            const createDirectoryResult = await this.#fileSystemService.CreateDirectory(newWorkspaceDirPath);
+            const existingWorkspaceKeys = existingWorkspaces.workspaceList.map(item => item.Key);
+            if (existingWorkspaceKeys.includes(newWorkspaceKey)) {
+                throw new Error(this.#ErrorCodes.CreateLocaleWorkspace.AlreadyExistWithSameName);
+            }
+
+            const workspacePath = await this.#getWorkspacePath();
+            const newWorkspacePath = path.join(workspacePath, newWorkspaceKey);
+            const createDirectoryResult = await this.#fileSystemService.CreateDirectory(newWorkspacePath);
             if (!createDirectoryResult.success) {
                 throw new Error(createDirectoryResult.message);
             }

@@ -39,7 +39,7 @@ export const WorkspaceSelector = ({ }) => {
 
     const onAddWorkspaceActionResult = async (workspaceName: string) => {
         try {
-            await createNewWorkspace(workspaceName);
+            await createNewWorkspace(workspaceName.toString());
             await loadWorkspaceList();
         }
         catch (e) {
