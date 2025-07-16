@@ -1,3 +1,5 @@
+import { BaseOperationResult } from "../index.js";
+
 export class ReadFileAsBinaryResult {
     /** @type {boolean} */
     success = false;

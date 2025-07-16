@@ -5,3 +5,8 @@ export interface GetLocaleWorkspaceListResult {
     workspaceList: Workspace[];
     message?: string;
 }
+
+export interface CreateLocaleWorkspaceResult {
+    success: boolean;
+    message?: string;
+}

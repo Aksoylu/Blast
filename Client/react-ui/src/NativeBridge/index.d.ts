@@ -8,7 +8,7 @@ import type {
 
 import type { ReadFileContentAsBinaryResult, GetFilePathResult } from "./FileDialogService";
 import type { ReadSessionInfoFromStorageResult, SaveSessionInfoToStorageResult } from "./UserSessionService";
-import type { GetLocaleWorkspaceListResult } from "./WorkspaceService";
+import type { GetLocaleWorkspaceListResult, CreateLocaleWorkspaceResult } from "./WorkspaceService";
 
 export default interface NativeBridge {
     electronAPI: {
@@ -35,6 +35,7 @@ export default interface NativeBridge {
         },
         WorkspaceService: {
             GetLocaleWorkspaceList: () => Promise<GetLocaleWorkspaceListResult>;
+            CreateLocaleWorkspace: (workspaceName: string) => Promise<CreateLocaleWorkspaceResult>;
         }
     };
 }

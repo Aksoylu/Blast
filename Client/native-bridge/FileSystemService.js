@@ -7,11 +7,19 @@ import {
     DeleteFileResult,
     GetSubdirectoriesResult,
     ReadFileAsBinaryResult,
-    WriteFileResult
+    WriteFileResult,
+    IsDirectoryExistResult,
+    IsFileExistResult
 } from "./Models/Business/index.js";
 
 
 export class FileSystemService {
+    #ErrorCodes = {
+        ReadSessionInfoFromStorage: {
+            SessionNotExist: "SessionNotExist"
+        }
+    }
+
     /** @type {FileSystemService|null} */
     static _instance = null;
 
@@ -60,27 +68,27 @@ export class FileSystemService {
 
     /**
      * @param {string} dirPath
-     * @returns {Promise<boolean>}
+     * @returns {Promise<IsDirectoryExistResult>}
      */
     async IsDirectoryExist(dirPath) {
         try {
             const stat = await fs.stat(dirPath);
-            return stat.isDirectory();
+            return new IsDirectoryExistResult({ success: stat.isDirectory() });
         } catch (error) {
-            return false;
+            return new IsDirectoryExistResult({ success: false, message: error });
         }
     }
 
     /**
      * @param {string} filePath
-     * @returns {Promise<boolean>}
+     * @returns {Promise<IsFileExistResult>}
      */
     async IsFileExist(filePath) {
         try {
             const stat = await fs.stat(filePath);
-            return stat.isFile();
+            return new IsFileExistResult({ success: stat.isFile() });
         } catch (error) {
-            return false;
+            return new IsFileExistResult({ success: false, message: error });
         }
     }
 
@@ -123,9 +131,9 @@ export class FileSystemService {
                 .filter(entry => entry.isDirectory())
                 .map(entry => entry.name);
 
-            return new GetSubdirectoriesResult({ success: true, directoryList: foundDirectoryList});
+            return new GetSubdirectoriesResult({ success: true, directoryList: foundDirectoryList });
         } catch (error) {
-            return new GetSubdirectoriesResult({ success: false,  message: error.message });
+            return new GetSubdirectoriesResult({ success: false, message: error.message });
         }
     }
 

@@ -1,13 +1,13 @@
 {
-  "name": "my-electron-app",
+  "name": "blast",
   "version": "1.0.0",
-  "description": "Hello World!",
+  "description": "Blast",
   "main": "main.js",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix react-ui\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "npm run build --prefix react-ui"
   },
-  "author": "Jane Doe",
+  "author": "Umit Aksoylu",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.0.1",

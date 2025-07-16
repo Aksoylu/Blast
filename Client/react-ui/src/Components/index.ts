@@ -4,3 +4,4 @@ export { LanguageSelector } from "./LanguageSelector";
 export { ResizablePanel } from "./ResizablePanel";
 export { SearchBar } from "./SearchBar";
 export { HttpRequestPanel } from "./HttpRequestPanel";
+export { WorkspaceSelector } from "./WorkspaceSelector/index";

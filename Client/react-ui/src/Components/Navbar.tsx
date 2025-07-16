@@ -1,8 +1,9 @@
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Flex, Text, FlexProps, HStack, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useColorModeValue, VStack, Button, useColorMode } from "@chakra-ui/react"
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi"
-import { EnvironmentSelector } from "./EnvironmentSelector";
+import { WorkspaceSelector } from "./WorkspaceSelector";
 import { useMainStore } from "#/MainStore";
+import { JSX } from "react";
 
 interface NavbarProps extends FlexProps {
     onOpen: () => void
@@ -16,7 +17,7 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
     /**
      * @description: Inner component
      */
-    const renderProfileImage = () => {
+    const ProfileImage = (): JSX.Element => {
         if (userSession?.ProfileImage === undefined || userSession?.ProfileImage.length === 0) {
             return (<Avatar
                 size={'sm'}
@@ -50,7 +51,7 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
             />
 
             <HStack spacing={4}>
-                <EnvironmentSelector />
+                <WorkspaceSelector />
             </HStack>
 
             <HStack spacing={{ base: '0', md: '6' }}>
@@ -62,10 +63,7 @@ export const Navbar = ({ onOpen, ...rest }: NavbarProps) => {
                         <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
                             <HStack>
 
-                                <Avatar
-                                    size={'sm'}
-                                    src={userSession?.ProfileImage}
-                                />
+                                <ProfileImage />
 
                                 <VStack
                                     display={{ base: 'none', md: 'flex' }}
