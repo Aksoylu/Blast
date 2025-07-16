@@ -1,12 +1,14 @@
 import { useMainStore } from "#/MainStore";
 import { AddIcon, HamburgerIcon } from "@chakra-ui/icons";
-import { IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
+
+import { useToast, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
 import { FiCheck } from "react-icons/fi";
 import { InputModal, InputModalRef } from "./InputModal";
 import React, { useEffect } from "react";
 
 export const WorkspaceSelector = ({ }) => {
     const inputModalRef = React.useRef<InputModalRef | null>(null);
+    const toast = useToast();
 
     const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList)
     const { localeWorkSpaceList } = useMainStore();
@@ -42,11 +44,15 @@ export const WorkspaceSelector = ({ }) => {
             await createNewWorkspace(workspaceName.toString());
             await loadWorkspaceList();
         }
-        catch (e) {
-            // throw toast
+        catch (exception) {
+            toast({
+                title: 'Error',
+                description: exception.toString(),
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
         }
-
-        loadWorkspaceList();
     }
 
     return (<Menu>
