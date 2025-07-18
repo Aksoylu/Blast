@@ -6,6 +6,7 @@ import {
     CreateDirectoryResult,
     DeleteFileResult,
     GetSubdirectoriesResult,
+    GetFilesResult,
     ReadFileAsBinaryResult,
     WriteFileResult,
     IsDirectoryExistResult,
@@ -117,6 +118,25 @@ export class FileSystemService extends BaseService {
             return new GetSubdirectoriesResult({ success: false, message: error.message });
         }
     }
+
+    /**
+     * @param {string} dirPath
+     * @returns {Promise<GetFilesResult>}
+    */
+    async GetFiles(dirPath) {
+        try {
+            const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+            const foundFileList = entries
+                .filter(entry => entry.isFile() && entry.name.endsWith('.json'))
+                .map(entry => entry.name);
+
+            return new GetFilesResult({ success: true, fileList: foundFileList });
+        } catch (error) {
+            return new GetFilesResult({ success: false, message: error.message });
+        }
+    }
+
 
     /**
      * @param {string} filePath

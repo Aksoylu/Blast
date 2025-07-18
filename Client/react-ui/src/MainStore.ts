@@ -16,6 +16,9 @@ interface MainStore {
 
     activeWorkspace: Workspace;
     setActiveWorkspace: (workspace: Workspace) => void;
+
+    collectionList: Collection[];
+    setCollectionList: (collectionList: Collection[]) => void;
 }
 
 
@@ -33,5 +36,8 @@ export const useMainStore = create<MainStore>((set) => ({
     setLocaleWorkSpaceList: (workspaceList) => set({ localeWorkSpaceList: workspaceList }),
 
     activeWorkspace: new Workspace(),
-    setActiveWorkspace: (workspace) => set({activeWorkspace: workspace})
+    setActiveWorkspace: (workspace) => set({activeWorkspace: workspace}),
+
+    collectionList: [] as Collection[],
+    setCollectionList:  (collections) => set({collectionList: collections}),
 }));

@@ -102,7 +102,7 @@ export class WorkspaceService extends BaseService {
      */
     async LoadLocaleWorkspaceInfo(_event, workspaceKey) {
         try {
-
+            
         }
         catch (error) {
             return new LoadLocaleWorkspaceInfo({ success: false, message: error.message });

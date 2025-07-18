@@ -14,4 +14,13 @@ export class CollectionService extends BaseService {
         });
     }
 
+    /**
+     * 
+     * @param {string} workspaceKey 
+     */
+    async GetAllCollectionsInWorkspace(workspaceKey)
+    {
+        //this.fileSystemService.get
+    }
+
 }
