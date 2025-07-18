@@ -1,4 +1,4 @@
-export { BaseOperationResult } from './Base/BaseOperationResult.js';
+export { BaseOperationResult } from '../../Infrastructure/BaseOperationResult.js';
 
 /** @FileSystemService */
 export { CreateDirectoryResult } from "./FileSystemService/CreateDirectoryResult.js";
@@ -20,3 +20,4 @@ export { SaveSessionInfoToStorageResult } from "./UserSessionService/SaveSession
 /** @WorkspaceService */
 export { GetLocaleWorkspaceListResult } from "./WorkspaceService/GetLocaleWorkspaceListResult.js";
 export { CreateLocaleWorkspaceResult } from "./WorkspaceService/CreateLocaleWorkspaceResult.js";
+export { LoadLocaleWorkspaceInfo } from "./WorkspaceService/LoadLocaleWorkspaceInfo.js";

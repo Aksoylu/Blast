@@ -6,5 +6,6 @@ export class ReadSessionInfoFromStorageResult extends BaseOperationResult {
 
     constructor({ success, message, userSession }) {
         super({ success, message });
+        this.userSession = userSession;
     }
 }

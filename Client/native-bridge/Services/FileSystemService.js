@@ -10,46 +10,26 @@ import {
     WriteFileResult,
     IsDirectoryExistResult,
     IsFileExistResult
-} from "./Models/Business/index.js";
+} from "../Models/Business/index.js";
 
+import { BaseService } from "../Infrastructure/BaseService.js";
 
-export class FileSystemService {
-    #ErrorCodes = {
-        ReadSessionInfoFromStorage: {
-            SessionNotExist: "SessionNotExist"
-        }
+const ErrorCodes = {
+    ReadFileAsBinary: {
+        NoFilePathSpecified: "NoFilePathSpecified"
     }
+};
 
-    /** @type {FileSystemService|null} */
-    static _instance = null;
-
+export class FileSystemService extends BaseService {
     /** @type {string|null} */
-    #blastPath = null;
-
-    constructor() {
-        if (FileSystemService._instance) {
-            return FileSystemService._instance;
-        }
-        FileSystemService._instance = this;
-    }
-
-    /**
-     * @returns {FileSystemService}
-     */
-    static getInstance() {
-        if (!FileSystemService._instance) {
-            FileSystemService._instance = new FileSystemService();
-        }
-        return FileSystemService._instance;
-    }
-
+    blastPath = null;
 
     /**
      * @returns {Promise<string>}
      */
     async GetBlastPath() {
-        if (this.#blastPath != null) {
-            return this.#blastPath;
+        if (this.blastPath != null) {
+            return this.blastPath;
         }
 
         const homeDir = os.homedir();
@@ -61,8 +41,9 @@ export class FileSystemService {
             await fs.mkdir(blastDir, { recursive: true });
         }
 
-        this.#blastPath = blastDir;
-        return this.#blastPath;
+        this.blastPath = blastDir;
+
+        return this.blastPath;
     }
 
 
@@ -100,9 +81,9 @@ export class FileSystemService {
     async CreateDirectory(dirPath) {
         try {
             await fs.mkdir(dirPath, { recursive: true });
-            return { success: true };
+            return new CreateDirectoryResult({ success: true });
         } catch (error) {
-            return { success: false, message: error.message };
+            return new CreateDirectoryResult({ success: false, message: error.message });
         }
     }
 
@@ -113,9 +94,9 @@ export class FileSystemService {
     async DeleteFile(filePath) {
         try {
             await fs.unlink(filePath);
-            return { success: true };
+            return new DeleteFileResult({ success: true });
         } catch (error) {
-            return { success: false, message: error.message };
+            return new DeleteFileResult({ success: false, message: error.message });
         }
     }
 
@@ -144,10 +125,11 @@ export class FileSystemService {
     async ReadFileAsBinary(filePath) {
         try {
             if (!filePath) {
-                return { success: false, message: 'NO_FILE_PATH_SPECIFIED' };
+                throw new Error(ErrorCodes.ReadFileAsBinary.NoFilePathSpecified);
             }
 
             const content = await fs.readFile(filePath);
+
             return new ReadFileAsBinaryResult({ success: true, content });
         } catch (error) {
             return new ReadFileAsBinaryResult({ success: false, message: error.message });
@@ -163,9 +145,9 @@ export class FileSystemService {
     async WriteFile(filePath, content) {
         try {
             await fs.writeFile(filePath, content);
-            return { success: true };
+            return new WriteFileResult({ success: true });
         } catch (error) {
-            return { success: false, message: error.message };
+            return new WriteFileResult({ success: false, message: error.message });
         }
     }
 }
