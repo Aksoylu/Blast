@@ -125,14 +125,15 @@ export class FileSystemService extends BaseService {
 
     /**
      * @param {string} dirPath
+     * @param {string?} fileExtension
      * @returns {Promise<GetFilesResult>}
     */
-    async GetFiles(dirPath) {
+    async GetFiles(dirPath, fileExtension = ".json") {
         try {
             const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
             const foundFileList = entries
-                .filter(entry => entry.isFile() && entry.name.endsWith('.json'))
+                .filter(entry => entry.isFile() && entry.name.endsWith(fileExtension))
                 .map(entry => entry.name);
 
             return new GetFilesResult({ success: true, fileList: foundFileList });

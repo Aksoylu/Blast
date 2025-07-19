@@ -1,7 +1,8 @@
 import { BaseService } from "../Infrastructure/BaseService.js";
 import { FileSystemService, WorkspaceService } from "./index.js";
-import { LoadLocaleCollectionListResult } from "../Models/Business/index.js";
+import { ReadLocaleCollectionResult, GetLocaleCollectionListResult } from "../Models/Business/index.js";
 import { HttpRequestCollection } from "../Models/Entity/index.js";
+import { Base64Utility } from "../Utility/Base64Utility.js";
 
 const ErrorCodes = {
     LoadLocaleCollectionList: {
@@ -28,19 +29,51 @@ export class HttpCollectionService extends BaseService {
 
     /**
      * @param {any} _event
-     * @param {string} workspaceKey
-     * @param {string} collectionKey
-     * @returns {Promise<LoadLocaleCollectionListResult>}
+     * @param {string} workspaceId
+     * @returns {Promise<GetLocaleCollectionListResult>}
      */
-    async LoadLocaleCollectionList(_event, workspaceKey, collectionKey) {
+    async GetLocaleCollectionList(_event, workspaceId) {
         try {
             const getWorkspacePathResult = await this.workspaceService.GetWorkspacePath();
             if (!getWorkspacePathResult.success) {
                 throw new Error(getWorkspacePathResult.message);
             }
 
-            const workspacePath = path.join(getWorkspacePathResult.WorkspacePath, workspaceKey);
-            const collectionFilePath = path.join(workspacePath, `${collectionKey}.json`);
+            const workspacePath = path.join(getWorkspacePathResult.WorkspacePath, workspaceId)
+            // get all file names in folder with extension
+            const existingFiles = await this.fileSystemService.GetFiles(workspacePath, ".json");
+            if (!existingFiles.success) {
+                return [];
+            }
+
+            const collectionList = existingFiles.fileList.map(eachFileInfo => new HttpRequestCollection({
+                Key: eachFileInfo,
+                Name: Base64Utility.Base64Decode(eachFileInfo),
+                RequestList: []
+            }));
+
+            return new GetLocaleCollectionListResult({success: true, CollectionList:collectionList});
+        }
+        catch (error) {
+            return new GetLocaleCollectionListResult({success: false, message: error.message, CollectionList:[]});
+        }
+    }
+
+    /**
+     * @param {any} _event
+     * @param {string} workspaceId
+     * @param {string} collectionId
+     * @returns {Promise<ReadLocaleCollectionResult>}
+     */
+    async ReadLocaleCollection(_event, workspaceId, collectionId) {
+        try {
+            const getWorkspacePathResult = await this.workspaceService.GetWorkspacePath();
+            if (!getWorkspacePathResult.success) {
+                throw new Error(getWorkspacePathResult.message);
+            }
+
+            const workspacePath = path.join(getWorkspacePathResult.WorkspacePath, workspaceId);
+            const collectionFilePath = path.join(workspacePath, `${collectionId}.json`);
 
             const isCollectionFileExist = await this.fileSystemService.IsFileExist(collectionFilePath);
             if (!isCollectionFileExist) {
@@ -52,13 +85,12 @@ export class HttpCollectionService extends BaseService {
                 throw new Error(ErrorCodes.LoadLocaleCollectionList.CollectionFileIsCorrupt);
             }
 
-            const requestList = new HttpRequestCollection(readFileAsJsonResult.jsonObject)
+            const collection = new HttpRequestCollection(readFileAsJsonResult.jsonObject)
 
-            return new LoadLocaleCollectionListResult({success: true, })
-            // LoadLocaleCollectionListResult
+            return new ReadLocaleCollectionResult({ success: true, Collection: collection })
         }
         catch (error) {
-            return new LoadLocaleCollectionListResult({ success: false, message: error.message });
+            return new ReadLocaleCollectionResult({ success: false, message: error.message });
         }
     }
 

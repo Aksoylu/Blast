@@ -14,7 +14,6 @@ export const App = (): JSX.Element => {
         setBlastPath(detectedBlastPath);
 
         const readSessionInfoFromStorageResult = await window.electronAPI.UserSessionService.ReadSessionInfoFromStorage();
-
         if (!readSessionInfoFromStorageResult.success) {
             // todo: show logout modal
             return;
@@ -23,16 +22,23 @@ export const App = (): JSX.Element => {
         const currentUserSession = readSessionInfoFromStorageResult.userSession;
         setUserSession(currentUserSession);
 
+
         const localeWorkspaceList = await window.electronAPI.WorkspaceService.GetLocaleWorkspaceList();
         if (localeWorkspaceList.success) {
             setLocaleWorkSpaceList(localeWorkspaceList.workspaceList);
         }
 
-        const workspaceInfo = currentUserSession.ActiveWorkspaceInfo;
-        if (workspaceInfo !== undefined) {
-            setActiveWorkspace(workspaceInfo);
-            const collectionList = await window.electronAPI.CollectionService.GetAllCollectionsInWorkspace(workspaceInfo);
-            
+        const activeWorkspaceInfo = currentUserSession.ActiveWorkspaceInfo;
+        console.log("activeWorkspaceInfo >>", activeWorkspaceInfo);
+        if (activeWorkspaceInfo !== undefined) {
+            setActiveWorkspace(activeWorkspaceInfo);
+
+            if (activeWorkspaceInfo.Storage === "locale") {
+                const getLocaleCollectionListResult = await window.electronAPI.HttpCollectionService.GetLocaleCollectionList(activeWorkspaceInfo.code);
+                const activeCollectionList = getLocaleCollectionListResult.success ? getLocaleCollectionListResult.CollectionList : [];
+                setCollectionList(activeCollectionList);
+                console.log(activeCollectionList);
+            }
         }
     }
 

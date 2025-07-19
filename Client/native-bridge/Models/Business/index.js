@@ -25,4 +25,5 @@ export { CreateLocaleWorkspaceResult } from "./WorkspaceService/CreateLocaleWork
 export { GetWorkspacePathResult } from "./WorkspaceService/GetWorkspacePathResult.js";
 
 /** @HttpCollectionService */
-export { LoadLocaleCollectionListResult } from "./HttpCollectionService/LoadLocaleCollectionListResult.js";
+export { ReadLocaleCollectionResult } from "./HttpCollectionService/ReadLocaleCollectionResult.js";
+export { GetLocaleCollectionListResult } from "./HttpCollectionService/GetLocaleCollectionListResult.js";

@@ -74,8 +74,8 @@ export class UserSessionService extends BaseService {
 
     /**
      * @todo
-     */
-    async GetSessionInfoFromRemote() {
+     *   async GetSessionInfoFromRemote() {
 
     }
+     */
 }

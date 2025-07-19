@@ -1,28 +1,29 @@
 import fs from 'fs';
 
-export interface CreateDirectoryResult {
-    success: boolean;
-    message?: string;
+import type { BaseOperationResult } from './Base';
+
+export interface IsFileExistResult extends BaseOperationResult { }
+
+export class IsDirectoryExistResult extends BaseOperationResult { }
+
+export interface CreateDirectoryResult extends BaseOperationResult { }
+
+export interface DeleteFileResult extends BaseOperationResult { }
+
+export interface GetFilesResult extends BaseOperationResult {
+    fileList: string[];
 }
 
-export interface DeleteFileResult {
-    success: boolean;
-    message?: string;
-}
 
-export interface GetSubdirectoriesResult {
-    success: boolean;
+export interface GetSubdirectoriesResult extends BaseOperationResult {
     directoryList: string[];
-    message?: string;
 }
 
-export interface ReadFileAsBinaryResult {
-    success: boolean;
-    message?: string;
+
+export interface ReadFileAsBinaryResult extends BaseOperationResult {
     content: Buffer
 }
 
-export interface WriteFileResult {
-    success: boolean;
-    message?: string;
-}
+export interface WriteFileResult extends BaseOperationResult { }
+
+

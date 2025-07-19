@@ -1,12 +1,7 @@
 import { UserSession } from "#/Models/UserSession";
-
-export interface ReadSessionInfoFromStorageResult {
-  success: boolean;
+import { BaseOperationResult } from "./Base";
+export interface ReadSessionInfoFromStorageResult extends BaseOperationResult {
   userSession: UserSession;
-  message?: string;
 }
 
-export interface SaveSessionInfoToStorageResult {
-  success: boolean;
-  message?: string;
-}
+export interface SaveSessionInfoToStorageResult extends BaseOperationResult { }

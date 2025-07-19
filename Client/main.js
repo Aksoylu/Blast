@@ -6,6 +6,7 @@ const { FileSystemService } = require("./native-bridge/Services/FileSystemServic
 const { FileDialogService } = require("./native-bridge/Services/FileDialogService");
 const { UserSessionService } = require("./native-bridge/Services/UserSessionService");
 const { WorkspaceService } = require('./native-bridge/Services/WorkspaceService');
+const { HttpCollectionService } = require('./native-bridge/Services/HttpCollectionService');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -51,7 +52,8 @@ app.whenReady().then(() => {
         FileDialogService: BaseService.getInstance(FileDialogService),
         FileSystemService: BaseService.getInstance(FileSystemService),
         UserSessionService: BaseService.getInstance(UserSessionService),
-        WorkspaceService:  BaseService.getInstance(WorkspaceService)
+        WorkspaceService: BaseService.getInstance(WorkspaceService),
+        HttpCollectionService: BaseService.getInstance(HttpCollectionService)
     });
 
     createWindow();
