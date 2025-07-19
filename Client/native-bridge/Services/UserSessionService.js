@@ -9,7 +9,8 @@ import { FileSystemService } from "./FileSystemService.js";
 
 const ErrorCodes = {
     ReadSessionInfoFromStorage: {
-        SessionNotExist: "SessionNotExist"
+        SessionNotExist: "SessionNotExist",
+        SessionFileCorrupt: "SessionFileCorrupt"
     }
 };
 
@@ -37,13 +38,15 @@ export class UserSessionService extends BaseService {
 
             const isSessionFileExist = await this.fileSystemService.IsFileExist(sessionFilePath);
             if (!isSessionFileExist) {
-                throw new Error(ErrorCodes.ReadSessionInfoFromStorage.SessionNotExist)
+                throw new Error(ErrorCodes.ReadSessionInfoFromStorage.SessionNotExist);
             }
 
-            const jsonString = await fs.readFile(sessionFilePath, 'utf-8');
-            const jsonData = JSON.parse(jsonString);
+            const readFileAsJsonResult = await this.fileSystemService.ReadFileAsJson(sessionFilePath);
+            if (!readFileAsJsonResult.success) {
+                throw new Error(ErrorCodes.ReadSessionInfoFromStorage.SessionFileCorrupt);
+            }
 
-            const userSession = new UserSession(jsonData)
+            const userSession = new UserSession(readFileAsJsonResult.jsonObject)
             return new ReadSessionInfoFromStorageResult({ success: true, userSession: userSession });
         }
         catch (error) {

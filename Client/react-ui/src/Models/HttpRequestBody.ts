@@ -1,7 +1,7 @@
-import { HttpBodyRawDataTypesEnum, HttpRequestBodyTypesEnum } from "#/Enums";
+import { SupportedDataFormatsEnum, HttpRequestBodyTypesEnum } from "#/Enums";
 
 export class HttpRequestBody {
     public type: HttpRequestBodyTypesEnum;
-    public rawDataType?: HttpBodyRawDataTypesEnum;
+    public rawDataType?: SupportedDataFormatsEnum;
     public data?: any;
 }

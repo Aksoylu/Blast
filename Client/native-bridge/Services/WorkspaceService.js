@@ -3,7 +3,7 @@ import path from "path";
 import {
     GetLocaleWorkspaceListResult,
     CreateLocaleWorkspaceResult,
-    LoadLocaleWorkspaceInfo
+    GetWorkspacePathResult
 } from "../Models/Business/index.js";
 import { Workspace } from "../Models/Entity/Workspace.js";
 
@@ -39,7 +39,12 @@ export class WorkspaceService extends BaseService {
      */
     async GetLocaleWorkspaceList() {
         try {
-            const workspacePath = await this.#getWorkspacePath();
+            const getWorkspacePathResult = await this.GetWorkspacePath();
+            if (!getWorkspacePathResult.success) {
+                throw new Error(getWorkspacePathResult.message);
+            }
+
+            const workspacePath = getWorkspacePathResult.WorkspacePath;
 
             const getSubDirectoryListResult = await this.fileSystemService.GetSubdirectories(workspacePath);
             if (!getSubDirectoryListResult.success) {
@@ -81,7 +86,13 @@ export class WorkspaceService extends BaseService {
                 throw new Error(ErrorCodes.CreateLocaleWorkspace.AlreadyExistWithSameName);
             }
 
-            const workspacePath = await this.#getWorkspacePath();
+            const getWorkspacePathResult = await this.GetWorkspacePath();
+            if (!getWorkspacePathResult.success) {
+                throw new Error(getWorkspacePathResult.message);
+            }
+
+            const workspacePath = getWorkspacePathResult.WorkspacePath;
+
             const newWorkspacePath = path.join(workspacePath, newWorkspaceKey);
             const createDirectoryResult = await this.fileSystemService.CreateDirectory(newWorkspacePath);
             if (!createDirectoryResult.success) {
@@ -97,29 +108,22 @@ export class WorkspaceService extends BaseService {
 
     /**
      * 
-     * @param {*} _event 
-     * @param {string} workspaceKey
+     * @returns {Promise<GetWorkspacePathResult>}
      */
-    async LoadLocaleWorkspaceInfo(_event, workspaceKey) {
+    async GetWorkspacePath() {
         try {
-            
+            const blastPath = await this.fileSystemService.GetBlastPath();
+            const workspacePath = path.join(blastPath, 'workspaces');
+
+            const isDirectoryExistResult = await this.fileSystemService.IsDirectoryExist(workspacePath);
+            if (!isDirectoryExistResult.success) {
+                await this.fileSystemService.CreateDirectory(workspacePath);
+            }
+
+            return new GetWorkspacePathResult({ success: true, WorkspacePath: workspacePath })
         }
         catch (error) {
-            return new LoadLocaleWorkspaceInfo({ success: false, message: error.message });
+            return new GetWorkspacePathResult({ success: false, message: error.message });
         }
-    }
-
-    async #getWorkspacePath() {
-        const blastPath = await this.fileSystemService.GetBlastPath();
-        console.log("getWorkspacePath || blastPath >>", blastPath);
-
-        const workspacePath = path.join(blastPath, 'workspaces');
-        const isWorkspacePathExist = await this.fileSystemService.IsDirectoryExist(workspacePath);
-
-        if (!isWorkspacePathExist.success) {
-            await this.fileSystemService.CreateDirectory(workspacePath);
-        }
-
-        return workspacePath;
     }
 }

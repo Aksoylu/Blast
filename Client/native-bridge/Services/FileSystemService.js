@@ -10,13 +10,17 @@ import {
     ReadFileAsBinaryResult,
     WriteFileResult,
     IsDirectoryExistResult,
-    IsFileExistResult
+    IsFileExistResult,
+    ReadFileAsJsonResult
 } from "../Models/Business/index.js";
 
 import { BaseService } from "../Infrastructure/BaseService.js";
 
 const ErrorCodes = {
     ReadFileAsBinary: {
+        NoFilePathSpecified: "NoFilePathSpecified"
+    },
+    ReadFileAsJson: {
         NoFilePathSpecified: "NoFilePathSpecified"
     }
 };
@@ -153,6 +157,26 @@ export class FileSystemService extends BaseService {
             return new ReadFileAsBinaryResult({ success: true, content });
         } catch (error) {
             return new ReadFileAsBinaryResult({ success: false, message: error.message });
+        }
+    }
+
+    /**
+     * 
+     * @param {string} filePath 
+     * @returns {Promise<ReadFileAsJsonResult>}
+     */
+    async ReadFileAsJson(filePath) {
+        try {
+            if (!filePath) {
+                throw new Error(ErrorCodes.ReadFileAsJson.NoFilePathSpecified);
+            }
+
+            const jsonString = await fs.readFile(filePath, 'utf-8');
+            const jsonObject = JSON.parse(jsonString);
+
+            return new ReadFileAsJsonResult({ success: true, jsonObject });
+        } catch (error) {
+            return new ReadFileAsJsonResult({ success: false, message: error.message });
         }
     }
 

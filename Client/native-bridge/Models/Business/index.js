@@ -9,6 +9,7 @@ export { ReadFileAsBinaryResult } from "./FileSystemService/ReadFileAsBinaryResu
 export { WriteFileResult } from "./FileSystemService/WriteFileResult.js";
 export { IsDirectoryExistResult } from "./FileSystemService/IsDirectoryExistResult.js";
 export { IsFileExistResult } from "./FileSystemService/IsFileExistResult.js";
+export { ReadFileAsJsonResult } from "./FileSystemService/ReadFileAsJsonResult.js";
 
 /** @FileDialogService */
 export { GetFilePathResult } from "./FileDialogService/GetFilePathResult.js";
@@ -21,6 +22,7 @@ export { SaveSessionInfoToStorageResult } from "./UserSessionService/SaveSession
 /** @WorkspaceService */
 export { GetLocaleWorkspaceListResult } from "./WorkspaceService/GetLocaleWorkspaceListResult.js";
 export { CreateLocaleWorkspaceResult } from "./WorkspaceService/CreateLocaleWorkspaceResult.js";
-export { LoadLocaleWorkspaceInfo } from "./WorkspaceService/LoadLocaleWorkspaceInfo.js";
+export { GetWorkspacePathResult } from "./WorkspaceService/GetWorkspacePathResult.js";
 
-/** @CollectionService */
+/** @HttpCollectionService */
+export { LoadLocaleCollectionListResult } from "./HttpCollectionService/LoadLocaleCollectionListResult.js";

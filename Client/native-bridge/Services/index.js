@@ -1,4 +1,4 @@
-export { CollectionService } from "./CollectionService.js";
+export { HttpCollectionService } from "./HttpCollectionService.js";
 export { FileDialogService } from "./FileDialogService.js";
 export { FileSystemService } from "./FileSystemService.js";
 export { UserSessionService } from "./UserSessionService.js";
