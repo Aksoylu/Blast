@@ -1,27 +1,49 @@
+import type { BaseOperationResult } from "./Base";
+
 import type {
     CreateDirectoryResult,
     DeleteFileResult,
     GetSubdirectoriesResult,
     WriteFileResult,
-    ReadFileAsBinaryResult
+    ReadFileAsBinaryResult,
+    GetFilesResult,
+    IsFileExistResult,
+    IsDirectoryExistResult
 } from "./FileSystemService";
 
-import type { ReadFileContentAsBinaryResult, GetFilePathResult } from "./FileDialogService";
-import type { ReadSessionInfoFromStorageResult, SaveSessionInfoToStorageResult } from "./UserSessionService";
-import type { GetLocaleWorkspaceListResult, CreateLocaleWorkspaceResult } from "./WorkspaceService";
+import type {
+    ReadFileContentAsBinaryResult,
+    GetFilePathResult
+} from "./FileDialogService";
+
+import type {
+    ReadSessionInfoFromStorageResult,
+    SaveSessionInfoToStorageResult
+} from "./UserSessionService";
+
+import type {
+    GetLocaleWorkspaceListResult,
+    CreateLocaleWorkspaceResult,
+    GetWorkspacePathResult
+} from "./WorkspaceService";
+
+import type {
+    ReadLocaleCollectionResult,
+    GetLocaleCollectionListResult
+} from "./HttpCollectionService";
 
 export default interface NativeBridge {
     electronAPI: {
         FileSystemService: {
             GetBlastPath: () => Promise<string>;
-            IsDirectoryExist: (path: string) => Promise<boolean>;
-            IsFileExist: (path: string) => Promise<boolean>;
-
+            IsDirectoryExist: (path: string) => Promise<IsDirectoryExistResult>;
+            IsFileExist: (path: string) => Promise<IsFileExistResult>;
             CreateDirectory: (path: string) => Promise<CreateDirectoryResult>;
             DeleteFile: (path: string) => Promise<DeleteFileResult>;
             GetSubdirectories: (path: string) => Promise<GetSubdirectoriesResult>;
-            WriteFile: () => Promise<WriteFileResult>;
+            GetFiles: (path: string, fileExtension: string) => Promise<GetFilesResult>;
             ReadFileAsBinary: (path: string) => Promise<ReadFileAsBinaryResult>;
+            WriteFile: () => Promise<WriteFileResult>;
 
         },
         FileDialogService: {
@@ -34,8 +56,13 @@ export default interface NativeBridge {
             SaveSessionInfoToStorage: () => Promise<SaveSessionInfoToStorageResult>;
         },
         WorkspaceService: {
+            GetWorkspacePath: () => Promise<GetWorkspacePathResult>;
             GetLocaleWorkspaceList: () => Promise<GetLocaleWorkspaceListResult>;
             CreateLocaleWorkspace: (workspaceName: string) => Promise<CreateLocaleWorkspaceResult>;
+        },
+        HttpCollectionService: {
+            ReadLocaleCollection: (workspaceId: string, collectionId: string) => Promise<ReadLocaleCollectionResult>;
+            GetLocaleCollectionList: (workspaceId: string) => Promise<GetLocaleCollectionListResult>;
         }
     };
 }

@@ -18,6 +18,8 @@ export { HttpResponseHeader } from "./HttpResponseHeader";
 export { HttpPayloadSizeObject } from "./HttpPayloadSizeObject";
 export { HttpResponseNetworkObject } from "./HttpResponseNetworkObject";
 
+export { HttpRequestCollection } from "./HttpRequestCollection";
+
 export { UserSession } from "./UserSession";
 export { AppPrefences } from "./AppPrefences";
 export { Workspace } from "./Workspace";

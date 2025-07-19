@@ -1,12 +1,10 @@
-export interface GetFilePathResult {
-    success: boolean;
-    message?: string;
+import type { BaseOperationResult } from './Base';
+
+export interface GetFilePathResult extends BaseOperationResult{
     path?: string;
     fileName?: string;
 }
 
-export interface ReadFileContentAsBinaryResult {
-    success: boolean;
-    message?: string;
+export interface ReadFileContentAsBinaryResult extends BaseOperationResult{
     content?: Buffer;
 }

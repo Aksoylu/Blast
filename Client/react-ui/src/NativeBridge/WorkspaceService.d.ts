@@ -1,12 +1,10 @@
 import { Workspace } from "#/Models/Workspace";
+import { BaseOperationResult } from "./Base";
 
-export interface GetLocaleWorkspaceListResult {
-    success: boolean;
+export interface GetWorkspacePathResult extends BaseOperationResult {};
+
+export interface GetLocaleWorkspaceListResult extends BaseOperationResult {
     workspaceList: Workspace[];
-    message?: string;
 }
 
-export interface CreateLocaleWorkspaceResult {
-    success: boolean;
-    message?: string;
-}
+export interface CreateLocaleWorkspaceResult extends BaseOperationResult  {}

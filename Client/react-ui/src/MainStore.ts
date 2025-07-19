@@ -11,8 +11,14 @@ interface MainStore {
     appPrefences?: AppPrefences;
     setAppPrefences: (appPrefences?: AppPrefences) => void;
 
-    localeWorkSpaceList:  Workspace[];
+    localeWorkSpaceList: Workspace[];
     setLocaleWorkSpaceList: (workspaceList?: Workspace[]) => void;
+
+    activeWorkspace: Workspace;
+    setActiveWorkspace: (workspace: Workspace) => void;
+
+    collectionList: Collection[];
+    setCollectionList: (collectionList: Collection[]) => void;
 }
 
 
@@ -27,5 +33,11 @@ export const useMainStore = create<MainStore>((set) => ({
     setAppPrefences: (appPrefences) => set({ appPrefences: appPrefences }),
 
     localeWorkSpaceList: [] as Workspace[],
-    setLocaleWorkSpaceList: (workspaceList) => set({ localeWorkSpaceList: workspaceList })
+    setLocaleWorkSpaceList: (workspaceList) => set({ localeWorkSpaceList: workspaceList }),
+
+    activeWorkspace: new Workspace(),
+    setActiveWorkspace: (workspace) => set({activeWorkspace: workspace}),
+
+    collectionList: [] as Collection[],
+    setCollectionList:  (collections) => set({collectionList: collections}),
 }));

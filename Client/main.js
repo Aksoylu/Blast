@@ -1,10 +1,12 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 
-const { FileSystemService } = require("./native-bridge/FileSystemService");
-const { FileDialogService } = require("./native-bridge/FileDialogService");
-const { UserSessionService } = require("./native-bridge/UserSessionService");
-const { WorkspaceService } = require('./native-bridge/WorkspaceService');
+const { BaseService } = require("./native-bridge/Infrastructure/BaseService");
+const { FileSystemService } = require("./native-bridge/Services/FileSystemService");
+const { FileDialogService } = require("./native-bridge/Services/FileDialogService");
+const { UserSessionService } = require("./native-bridge/Services/UserSessionService");
+const { WorkspaceService } = require('./native-bridge/Services/WorkspaceService');
+const { HttpCollectionService } = require('./native-bridge/Services/HttpCollectionService');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -46,16 +48,12 @@ function registerIpcHandlers(services) {
 }
 
 app.whenReady().then(() => {
-    const fileDialogService = FileDialogService.getInstance();
-    const fileSystemService = FileSystemService.getInstance();
-    const userSessionService = UserSessionService.getInstance().InjectDependencies(fileSystemService);
-    const workspaceService = WorkspaceService.getInstance().InjectDependencies(fileSystemService);
-
     registerIpcHandlers({
-        FileDialogService: fileDialogService,
-        FileSystemService: fileSystemService,
-        UserSessionService: userSessionService,
-        WorkspaceService: workspaceService
+        FileDialogService: BaseService.getInstance(FileDialogService),
+        FileSystemService: BaseService.getInstance(FileSystemService),
+        UserSessionService: BaseService.getInstance(UserSessionService),
+        WorkspaceService: BaseService.getInstance(WorkspaceService),
+        HttpCollectionService: BaseService.getInstance(HttpCollectionService)
     });
 
     createWindow();
