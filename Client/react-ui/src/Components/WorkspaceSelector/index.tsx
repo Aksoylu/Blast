@@ -2,16 +2,19 @@ import { useMainStore } from "#/MainStore";
 import { AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 
 import { useToast, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
-import { FiCheck } from "react-icons/fi";
+import { FiCheck, FiCircle } from "react-icons/fi";
 import { InputModal, InputModalRef } from "./InputModal";
 import React, { useEffect } from "react";
+import { Workspace } from "#/Models";
 
 export const WorkspaceSelector = ({ }) => {
     const inputModalRef = React.useRef<InputModalRef | null>(null);
     const toast = useToast();
 
-    const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList)
-    const { localeWorkSpaceList } = useMainStore();
+    const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList);
+    const setActiveWorkspace = useMainStore((state) => state.setActiveWorkspace);
+
+    const { localeWorkSpaceList, activeWorkspace } = useMainStore();
 
     // #region LifeCycle
     useEffect(() => {
@@ -55,6 +58,22 @@ export const WorkspaceSelector = ({ }) => {
         }
     }
 
+
+    const onSelectedWorkspaceChange = async (selectedWorkspace: Workspace) => {
+        if (selectedWorkspace.Id === activeWorkspace?.Id) {
+            return;
+        }
+
+        setActiveWorkspace(selectedWorkspace);
+
+        const updatedSession = useMainStore.getState().userSession;
+
+        if (updatedSession !== undefined) {
+            await window.electronAPI.UserSessionService.SaveSessionInfoToStorage(updatedSession);
+
+        }
+    }
+
     return (<Menu>
         <InputModal ref={inputModalRef} actionResult={onAddWorkspaceActionResult} />
         <MenuButton
@@ -63,15 +82,20 @@ export const WorkspaceSelector = ({ }) => {
             icon={<HamburgerIcon />}
             variant='outline'
         />
-        <Text>Example Workspace 1</Text>
+        <Text>{activeWorkspace?.Name}</Text>
         <MenuList>
             <MenuItem icon={<AddIcon />} onClick={onAddNewWorkspaceButtonClick}>
                 Add new workspace
             </MenuItem>
             <MenuDivider />
-            {localeWorkSpaceList.map((workspaceName, index) => {
-                return (<MenuItem icon={<FiCheck />} key={`workspace_${index}`}>
-                    {workspaceName.Name}
+            {localeWorkSpaceList.map((workspace, index) => {
+                const isCurrentWorkspace = (workspace.Id == activeWorkspace?.Id);
+
+                return (<MenuItem
+                    onClick={() => { onSelectedWorkspaceChange(workspace) }}
+                    icon={isCurrentWorkspace ? <FiCheck /> : <FiCircle />}
+                    key={`workspace_${workspace.Id}`}>
+                    {workspace.Name}
                 </MenuItem>);
             })}
         </MenuList>

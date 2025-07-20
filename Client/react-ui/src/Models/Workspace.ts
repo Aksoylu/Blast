@@ -1,7 +1,7 @@
 export class Workspace {
+    Id: string;
     Name: string;
     Storage: "locale" | "remote";
-    code: string;
 
     constructor(init?: Partial<Workspace>) {
         Object.assign(this, init);

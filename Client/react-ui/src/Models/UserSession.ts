@@ -11,7 +11,7 @@ export class UserSession {
     ProfileImage: string;
     Network: string;
 
-    ActiveWorkspaceInfo: Workspace | undefined;
+    ActiveWorkspace: Workspace | undefined;
 
     constructor(init?: Partial<UserSession>) {
         Object.assign(this, init);

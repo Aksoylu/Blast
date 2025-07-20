@@ -31,6 +31,7 @@ import type {
     ReadLocaleCollectionResult,
     GetLocaleCollectionListResult
 } from "./HttpCollectionService";
+import { UserSession } from "#/Models";
 
 export default interface NativeBridge {
     electronAPI: {
@@ -53,7 +54,7 @@ export default interface NativeBridge {
 
         UserSessionService: {
             ReadSessionInfoFromStorage: () => Promise<ReadSessionInfoFromStorageResult>;
-            SaveSessionInfoToStorage: () => Promise<SaveSessionInfoToStorageResult>;
+            SaveSessionInfoToStorage: (sessionInfo: UserSession) => Promise<SaveSessionInfoToStorageResult>;
         },
         WorkspaceService: {
             GetWorkspacePath: () => Promise<GetWorkspacePathResult>;

@@ -33,7 +33,6 @@ export class UserSessionService extends BaseService {
     async ReadSessionInfoFromStorage() {
         try {
             const blastPath = await this.fileSystemService.GetBlastPath();
-            console.log("ReadSessionInfoFromStorage || blastPath >>", blastPath);
             const sessionFilePath = path.join(blastPath, 'userSession.json');
 
             const isSessionFileExist = await this.fileSystemService.IsFileExist(sessionFilePath);
@@ -56,10 +55,11 @@ export class UserSessionService extends BaseService {
 
     /**
      * @description: Writes session record to loacle storage
+     * @param {event} _event
      * @param {UserSession} sessionInfo 
      * @returns {Promise<SaveSessionInfoToStorageResult>}
      */
-    async SaveSessionInfoToStorage(sessionInfo) {
+    async SaveSessionInfoToStorage(_event, sessionInfo) {
         try {
             const blastPath = await this.fileSystemService.GetBlastPath();
             const sessionFilePath = path.join(blastPath, 'userSession.json');

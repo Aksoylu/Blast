@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AppPrefences, UserSession, Workspace } from "./Models";
+import { AppPrefences, HttpRequestCollection, UserSession, Workspace } from "./Models";
 
 interface MainStore {
     blastPath?: string;
@@ -8,21 +8,21 @@ interface MainStore {
     userSession?: UserSession;
     setUserSession: (session?: UserSession) => void;
 
+    activeWorkspace?: Workspace;
+    setActiveWorkspace: (workspace: Workspace) => void;
+
     appPrefences?: AppPrefences;
     setAppPrefences: (appPrefences?: AppPrefences) => void;
 
     localeWorkSpaceList: Workspace[];
     setLocaleWorkSpaceList: (workspaceList?: Workspace[]) => void;
 
-    activeWorkspace: Workspace;
-    setActiveWorkspace: (workspace: Workspace) => void;
-
-    collectionList: Collection[];
-    setCollectionList: (collectionList: Collection[]) => void;
+    collectionList: HttpRequestCollection[];
+    setCollectionList: (collectionList: HttpRequestCollection[]) => void;
 }
 
 
-export const useMainStore = create<MainStore>((set) => ({
+export const useMainStore = create<MainStore>((set, get) => ({
     blastPath: undefined,
     setBlastPath: (path) => set({ blastPath: path }),
 
@@ -35,9 +35,17 @@ export const useMainStore = create<MainStore>((set) => ({
     localeWorkSpaceList: [] as Workspace[],
     setLocaleWorkSpaceList: (workspaceList) => set({ localeWorkSpaceList: workspaceList }),
 
-    activeWorkspace: new Workspace(),
-    setActiveWorkspace: (workspace) => set({activeWorkspace: workspace}),
+    activeWorkspace: undefined,
+    setActiveWorkspace: (workspace: Workspace) => {
+        const currentSession = get().userSession;
+        if (!currentSession) return;
 
-    collectionList: [] as Collection[],
-    setCollectionList:  (collections) => set({collectionList: collections}),
+        set({ activeWorkspace: workspace });
+        const updatedSession = { ...currentSession, ActiveWorkspace: workspace };
+        console.log(updatedSession);
+        set({ userSession: updatedSession });
+    },
+
+    collectionList: [] as HttpRequestCollection[],
+    setCollectionList: (collections) => set({ collectionList: collections }),
 }));
