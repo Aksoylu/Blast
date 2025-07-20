@@ -47,7 +47,7 @@ export class HttpCollectionService extends BaseService {
             }
 
             const collectionList = existingFiles.fileList.map(eachFileInfo => new HttpRequestCollection({
-                Key: eachFileInfo,
+                Id: eachFileInfo,
                 Name: Base64Utility.Base64Decode(eachFileInfo),
                 RequestList: []
             }));

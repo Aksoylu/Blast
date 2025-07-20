@@ -55,7 +55,7 @@ export class WorkspaceService extends BaseService {
             for (let i = 0; i < getSubDirectoryListResult.directoryList.length; i++) {
                 const eachDirName = getSubDirectoryListResult.directoryList[i];
                 const workspaceName = Base64Utility.Base64Decode(eachDirName);
-                const newWorkspace = new Workspace({ Name: workspaceName, Storage: "locale", Key: eachDirName });
+                const newWorkspace = new Workspace({ Id: eachDirName, Name: workspaceName, Storage: "locale" });
 
                 workspaceList.push(newWorkspace);
             }
@@ -68,21 +68,21 @@ export class WorkspaceService extends BaseService {
     }
 
     /**
-     * 
+     * @param {event} _event
      * @param {string} workspaceName 
      * @returns {Promise<CreateLocaleWorkspaceResult>}
      */
     async CreateLocaleWorkspace(_event, workspaceName) {
         try {
-            const newWorkspaceKey = Base64Utility.Base64Encode(workspaceName);
+            const newWorkspaceId = Base64Utility.Base64Encode(workspaceName);
 
             const existingWorkspaces = await this.GetLocaleWorkspaceList();
             if (!existingWorkspaces.success) {
                 throw new Error(existingWorkspaces.message);
             }
 
-            const existingWorkspaceKeys = existingWorkspaces.workspaceList.map(item => item.Key);
-            if (existingWorkspaceKeys.includes(newWorkspaceKey)) {
+            const existingWorkspaceIdList = existingWorkspaces.workspaceList.map(item => item.Id);
+            if (existingWorkspaceIdList.includes(newWorkspaceId)) {
                 throw new Error(ErrorCodes.CreateLocaleWorkspace.AlreadyExistWithSameName);
             }
 
@@ -93,7 +93,7 @@ export class WorkspaceService extends BaseService {
 
             const workspacePath = getWorkspacePathResult.WorkspacePath;
 
-            const newWorkspacePath = path.join(workspacePath, newWorkspaceKey);
+            const newWorkspacePath = path.join(workspacePath, newWorkspaceId);
             const createDirectoryResult = await this.fileSystemService.CreateDirectory(newWorkspacePath);
             if (!createDirectoryResult.success) {
                 throw new Error(createDirectoryResult.message);

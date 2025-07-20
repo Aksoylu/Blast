@@ -3,7 +3,7 @@ import { HttpRequestObject } from "./index.js";
 export class HttpRequestCollection {
     constructor(init) {
         /** @type {string} | @description: File name or provided backend code */
-        Key = "";
+        Id = "";
 
         /** @type {string} */
         Name = "dark";

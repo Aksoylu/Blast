@@ -22,22 +22,22 @@ export const App = (): JSX.Element => {
         const currentUserSession = readSessionInfoFromStorageResult.userSession;
         setUserSession(currentUserSession);
 
-
         const localeWorkspaceList = await window.electronAPI.WorkspaceService.GetLocaleWorkspaceList();
         if (localeWorkspaceList.success) {
             setLocaleWorkSpaceList(localeWorkspaceList.workspaceList);
         }
 
-        const activeWorkspaceInfo = currentUserSession.ActiveWorkspaceInfo;
-        console.log("activeWorkspaceInfo >>", activeWorkspaceInfo);
-        if (activeWorkspaceInfo !== undefined) {
-            setActiveWorkspace(activeWorkspaceInfo);
+        if (currentUserSession.ActiveWorkspace !== undefined && currentUserSession.ActiveWorkspace.Id !== undefined) {
+            setActiveWorkspace(currentUserSession.ActiveWorkspace);
+            console.log(currentUserSession);
 
-            if (activeWorkspaceInfo.Storage === "locale") {
-                const getLocaleCollectionListResult = await window.electronAPI.HttpCollectionService.GetLocaleCollectionList(activeWorkspaceInfo.code);
+            if (currentUserSession.ActiveWorkspace.Storage === "locale") {
+                const getLocaleCollectionListResult = await window.electronAPI.HttpCollectionService.GetLocaleCollectionList(currentUserSession.ActiveWorkspace.Id);
                 const activeCollectionList = getLocaleCollectionListResult.success ? getLocaleCollectionListResult.CollectionList : [];
                 setCollectionList(activeCollectionList);
-                console.log(activeCollectionList);
+            }
+            else if (currentUserSession.ActiveWorkspace.Storage === "remote") {
+                // todo: get from backend here
             }
         }
     }

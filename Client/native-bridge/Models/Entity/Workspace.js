@@ -6,11 +6,11 @@ export class Workspace {
     Storage = "locale";
 
     /** @type {string} | @description: Directory name or provided backend code */
-    Key = "";
+    Id = "";
 
-    constructor({ Name, Storage, Key }) {
+    constructor({ Id, Name, Storage}) {
+        this.Id = Id;
         this.Name = Name;
         this.Storage = Storage;
-        this.Key = Key;
     }
 }
