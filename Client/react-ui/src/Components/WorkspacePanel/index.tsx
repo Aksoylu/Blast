@@ -8,7 +8,7 @@ import {
     TabPanels,
     Tabs
 } from '@chakra-ui/react';
-import { FileTree, FileTreeProps } from '../FileTree';
+import { FileTree, FileTreeProps } from '../CollectionTree';
 import { SearchBar } from '../SearchBar';
 
 

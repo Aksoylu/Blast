@@ -1,6 +1,15 @@
 import { HttpRequestType, HttpRequestHeader, HttpQueryParameter, HttpRequestBody } from "./index.js";
 
 export class HttpRequestObject {
+    /** @type {string} | @description: File name or provided backend code */
+    Id = "";
+
+    /** @type {string} */
+    Name = "dark";
+
+    /** @type {string} */
+    EntityType = "http_request"
+
     /** @type {HttpRequestType} */
     RequestType = undefined;
 
@@ -13,7 +22,9 @@ export class HttpRequestObject {
     /** @type {HttpRequestBody} */
     Body = undefined;
 
-    constructor({ RequestType, Headers, QueryParameters, Body }) {
+    constructor({ Id, Name, RequestType, Headers, QueryParameters, Body }) {
+        this.Id = Id;
+        this.Name = Name;
         this.RequestType = RequestType;
         this.Headers = Headers;
         this.QueryParameters = QueryParameters;

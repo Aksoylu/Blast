@@ -1,9 +1,8 @@
-import { HttpRequestFolder } from "./HttpRequestFolder";
 import { HttpRequestObject } from "./HttpRequestObject";
 
-export class HttpRequestCollection {
+export class HttpRequestFolder {
     public Id: string;
     public Name: string;
-    public readonly EntityType = "collection";
+    public readonly EntityType = "folder";
     public Items: (HttpRequestObject | HttpRequestFolder)[];
 }

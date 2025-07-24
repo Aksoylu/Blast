@@ -9,13 +9,8 @@ import { HttpRequestPanel } from '#/Components/HttpRequestPanel/index';
 
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
-import { HttpResponseStatusData, ScrollBarBehaviour } from '#/Constants';
-import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
-import { SupportedDataFormatsEnum } from '#/Enums';
-import { TreeNodeProps } from '#/Components/FileTree/TreeNode';
+import { ScrollBarBehaviour } from '#/Constants';
 import { useHomePageStore } from './Store';
-import { useMainStore } from '#/MainStore';
-
 
 const workspace_1 = [
     {
@@ -84,8 +79,8 @@ export const VerticalLayout = () => {
         httpResponseBody
     } = useHomePageStore();
 
-    const treeData = useHomePageStore((state) => state.treeData);
-    const setTreeData = useHomePageStore((state) => state.setTreeData);
+    const treeData = useHomePageStore((state) => state.collectionList);
+    const setTreeData = useHomePageStore((state) => state.setCollectionList);
     // #endregion
 
     // #region UI Functions
@@ -177,7 +172,7 @@ export const VerticalLayout = () => {
                             <Box height="100%" sx={responsePanelScrollBar} ref={responsePanelRef}>
                                 <HttpResponsePanel
                                     renderLayout='vertical'
-            
+
                                     onChangeLayoutButtonClick={onChangeLayoutButtonClick}
                                     onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
 

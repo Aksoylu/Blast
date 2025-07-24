@@ -8,5 +8,6 @@ export { HttpRequestBody } from "./HttpRequestBody.js";
 
 export { HttpRequestObject } from "./HttpRequestObject.js";
 export { HttpRequestCollection } from "./HttpRequestCollection.js";
+export { HttpRequestFolder } from "./HttpRequestFolder.js";
 
 export { Workspace } from "./Workspace.js";

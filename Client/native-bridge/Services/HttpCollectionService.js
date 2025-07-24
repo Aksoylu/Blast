@@ -1,7 +1,11 @@
+import fs from 'fs/promises';
+import os from 'os';
+import path from 'path';
+
 import { BaseService } from "../Infrastructure/BaseService.js";
 import { FileSystemService, WorkspaceService } from "./index.js";
 import { ReadLocaleCollectionResult, GetLocaleCollectionListResult } from "../Models/Business/index.js";
-import { HttpRequestCollection } from "../Models/Entity/index.js";
+import { HttpRequestCollection, HttpRequestFolder, HttpRequestObject } from "../Models/Entity/index.js";
 import { Base64Utility } from "../Utility/Base64Utility.js";
 
 const ErrorCodes = {
@@ -34,6 +38,7 @@ export class HttpCollectionService extends BaseService {
      */
     async GetLocaleCollectionList(_event, workspaceId) {
         try {
+
             const getWorkspacePathResult = await this.workspaceService.GetWorkspacePath();
             if (!getWorkspacePathResult.success) {
                 throw new Error(getWorkspacePathResult.message);
@@ -41,21 +46,68 @@ export class HttpCollectionService extends BaseService {
 
             const workspacePath = path.join(getWorkspacePathResult.WorkspacePath, workspaceId)
             // get all file names in folder with extension
-            const existingFiles = await this.fileSystemService.GetFiles(workspacePath, ".json");
-            if (!existingFiles.success) {
+            const getFilesResult = await this.fileSystemService.GetFiles(workspacePath, ".json");
+
+            if (!getFilesResult.success) {
                 return [];
             }
 
-            const collectionList = existingFiles.fileList.map(eachFileInfo => new HttpRequestCollection({
-                Id: eachFileInfo,
-                Name: Base64Utility.Base64Decode(eachFileInfo),
-                RequestList: []
-            }));
+            let collectionList = [];
 
-            return new GetLocaleCollectionListResult({success: true, CollectionList:collectionList});
+            const fileList = getFilesResult.fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                const eachFileName = fileList[i];
+                const eachFilePath = path.join(workspacePath, eachFileName);
+
+                const readFileResult = await this.fileSystemService.ReadFileAsJson(eachFilePath);
+                if (!readFileResult.success) {
+                    continue;
+                }
+
+                /** @type {(HttpRequestCollection|HttpRequestObject)[]} */
+                collectionList = readFileResult.jsonObject.map(eachItem => this.#parseCollectionEntity(eachItem));
+            }
+
+            console.log(JSON.stringify(collectionList));
+            return new GetLocaleCollectionListResult({ success: true, CollectionList: collectionList });
         }
         catch (error) {
-            return new GetLocaleCollectionListResult({success: false, message: error.message, CollectionList:[]});
+            console.log(error);
+            return new GetLocaleCollectionListResult({ success: false, message: error.message, CollectionList: [] });
+        }
+    }
+
+    /**
+     * 
+     * @param {HttpRequestCollection|HttpRequestObject|HttpRequestFolder} input 
+     * @returns {HttpRequestObject|HttpRequestCollection|HttpRequestFolder|null}
+     */
+    #parseCollectionEntity = (input) => {
+        switch (input.EntityType) {
+            case "http_request":
+                return new HttpRequestObject({
+                    Id: input.Id,
+                    Name: input.Name,
+                    RequestType: input.RequestType,
+                    QueryParameters: input.QueryParameters,
+                    Headers: input.QueryParameters,
+                    Body: input.Body
+                });
+
+            case "collection":
+                return new HttpRequestCollection({
+                    Id: input.Id,
+                    Name: input.Name,
+                    Items: input.Items.map(item => this.#parseCollectionEntity(item))
+                });
+            case "folder":
+                return new HttpRequestFolder({
+                    Id: input.Id,
+                    Name: input.Name,
+                    Items: input.Items.map(item => this.#parseCollectionEntity(item))
+                });
+            default:
+                return null;
         }
     }
 

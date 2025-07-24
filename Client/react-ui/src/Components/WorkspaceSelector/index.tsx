@@ -1,11 +1,13 @@
 import { useMainStore } from "#/MainStore";
 import { AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 
-import { useToast, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
+import { useToast, IconButton, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { FiCheck, FiCircle } from "react-icons/fi";
 import { InputModal, InputModalRef } from "./InputModal";
 import React, { useEffect } from "react";
-import { Workspace } from "#/Models";
+import { HttpRequestCollection, Workspace } from "#/Models";
+import { useHomePageStore } from "#/Pages/Home/Store";
+
 
 export const WorkspaceSelector = ({ }) => {
     const inputModalRef = React.useRef<InputModalRef | null>(null);
@@ -13,7 +15,7 @@ export const WorkspaceSelector = ({ }) => {
 
     const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList);
     const setActiveWorkspace = useMainStore((state) => state.setActiveWorkspace);
-
+    const setCollectionList = useHomePageStore((state) => state.setCollectionList);
     const { localeWorkSpaceList, activeWorkspace } = useMainStore();
 
     // #region LifeCycle
@@ -21,7 +23,7 @@ export const WorkspaceSelector = ({ }) => {
         loadWorkspaceList();
     }, []);
 
-    // #region UI Actions
+    // #region Service Functions
     const loadWorkspaceList = async () => {
         const getLocaleWorkspaceListResult = await window.electronAPI.WorkspaceService.GetLocaleWorkspaceList();
         if (!getLocaleWorkspaceListResult.success) {
@@ -38,6 +40,38 @@ export const WorkspaceSelector = ({ }) => {
         }
     }
 
+    const updateSessionInfo = async (selectedWorkspace: Workspace) => {
+        const updatedSession = useMainStore.getState().userSession;
+        if (updatedSession === undefined) {
+            throw new Error("User session is not exist");
+        }
+
+        const saveSessionInfoToStorageResult = await window.electronAPI.UserSessionService.SaveSessionInfoToStorage(updatedSession);
+        if (!saveSessionInfoToStorageResult.success) {
+            throw new Error(saveSessionInfoToStorageResult.message);
+        }
+
+    }
+
+    const readCollectionList = async (selectedWorkspace: Workspace) => {
+        let collectionList = [] as HttpRequestCollection[];
+
+        if (selectedWorkspace.Storage === "locale") {
+            const getLocaleCollectionListResult = await window.electronAPI.HttpCollectionService.GetLocaleCollectionList(selectedWorkspace.Id)
+            if (!getLocaleCollectionListResult.success) {
+                throw new Error(getLocaleCollectionListResult.message);
+            }
+
+            collectionList = getLocaleCollectionListResult.CollectionList;
+        }
+        else if (selectedWorkspace.Storage === "remote") {
+            // todo
+        }
+
+        setCollectionList(collectionList);
+    }
+
+    // #region UI Actions
     const onAddNewWorkspaceButtonClick = () => {
         inputModalRef.current?.show();
     }
@@ -58,19 +92,24 @@ export const WorkspaceSelector = ({ }) => {
         }
     }
 
-
     const onSelectedWorkspaceChange = async (selectedWorkspace: Workspace) => {
         if (selectedWorkspace.Id === activeWorkspace?.Id) {
             return;
         }
 
-        setActiveWorkspace(selectedWorkspace);
-
-        const updatedSession = useMainStore.getState().userSession;
-
-        if (updatedSession !== undefined) {
-            await window.electronAPI.UserSessionService.SaveSessionInfoToStorage(updatedSession);
-
+        try {
+            await updateSessionInfo(selectedWorkspace);
+            await readCollectionList(selectedWorkspace);
+            setActiveWorkspace(selectedWorkspace);
+        }
+        catch (exception) {
+            toast({
+                title: 'Error',
+                description: exception.toString(),
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
         }
     }
 
