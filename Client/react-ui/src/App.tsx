@@ -29,7 +29,6 @@ export const App = (): JSX.Element => {
 
         if (currentUserSession.ActiveWorkspace !== undefined && currentUserSession.ActiveWorkspace.Id !== undefined) {
             setActiveWorkspace(currentUserSession.ActiveWorkspace);
-            console.log(currentUserSession);
 
             if (currentUserSession.ActiveWorkspace.Storage === "locale") {
                 const getLocaleCollectionListResult = await window.electronAPI.HttpCollectionService.GetLocaleCollectionList(currentUserSession.ActiveWorkspace.Id);

@@ -38,7 +38,10 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
         },
         Headers: DefaultHttpHeaders.List(),
         QueryParameters: [],
-        Body: new HttpRequestBody()
+        Body: new HttpRequestBody(),
+        Id: '',
+        Name: '',
+        EntityType: 'http_request'
     };
 
     const [queryParameters, setQueryParameters] = useState<HttpQueryParameter[]>(initialRequestData.QueryParameters);
@@ -68,7 +71,10 @@ export const HttpRequestPanel = ({ initialRequestData_ }: HttpRequestPanelProps)
         RequestType: requestType,
         Headers: headers,
         QueryParameters: queryParameters,
-        Body: requestBody
+        Body: requestBody,
+        Id: '',
+        Name: '',
+        EntityType: 'http_request'
     };
 
 

@@ -30,8 +30,6 @@ export const HorizontalLayout = () => {
         httpResponseBody
     } = useHomePageStore();
 
-    const treeData = useHomePageStore((state) => state.collectionList);
-    const setTreeData = useHomePageStore((state) => state.setCollectionList);
     // #endregion 
 
     // #region UI Functions
@@ -79,10 +77,7 @@ export const HorizontalLayout = () => {
                     direction="horizontal"
                 >
                     <Box height="100%" pr={3}>
-                        <WorkspacePanel
-                            data={treeData}
-                            onTreeChange={setTreeData}
-                        />
+                        <WorkspacePanel />
                     </Box>
                     <Box height="100%" pl={3} ref={requestPanelRef}>
                         <HttpRequestPanel

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, HStack, useDisclosure, VStack } from '@chakra-ui/react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -7,20 +7,21 @@ import { HttpRequestCollection, HttpRequestFolder, HttpRequestObject } from '#/M
 import { FolderNodeItem } from './FolderNodeItem';
 import { HttpRequestNodeItem } from './HttpRequestNodeItem';
 import { CollectionNodeItem } from './CollectionNodeItem';
+import { useMainStore } from '#/MainStore';
 
 type FileTreeNode = HttpRequestCollection | HttpRequestFolder | HttpRequestObject;
 
-export interface FileTreeProps {
-  data: FileTreeNode[];
-  onTreeChange: (newTree: HttpRequestCollection[]) => void;
-}
+export const CollectionTree = () => {
+
+  const data = useMainStore((state) => state.collectionList);
+  const onTreeChange = useMainStore((state) => state.setCollectionList);
 
 
-export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
-  function isFolderOrCollection(
-    node: FileTreeNode
-  ): node is HttpRequestCollection | HttpRequestFolder {
+  const isFolderOrCollection = (node: FileTreeNode): node is HttpRequestCollection | HttpRequestFolder => {
     return 'Items' in node && Array.isArray(node.Items);
   }
 
@@ -163,7 +164,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
   //todo: menü kapanınca tüm gereksiz hover olmuş elemanlar resetlenmeli
 
   const renderTree = (node: FileTreeNode) => {
-    if (node instanceof HttpRequestFolder) {
+    if (node.EntityType == "folder") {
       return (<FolderNodeItem
         key={node.Id}
         node={node}
@@ -172,7 +173,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
         isContextMenuOpen={contextMenuDisclosure.isOpen}
       />);
     }
-    else if (node instanceof HttpRequestObject) {
+    if (node.EntityType == "http_request") {
       return (<HttpRequestNodeItem
         key={node.Id}
         node={node}
@@ -181,7 +182,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
         isContextMenuOpen={contextMenuDisclosure.isOpen}
       />);
     }
-    else if (node instanceof HttpRequestCollection) {
+    if (node.EntityType ==  "collection") {
       return (<CollectionNodeItem
         key={node.Id}
         node={node}
@@ -190,6 +191,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
         isContextMenuOpen={contextMenuDisclosure.isOpen}
       />);
     }
+    return (<></>);
   }
 
   return (

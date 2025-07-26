@@ -4,6 +4,7 @@ import { Box, VStack, HStack, Text, Icon, Collapse } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useDrag, useDrop } from 'react-dnd';
 import { HttpRequestFolder, HttpRequestObject } from "#/Models";
+import { HttpRequestNodeItem } from "./HttpRequestNodeItem";
 
 
 export const FolderNodeItem: React.FC<{
@@ -45,7 +46,7 @@ export const FolderNodeItem: React.FC<{
 
 
   const renderChildItem = (item: HttpRequestFolder | HttpRequestObject) => {
-    if (item instanceof HttpRequestFolder) {
+    if (item.EntityType == "folder") {
       return (<FolderNodeItem
         key={item.Id}
         node={item}
@@ -54,8 +55,14 @@ export const FolderNodeItem: React.FC<{
         isContextMenuOpen={isContextMenuOpen}
       />)
     }
-    else if (item instanceof HttpRequestObject) {
-
+    if (item.EntityType == "http_request") {
+      return (<HttpRequestNodeItem
+        key={item.Id}
+        node={item}
+        onDrop={onDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={isContextMenuOpen}
+      />);
     }
   }
 

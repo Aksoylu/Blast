@@ -52,12 +52,13 @@ export class HttpCollectionService extends BaseService {
                 return [];
             }
 
-            let collectionList = [];
+            const collectionList = [];
 
             const fileList = getFilesResult.fileList;
             for (let i = 0; i < fileList.length; i++) {
                 const eachFileName = fileList[i];
                 const eachFilePath = path.join(workspacePath, eachFileName);
+                const fileId = eachFileName.replace(".json", "");
 
                 const readFileResult = await this.fileSystemService.ReadFileAsJson(eachFilePath);
                 if (!readFileResult.success) {
@@ -65,7 +66,15 @@ export class HttpCollectionService extends BaseService {
                 }
 
                 /** @type {(HttpRequestCollection|HttpRequestObject)[]} */
-                collectionList = readFileResult.jsonObject.map(eachItem => this.#parseCollectionEntity(eachItem));
+                const itemList = readFileResult.jsonObject.map(eachItem => this.#parseCollectionEntity(eachItem));
+
+                const eachollection = new HttpRequestCollection({
+                    Id: fileId,
+                    Name: Base64Utility.Base64Decode(fileId),
+                    Items: itemList
+                });
+
+                collectionList.push(eachollection);
             }
 
             console.log(JSON.stringify(collectionList));

@@ -30,8 +30,6 @@
   overflow-x: auto;
 }
 
-
-
 .vertical-split>.gutter {
   cursor: row-resize;
   height: 4px;

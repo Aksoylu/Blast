@@ -13,10 +13,12 @@ export const WorkspaceSelector = ({ }) => {
     const inputModalRef = React.useRef<InputModalRef | null>(null);
     const toast = useToast();
 
+    const { localeWorkSpaceList, activeWorkspace } = useMainStore();
+
     const setLocaleWorkSpaceList = useMainStore((state) => state.setLocaleWorkSpaceList);
     const setActiveWorkspace = useMainStore((state) => state.setActiveWorkspace);
-    const setCollectionList = useHomePageStore((state) => state.setCollectionList);
-    const { localeWorkSpaceList, activeWorkspace } = useMainStore();
+    const setCollectionList = useMainStore((state) => state.setCollectionList);
+
 
     // #region LifeCycle
     useEffect(() => {
@@ -98,9 +100,9 @@ export const WorkspaceSelector = ({ }) => {
         }
 
         try {
+            setActiveWorkspace(selectedWorkspace);
             await updateSessionInfo(selectedWorkspace);
             await readCollectionList(selectedWorkspace);
-            setActiveWorkspace(selectedWorkspace);
         }
         catch (exception) {
             toast({

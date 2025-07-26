@@ -1,8 +1,11 @@
 import React, { useRef, useState } from "react";
-import { FiFolder, FiFile } from 'react-icons/fi';
+import { FiFolder, FiFile, FiArchive, FiLayers } from 'react-icons/fi';
+import { Tooltip } from '@chakra-ui/react'
 import { Box, VStack, HStack, Text, Icon, Collapse } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
+
 import { useDrag, useDrop } from 'react-dnd';
+
 import { HttpRequestCollection, HttpRequestFolder, HttpRequestObject } from "#/Models";
 import { HttpRequestNodeItem } from "./HttpRequestNodeItem";
 import { FolderNodeItem } from "./FolderNodeItem";
@@ -47,7 +50,7 @@ export const CollectionNodeItem: React.FC<{
 
 
   const renderChildItem = (item: HttpRequestFolder | HttpRequestObject) => {
-    if (item instanceof HttpRequestFolder) {
+    if (item.EntityType == "folder") {
       return (<FolderNodeItem
         key={item.Id}
         node={item}
@@ -56,7 +59,7 @@ export const CollectionNodeItem: React.FC<{
         isContextMenuOpen={isContextMenuOpen}
       />);
     }
-    else if (item instanceof HttpRequestObject) {
+    if (item.EntityType == "http_request") {
       return (<HttpRequestNodeItem
         key={item.Id}
         node={item}
@@ -65,44 +68,43 @@ export const CollectionNodeItem: React.FC<{
         isContextMenuOpen={isContextMenuOpen}
       />);
     }
+
+    return (<></>);
   }
 
   return (
     <Box pl={2}>
-      <HStack
-        ref={ref}
-        onClick={toggle}
-        cursor="pointer"
-        bg={isOver ? 'blue.100' : 'transparent'}
-        fontWeight={isMouseOver ? 600 : 300}
-        opacity={isDragging ? 0.5 : 1}
-        p={1}
-        borderRadius="md"
-        onMouseEnter={(e) => {
-          if (isContextMenuOpen)
-            return;
-          e.stopPropagation();
-          handleHover?.(node.Id);
-          setIsMouseOver(true);
-        }}
-        onMouseLeave={(e) => {
-          if (isContextMenuOpen)
-            return;
-          e.stopPropagation();
-          setIsMouseOver(false);
-        }}
-      >
-        {hasChildren ? (
-          <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} boxSize={4} />
-        ) : (
-          <Box w={4} />
-        )}
-        <Icon
-          as={FiFolder}
-          color="yellow.500"
-        />
-        <Text fontSize="sm">{node.Name}</Text>
-      </HStack>
+        <HStack
+          ref={ref}
+          onClick={toggle}
+          cursor="pointer"
+          bg={isOver ? 'blue.100' : 'transparent'}
+          fontWeight={isMouseOver ? 600 : 300}
+          opacity={isDragging ? 0.5 : 1}
+          p={1}
+          borderRadius="md"
+          onMouseEnter={(e) => {
+            if (isContextMenuOpen)
+              return;
+            e.stopPropagation();
+            handleHover?.(node.Id);
+            setIsMouseOver(true);
+          }}
+          onMouseLeave={(e) => {
+            if (isContextMenuOpen)
+              return;
+            e.stopPropagation();
+            setIsMouseOver(false);
+          }}
+        >
+          {hasChildren ? (
+            <Icon as={isOpen ? ChevronDownIcon : ChevronRightIcon} boxSize={4} />
+          ) : (
+            <Box w={4} />
+          )}
+          <Icon as={FiLayers} color="blue.300" />
+          <Text fontSize="sm">{node.Name}</Text>
+        </HStack>
 
       {hasChildren && isOpen && (
         <Collapse in={isOpen} >
