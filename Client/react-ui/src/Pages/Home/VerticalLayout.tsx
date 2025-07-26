@@ -9,49 +9,8 @@ import { HttpRequestPanel } from '#/Components/HttpRequestPanel/index';
 
 import "./Home.css";
 import { HttpResponsePanel } from '#/Components/HttpResponsePanel';
-import { HttpResponseStatusData, ScrollBarBehaviour } from '#/Constants';
-import { HttpBodyRawData, HttpPayloadSizeObject, HttpResponseHeader, HttpResponseNetworkObject, HttpResponseStatusObject, HttpResponseTimeObject } from '#/Models';
-import { SupportedDataFormatsEnum } from '#/Enums';
-import { TreeNodeProps } from '#/Components/FileTree/TreeNode';
+import { ScrollBarBehaviour } from '#/Constants';
 import { useHomePageStore } from './Store';
-import { useMainStore } from '#/MainStore';
-
-
-const workspace_1 = [
-    {
-        id: '1',
-        name: 'Test Folder',
-        isCollection: true,
-        isFolder: true,
-        children: [
-            { id: '2', name: 'get isteği', isFolder: false },
-            {
-                id: '3',
-                name: 'subfolder',
-                isFolder: true,
-                children: [
-                    { id: '4', name: 'put deneme', isFolder: false },
-                ],
-            },
-        ],
-    },
-    {
-        id: '6',
-        name: 'Deneme',
-        isCollection: true,
-        isFolder: true,
-        children: [
-            { id: '7', name: 'Post req test', isFolder: false }
-        ],
-    },
-    {
-        id: '5',
-        name: 'get2',
-        isFolder: false,
-    },
-];
-
-
 
 export const VerticalLayout = () => {
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -84,8 +43,6 @@ export const VerticalLayout = () => {
         httpResponseBody
     } = useHomePageStore();
 
-    const treeData = useHomePageStore((state) => state.treeData);
-    const setTreeData = useHomePageStore((state) => state.setTreeData);
     // #endregion
 
     // #region UI Functions
@@ -161,7 +118,9 @@ export const VerticalLayout = () => {
                     direction="horizontal"
                     gutterSize={2}
                 >
-                    <Box height="100%" pr={3}><WorkspacePanel data={treeData} onTreeChange={setTreeData} /></Box>
+                    <Box height="100%" pr={3}>
+                        <WorkspacePanel />
+                    </Box>
                     <Box height="100%" width="100%" pl={3}>
                         <Split
                             className="vertical-split"
@@ -177,7 +136,7 @@ export const VerticalLayout = () => {
                             <Box height="100%" sx={responsePanelScrollBar} ref={responsePanelRef}>
                                 <HttpResponsePanel
                                     renderLayout='vertical'
-            
+
                                     onChangeLayoutButtonClick={onChangeLayoutButtonClick}
                                     onResizeResponseWindowButtonClick={onResizeResponseWindowButtonClick}
 

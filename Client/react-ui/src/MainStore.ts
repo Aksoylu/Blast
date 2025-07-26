@@ -42,7 +42,6 @@ export const useMainStore = create<MainStore>((set, get) => ({
 
         set({ activeWorkspace: workspace });
         const updatedSession = { ...currentSession, ActiveWorkspace: workspace };
-        console.log(updatedSession);
         set({ userSession: updatedSession });
     },
 

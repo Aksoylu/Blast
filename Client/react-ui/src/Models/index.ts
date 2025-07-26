@@ -19,7 +19,9 @@ export { HttpPayloadSizeObject } from "./HttpPayloadSizeObject";
 export { HttpResponseNetworkObject } from "./HttpResponseNetworkObject";
 
 export { HttpRequestCollection } from "./HttpRequestCollection";
+export { HttpRequestFolder } from "./HttpRequestFolder";
 
 export { UserSession } from "./UserSession";
 export { AppPrefences } from "./AppPrefences";
 export { Workspace } from "./Workspace";
+export { WorkspaceTreeNode } from "./WorkspaceTreeNode";

@@ -1,43 +1,69 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, HStack, useDisclosure, VStack } from '@chakra-ui/react';
-import { TreeNodeItem, TreeNodeProps } from './TreeNode';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ContextMenu } from './ContextMenu';
+import { HttpRequestCollection, HttpRequestFolder, HttpRequestObject } from '#/Models';
+import { FolderNodeItem } from './FolderNodeItem';
+import { HttpRequestNodeItem } from './HttpRequestNodeItem';
+import { CollectionNodeItem } from './CollectionNodeItem';
+import { useMainStore } from '#/MainStore';
 
-export interface FileTreeProps {
-  data: TreeNodeProps[];
-  onTreeChange: (newTree: TreeNodeProps[]) => void;
-}
+type FileTreeNode = HttpRequestCollection | HttpRequestFolder | HttpRequestObject;
 
-export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
+export const CollectionTree = () => {
 
-  const isDescendant = (nodes: TreeNodeProps[], parentId: string, childId: string): boolean => {
+  const data = useMainStore((state) => state.collectionList);
+  const onTreeChange = useMainStore((state) => state.setCollectionList);
+
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  const isFolderOrCollection = (node: FileTreeNode): node is HttpRequestCollection | HttpRequestFolder => {
+    return 'Items' in node && Array.isArray(node.Items);
+  }
+
+  const isDescendant = (nodes: FileTreeNode[], parentId: string, childId: string): boolean => {
     for (const node of nodes) {
-      if (node.id === parentId) {
-        return containsNode(node, childId);
+      if (node.Id === parentId) {
+        if (isFolderOrCollection(node)) {
+          return containsNode(node, childId);
+        }
+        return false;
       }
-      if (node.children) {
-        if (isDescendant(node.children, parentId, childId)) return true;
+
+      if (isFolderOrCollection(node) && node.Items) {
+        if (isDescendant(node.Items, parentId, childId)) return true;
       }
     }
     return false;
   };
 
-  const containsNode = (node: TreeNodeProps, id: string): boolean => {
-    if (node.id === id) return true;
-    if (!node.children) return false;
-    return node.children.some(child => containsNode(child, id));
+  const containsNode = (node: FileTreeNode, id: string): boolean => {
+    if (node.Id === id) {
+      return true;
+    }
+
+    if (isFolderOrCollection(node)) {
+      return node.Items.some(item => containsNode(item, id));
+    }
+
+    return false;
   };
 
-  const findNodeById = (nodes: TreeNodeProps[], id: string): TreeNodeProps | null => {
+  const findNodeById = (nodes: FileTreeNode[], id: string): FileTreeNode | null => {
     for (const node of nodes) {
-      if (node.id === id) return node;
-      if (node.children) {
-        const found = findNodeById(node.children, id);
-        if (found) return found;
+      if (node.Id === id) return node;
+      if (isFolderOrCollection(node)) {
+        const found = findNodeById(node.Items, id);
+        if (found) {
+          return found;
+        }
       }
     }
+
     return null;
   };
 
@@ -55,13 +81,13 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
     // Interrupt moving node operation if current node is a collection.
     // Because that moving collections is not permitted by business logic
     const currentNode = findNodeById(data, draggedId);
-    if (currentNode?.isCollection) {
+    if (currentNode?.EntityType == "collection" || currentNode?.EntityType == "folder") {
       return;
     }
 
     // Interrupt moving node operation if target node is not an folder
     const targetNode = findNodeById(data, targetId);
-    if (!targetNode || !targetNode.isFolder) {
+    if (!targetNode || targetNode.EntityType == "http_request") {
       return;
     }
 
@@ -132,18 +158,47 @@ export const FileTree: React.FC<FileTreeProps> = ({ data, onTreeChange }) => {
 
     if (nodeId !== "") {
       const node = findNodeById(data, nodeId);
-      alert(`Seçilen işlem: ${value}, ${node?.name} <-> ${node?.id}`);
+      alert(`Seçilen işlem: ${value}, ${node?.Name} <-> ${node?.Id}`);
     }
   };
   //todo: menü kapanınca tüm gereksiz hover olmuş elemanlar resetlenmeli
+
+  const renderTree = (node: FileTreeNode) => {
+    if (node.EntityType == "folder") {
+      return (<FolderNodeItem
+        key={node.Id}
+        node={node}
+        onDrop={handleDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={contextMenuDisclosure.isOpen}
+      />);
+    }
+    if (node.EntityType == "http_request") {
+      return (<HttpRequestNodeItem
+        key={node.Id}
+        node={node}
+        onDrop={handleDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={contextMenuDisclosure.isOpen}
+      />);
+    }
+    if (node.EntityType ==  "collection") {
+      return (<CollectionNodeItem
+        key={node.Id}
+        node={node}
+        onDrop={handleDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={contextMenuDisclosure.isOpen}
+      />);
+    }
+    return (<></>);
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
       <ContextMenu menuItems={items} onSelect={handleSelect} disclosure={contextMenuDisclosure} >
         <VStack align="start" spacing={1} h="100%" w="100%" >
-          {data.map((node, index) => (
-            <TreeNodeItem key={node.id} node={node} onDrop={handleDrop} handleHover={(e) => handleHover(e)} isContextMenuOpen={contextMenuDisclosure.isOpen} />
-          ))}
+          {data.map(node => renderTree(node))}
         </VStack>
       </ContextMenu>
     </DndProvider >

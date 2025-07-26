@@ -1,12 +1,13 @@
 import { create } from "zustand";
 
 import {
-    HttpBodyRawData,
-    HttpPayloadSizeObject,
-    HttpResponseHeader, 
-    HttpResponseNetworkObject, 
-    HttpResponseStatusObject, 
-    HttpResponseTimeObject
+  HttpBodyRawData,
+  HttpPayloadSizeObject,
+  HttpRequestCollection,
+  HttpResponseHeader,
+  HttpResponseNetworkObject,
+  HttpResponseStatusObject,
+  HttpResponseTimeObject
 } from '#/Models';
 import { HttpResponseStatusData } from "#/Constants";
 import { SupportedDataFormatsEnum } from "#/Enums";
@@ -54,59 +55,59 @@ const workspace_1 = [
 ];
 
 interface HomePageStore {
-    treeData: TreeNodeProps[];
-    setTreeData: (data: TreeNodeProps[]) => void;
+  collectionList: HttpRequestCollection[];
+  setCollectionList: (data: HttpRequestCollection[]) => void;
 
-    responseHttpStatus?: HttpResponseStatusObject;
-    setResponseHttpStatus: (status?: HttpResponseStatusObject) => void;
+  responseHttpStatus?: HttpResponseStatusObject;
+  setResponseHttpStatus: (status?: HttpResponseStatusObject) => void;
 
-    httpResponseTime?: HttpResponseTimeObject;
-    setHttpResponseTime: (time?: HttpResponseTimeObject) => void;
+  httpResponseTime?: HttpResponseTimeObject;
+  setHttpResponseTime: (time?: HttpResponseTimeObject) => void;
 
-    httpPayloadSize?: HttpPayloadSizeObject;
-    setHttpPayloadSize: (size?: HttpPayloadSizeObject) => void;
+  httpPayloadSize?: HttpPayloadSizeObject;
+  setHttpPayloadSize: (size?: HttpPayloadSizeObject) => void;
 
-    responseNetworkInfo?: HttpResponseNetworkObject;
-    setResponseNetworkInfo: (info?: HttpResponseNetworkObject) => void;
+  responseNetworkInfo?: HttpResponseNetworkObject;
+  setResponseNetworkInfo: (info?: HttpResponseNetworkObject) => void;
 
-    httpResponseHeaders: HttpResponseHeader[];
-    setHttpResponseHeaders: (headers: HttpResponseHeader[]) => void;
+  httpResponseHeaders: HttpResponseHeader[];
+  setHttpResponseHeaders: (headers: HttpResponseHeader[]) => void;
 
-    httpResponseBody?: HttpBodyRawData;
-    setHttpResponseBody: (body?: HttpBodyRawData) => void;
+  httpResponseBody?: HttpBodyRawData;
+  setHttpResponseBody: (body?: HttpBodyRawData) => void;
 }
 
 export const useHomePageStore = create<HomePageStore>((set) => ({
-    treeData: workspace_1,
-    setTreeData: (data) => set({ treeData: data }),
+  collectionList: [] as  HttpRequestCollection[],
+  setCollectionList: (data) => set({collectionList: data}),
 
-    responseHttpStatus: HttpResponseStatusData.FindByCode("201"),
-    setResponseHttpStatus: (status) => set({ responseHttpStatus: status }),
+  responseHttpStatus: HttpResponseStatusData.FindByCode("201"),
+  setResponseHttpStatus: (status) => set({ responseHttpStatus: status }),
 
-    httpResponseTime: new HttpResponseTimeObject({ Total: 542 }),
-    setHttpResponseTime: (time) => set({ httpResponseTime: time }),
+  httpResponseTime: new HttpResponseTimeObject({ Total: 542 }),
+  setHttpResponseTime: (time) => set({ httpResponseTime: time }),
 
-    httpPayloadSize: new HttpPayloadSizeObject({ Total: 320 }),
-    setHttpPayloadSize: (size) => set({ httpPayloadSize: size }),
+  httpPayloadSize: new HttpPayloadSizeObject({ Total: 320 }),
+  setHttpPayloadSize: (size) => set({ httpPayloadSize: size }),
 
-    responseNetworkInfo: new HttpResponseNetworkObject({
-        HttpVersion: "1.1",
-        LocalAddress: "129.168.2.1",
-        RemoteAddress: "0.0.0.0"
-    }),
-    setResponseNetworkInfo: (info) => set({ responseNetworkInfo: info }),
+  responseNetworkInfo: new HttpResponseNetworkObject({
+    HttpVersion: "1.1",
+    LocalAddress: "129.168.2.1",
+    RemoteAddress: "0.0.0.0"
+  }),
+  setResponseNetworkInfo: (info) => set({ responseNetworkInfo: info }),
 
-    httpResponseHeaders: [
-        new HttpResponseHeader({ Key: "date", Value: "Thu, 03 Jul 2025 11:10:43 GMT" }),
-        new HttpResponseHeader({ Key: "server", Value: "Apache" }),
-        new HttpResponseHeader({ Key: "content-encoding", Value: "gzip" }),
-        new HttpResponseHeader({ Key: "content-length", Value: "589" }),
-    ],
-    setHttpResponseHeaders: (headers) => set({ httpResponseHeaders: headers }),
+  httpResponseHeaders: [
+    new HttpResponseHeader({ Key: "date", Value: "Thu, 03 Jul 2025 11:10:43 GMT" }),
+    new HttpResponseHeader({ Key: "server", Value: "Apache" }),
+    new HttpResponseHeader({ Key: "content-encoding", Value: "gzip" }),
+    new HttpResponseHeader({ Key: "content-length", Value: "589" }),
+  ],
+  setHttpResponseHeaders: (headers) => set({ httpResponseHeaders: headers }),
 
-    httpResponseBody: new HttpBodyRawData({
-        type: SupportedDataFormatsEnum.JSON,
-        Value: "<abc> test</abc>",
-    }),
-    setHttpResponseBody: (body) => set({ httpResponseBody: body }),
+  httpResponseBody: new HttpBodyRawData({
+    type: SupportedDataFormatsEnum.JSON,
+    Value: "<abc> test</abc>",
+  }),
+  setHttpResponseBody: (body) => set({ httpResponseBody: body }),
 }));

@@ -1,6 +1,6 @@
 import { HttpRequestObject } from "./index.js";
 
-export class HttpRequestCollection {
+export class HttpRequestFolder {
     /** @type {string} | @description: File name or provided backend code */
     Id = "";
 
@@ -8,7 +8,7 @@ export class HttpRequestCollection {
     Name = "dark";
 
     /** @type {string} */
-    EntityType = "collection"
+    EntityType = "folder"
 
     /** @type {(HttpRequestObject | HttpRequestFolder) []} */
     Items = [];

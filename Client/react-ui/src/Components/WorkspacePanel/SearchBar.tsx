@@ -15,7 +15,7 @@ export const SearchBar = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           variant="filled"
-          focusBorderColor="teal.400"
+          focusBorderColor="blue.400"
         />
       </InputGroup>
     </Box>

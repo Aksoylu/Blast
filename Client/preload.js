@@ -28,6 +28,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     HttpCollectionService: {
         ReadLocaleCollection: (workspaceId, collectionId) => ipcRenderer.invoke('HttpCollectionService:ReadLocaleCollection', workspaceId, collectionId),
-        GetLocaleCollectionList: (workspaceId) => ipcRenderer.invoke('HttpCollectionService:GetLocaleCollectionList', workspaceId, collectionId)
+        GetLocaleCollectionList: (workspaceId) => ipcRenderer.invoke('HttpCollectionService:GetLocaleCollectionList', workspaceId)
     }
 });

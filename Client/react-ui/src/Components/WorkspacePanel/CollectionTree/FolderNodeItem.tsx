@@ -1,26 +1,21 @@
 import React, { useRef, useState } from "react";
-import { FiFolder, FiFile } from 'react-icons/fi';
+import { FiFolder } from 'react-icons/fi';
 import { Box, VStack, HStack, Text, Icon, Collapse } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useDrag, useDrop } from 'react-dnd';
+import { HttpRequestFolder, HttpRequestObject } from "#/Models";
+import { HttpRequestNodeItem } from "./HttpRequestNodeItem";
 
-export interface TreeNodeProps {
-  id: string;
-  name: string;
-  isCollection?: boolean;
-  isFolder: boolean;
-  children?: TreeNodeProps[];
-}
 
-export const TreeNodeItem: React.FC<{
-  node: TreeNodeProps;
+export const FolderNodeItem: React.FC<{
+  node: HttpRequestFolder;
   onDrop: (draggedId: string, targetId: string) => void
   handleHover?: (hoveredId: string) => void;
   isContextMenuOpen: boolean;
 
 }> = ({ node, onDrop, handleHover, isContextMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const hasChildren = node.children && node.children.length > 0;
+  const hasChildren = node.Items && node.Items.length > 0;
   const ref = useRef<HTMLDivElement>(null);
 
   const toggle = () => {
@@ -29,7 +24,7 @@ export const TreeNodeItem: React.FC<{
 
   const [{ isDragging }, drag] = useDrag({
     type: 'TREE_NODE',
-    item: { id: node.id },
+    item: { id: node.Id },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -38,7 +33,7 @@ export const TreeNodeItem: React.FC<{
   const [{ isOver }, drop] = useDrop({
     accept: 'TREE_NODE',
     drop: (item: { id: string }) => {
-      onDrop(item.id, node.id);
+      onDrop(item.id, node.Id);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
@@ -49,6 +44,27 @@ export const TreeNodeItem: React.FC<{
 
   const [isMouseOver, setIsMouseOver] = useState(false);
 
+
+  const renderChildItem = (item: HttpRequestFolder | HttpRequestObject) => {
+    if (item.EntityType == "folder") {
+      return (<FolderNodeItem
+        key={item.Id}
+        node={item}
+        onDrop={onDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={isContextMenuOpen}
+      />)
+    }
+    if (item.EntityType == "http_request") {
+      return (<HttpRequestNodeItem
+        key={item.Id}
+        node={item}
+        onDrop={onDrop}
+        handleHover={handleHover}
+        isContextMenuOpen={isContextMenuOpen}
+      />);
+    }
+  }
 
   return (
     <Box pl={2}>
@@ -65,7 +81,7 @@ export const TreeNodeItem: React.FC<{
           if (isContextMenuOpen)
             return;
           e.stopPropagation();
-          handleHover?.(node.id);
+          handleHover?.(node.Id);
           setIsMouseOver(true);
         }}
         onMouseLeave={(e) => {
@@ -81,24 +97,16 @@ export const TreeNodeItem: React.FC<{
           <Box w={4} />
         )}
         <Icon
-          as={node.isFolder ? FiFolder : FiFile}
-          color={node.isFolder ? 'yellow.500' : 'gray.400'}
+          as={FiFolder}
+          color="yellow.500"
         />
-        <Text fontSize="sm">{node.name}</Text>
+        <Text fontSize="sm">{node.Name}</Text>
       </HStack>
 
       {hasChildren && isOpen && (
         <Collapse in={isOpen} >
           <VStack align="start" spacing={1} mt={1} >
-            {node.children?.map((child) => (
-              <TreeNodeItem
-                key={child.id}
-                node={child}
-                onDrop={onDrop}
-                handleHover={handleHover}
-                isContextMenuOpen={isContextMenuOpen}
-              />
-            ))}
+            {node.Items?.map(eachItem => renderChildItem(eachItem))}
           </VStack>
         </Collapse>
       )}
