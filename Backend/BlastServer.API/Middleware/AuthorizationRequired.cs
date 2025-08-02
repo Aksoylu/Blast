@@ -11,11 +11,11 @@ namespace BlastServer.API.Middleware
 
         private class SecuredImplementation : IAsyncActionFilter
         {
-            private readonly IAuthSessionCacheService authSessionCacheService;
+            private readonly IAuthSessionCacheProvider authSessionCacheProvider;
 
-            public SecuredImplementation(IAuthSessionCacheService _authSessionCacheService)
+            public SecuredImplementation(IAuthSessionCacheProvider _authSessionCacheProvider)
             {
-                this.authSessionCacheService = _authSessionCacheService;
+                this.authSessionCacheProvider = _authSessionCacheProvider;
             }
 
             public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -35,7 +35,7 @@ namespace BlastServer.API.Middleware
                     throw new AccessViolationException("Bearer token is not provided");
                 }
 
-                AuthSession? sessionInfo = this.authSessionCacheService.GetAuthInfoWithToken(token);
+                AuthSession? sessionInfo = this.authSessionCacheProvider.GetAuthInfoWithToken(token);
                 if (sessionInfo == null || String.IsNullOrEmpty(sessionInfo.UserName))
                 {
                     throw new AccessViolationException("Invalid authorization token");

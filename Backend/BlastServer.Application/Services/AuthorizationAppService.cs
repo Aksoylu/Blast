@@ -12,14 +12,14 @@ namespace BlastServer.Application.Services
         private readonly IUserRepository userRepository;
         private readonly ICryptService cryptService;
         private readonly IJwtService jwtService;
-        private readonly IAuthSessionCacheService authInfoCacheService;
+        private readonly IAuthSessionCacheProvider authSessionCacheProvider;
 
-        public AuthorizationAppService(IUserRepository _userRepository, ICryptService _cryptService, IJwtService _jwtService, IAuthSessionCacheService _authInfoCacheService)
+        public AuthorizationAppService(IUserRepository _userRepository, ICryptService _cryptService, IJwtService _jwtService, IAuthSessionCacheProvider _authSessionCacheProvider)
         {
             this.userRepository = _userRepository;
             this.cryptService = _cryptService;
             this.jwtService = _jwtService;
-            this.authInfoCacheService = _authInfoCacheService;
+            this.authSessionCacheProvider = _authSessionCacheProvider;
         }
 
         public async Task<LoginResponse> Login(LoginRequest request)
@@ -34,8 +34,11 @@ namespace BlastServer.Application.Services
 
             string token = jwtService.GenerateToken(user.Username);
 
-            var authInfo = new AuthSession { UserName = user.Username, AuthToken = token, Role = user.Role};
-            authInfoCacheService.SetAuthInfo(token, authInfo);
+            this.authSessionCacheProvider.SetAuthInfo(token, new AuthSession {
+                UserName = user.Username, 
+                AuthToken = token, 
+                Role = user.Role 
+            });
 
             return new LoginResponse
             {

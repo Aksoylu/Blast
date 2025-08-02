@@ -1,37 +1,23 @@
 ﻿
+using BlastServer.Domain.Interfaces.Abstractions;
+using BlastServer.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 using System;
+using System.Security.AccessControl;
+using System.Text.Json;
 
 namespace BlastServer.Infrastructure.Services;
-
-public abstract class CacheService<T>
+public class CacheService<T>
 {
-    private readonly IMemoryCache _cache;
-    private readonly TimeSpan _defaultExpiration;
+    private readonly ICacheService<T> _strategy;
 
-    protected CacheService(IMemoryCache cache, TimeSpan? defaultExpiration = null)
+    public CacheService(ICacheService<T> strategy)
     {
-        _cache = cache;
-        _defaultExpiration = defaultExpiration ?? TimeSpan.FromMinutes(5);
+        _strategy = strategy;
     }
 
-    protected void Set(string key, T value, TimeSpan? expiration = null)
-    {
-        var options = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = expiration ?? _defaultExpiration
-        };
-
-        _cache.Set(key, value, options);
-    }
-
-    protected T? Get(string key)
-    {
-        return _cache.TryGetValue(key, out T? value) ? value : default;
-    }
-
-    protected void Delete(string key)
-    {
-        _cache.Remove(key);
-    }
+    public void Set(string key, T value, TimeSpan? expiration = null) => _strategy.Set(key, value, expiration);
+    public T? Get(string key) => _strategy.Get(key);
+    public void Delete(string key) => _strategy.Delete(key);
 }
