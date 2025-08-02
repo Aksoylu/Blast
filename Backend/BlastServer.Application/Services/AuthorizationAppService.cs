@@ -1,7 +1,10 @@
 ﻿using BlastServer.Application.DTOs.Authorization;
 using BlastServer.Domain.CacheItems;
 using BlastServer.Domain.Interfaces.Abstractions;
+using BlastServer.Domain.Interfaces.DomainService;
 using BlastServer.Domain.Interfaces.Repositories;
+using BlastServer.Domain.Services;
+using BlastServer.Domain.ValueObjects;
 using System.Data;
 
 
@@ -9,41 +12,21 @@ namespace BlastServer.Application.Services
 {
     public class AuthorizationAppService : IAuthorizationAppService
     {
-        private readonly IUserRepository userRepository;
-        private readonly ICryptService cryptService;
-        private readonly IJwtService jwtService;
-        private readonly IAuthSessionCacheProvider authSessionCacheProvider;
-
-        public AuthorizationAppService(IUserRepository _userRepository, ICryptService _cryptService, IJwtService _jwtService, IAuthSessionCacheProvider _authSessionCacheProvider)
+        private readonly IAuthorizationDomainService authorizationDomainService;
+        
+        public AuthorizationAppService(IAuthorizationDomainService _authorizationDomainService)
         {
-            this.userRepository = _userRepository;
-            this.cryptService = _cryptService;
-            this.jwtService = _jwtService;
-            this.authSessionCacheProvider = _authSessionCacheProvider;
+            this.authorizationDomainService = _authorizationDomainService;
         }
 
         public async Task<LoginResponse> Login(LoginRequest request)
         {
-            var user = await userRepository.GetByUsername(request.Username!);
-            if (user == null)
-                throw new Exception("User not exists");
-
-            Console.WriteLine(cryptService.HashPassword(request.Password));
-            if (!user.IsPasswordValid(request.Password!, cryptService))
-                throw new Exception("Invalid password");
-
-            string token = jwtService.GenerateToken(user.Username);
-
-            this.authSessionCacheProvider.SetAuthInfo(token, new AuthSession {
-                UserName = user.Username, 
-                AuthToken = token, 
-                Role = user.Role 
-            });
+            LoginResult result = await this.authorizationDomainService.Login(request.Username, request.Password);
 
             return new LoginResponse
             {
-                Username = user.Username,
-                AuthToken = token
+                Username = result.Username,
+                AuthToken = result.AuthToken
             };
         }
     }
