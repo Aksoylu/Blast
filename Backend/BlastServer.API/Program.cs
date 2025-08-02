@@ -8,6 +8,8 @@ using BlastServer.Domain.Interfaces.Repositories;
 using BlastServer.Infrastructure;
 using BlastServer.Infrastructure.Cache.Providers;
 using BlastServer.Infrastructure.Persistence.Repository;
+using BlastServer.Domain.Services;
+using BlastServer.Domain.Interfaces.DomainService;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 #region App Services
 builder.Services.AddScoped<IAuthorizationAppService, AuthorizationAppService>();
+#endregion
+
+#region Domain Services
+builder.Services.AddScoped<IAuthorizationDomainService, AuthorizationDomainService>();
 #endregion
 
 #region Cache Providers
