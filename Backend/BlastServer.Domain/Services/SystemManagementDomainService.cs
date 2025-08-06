@@ -22,7 +22,7 @@ namespace BlastServer.Domain.Services
         )
         {
             this.systemSettingRepository = _systemSettingRepository;
-            this.systemSettingCacheProvider = _systemSettingRepositoryCacheProvider;
+            this.systemSettingCacheProvider = _systemSettingCacheProvider;
         }
 
         public void MigrateDefaults()
