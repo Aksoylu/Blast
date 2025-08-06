@@ -1,7 +1,9 @@
 ﻿namespace BlastBackend.Controllers
 {
+    using BlastServer.API.Middleware;
     using BlastServer.Application.DTOs.Authorization;
     using BlastServer.Application.Services;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     namespace BlastBackend.Controllers
@@ -24,18 +26,23 @@
             }
 
             [HttpPost("Logout")]
-            public async Task<LoginResponse> Logout([FromBody] LoginRequest request)
+            [Secured]
+            public LogoutResponse Logout()
             {
-                return await authorizationAppService.Login(request);
+                string? authToken = HttpContext.Items["token"] as string;
+              
+                LogoutRequest logoutRequest = new LogoutRequest { AuthToken = authToken };
+
+                return  authorizationAppService.Logout(logoutRequest);
             }
 
-            /*
             [HttpPost("Register")]
-            public async Task<LoginResponse> Register([FromBody] RegisterRequest request)
+            [Secured]
+            public async Task<RegisterResponse> Register([FromBody] RegisterRequest request)
             {
-                return await _userService.Register(request);
+                return await authorizationAppService.Register(request);
             }
-            */
+
         }
 
     }

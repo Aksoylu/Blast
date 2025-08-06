@@ -10,5 +10,7 @@ namespace BlastServer.Application.Services
     public interface IAuthorizationAppService
     {
         public Task<LoginResponse> Login(LoginRequest request);
+        LogoutResponse Logout(LogoutRequest request);
+        public Task<RegisterResponse> Register(RegisterRequest request);
     }
 }

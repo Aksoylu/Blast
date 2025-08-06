@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
+﻿using BlastServer.Application.DTOs;
 using BlastServer.Domain.CacheItems;
 using BlastServer.Domain.Interfaces.Abstractions;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BlastServer.API.Middleware
 {
@@ -41,9 +43,19 @@ namespace BlastServer.API.Middleware
                     throw new AccessViolationException("Invalid authorization token");
                 }
 
+                httpContext.Items["token"] = token;
                 httpContext.Items["username"] = sessionInfo.UserName;
                 httpContext.Items["role"] = sessionInfo.Role;
 
+                foreach (var arg in context.ActionArguments.Values)
+                {
+                    if (arg is RequestDTO dto)
+                    {
+                        dto.Token = token;
+                        dto.UserName = sessionInfo.UserName;
+                        dto.Role = sessionInfo.Role;
+                    }
+                }
                 await next();
             }
         }

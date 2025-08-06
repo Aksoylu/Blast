@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlastServer.Domain.ValueObjects
+namespace BlastServer.Application.DTOs.Authorization
 {
-    public class LoginResult
+    public class RegisterResponse
     {
+        public string? Id { get; set; }
         public string? Username { get; set; }
         public string? AuthToken { get; set; }
     }

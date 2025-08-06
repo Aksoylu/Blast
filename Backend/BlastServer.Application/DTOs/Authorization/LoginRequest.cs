@@ -2,7 +2,7 @@
 
 namespace BlastServer.Application.DTOs.Authorization
 {
-    public class LoginRequest
+    public class LoginRequest: RequestDTO
     {
         public required string Username { get; set; }
         public required string Password { get; set; }
