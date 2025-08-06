@@ -5,5 +5,6 @@ namespace BlastServer.Domain.Interfaces.Repositories;
 public interface IUserRepository
 {
     Task<EUser> GetByUsername(string username);
-    Task AddUser(EUser user);
+    Task<EUser> GetByMail(string mail);
+    Task Create(EUser user);
 }

@@ -21,8 +21,13 @@ public class UserRepository : IUserRepository
         return await this.userCollection.Find(u => u.Username == username).FirstOrDefaultAsync();
     }
 
-    public async Task AddUser(EUser user)
+    public async Task Create(EUser user)
     {
         await this.userCollection.InsertOneAsync(user);
+    }
+
+    public async Task<EUser> GetByMail(string mail)
+    {
+        return await this.userCollection.Find(u => u.Mail == mail).FirstOrDefaultAsync();
     }
 }

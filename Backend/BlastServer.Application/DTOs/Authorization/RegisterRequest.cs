@@ -2,7 +2,7 @@
 
 namespace BlastServer.Application.DTOs.Authorization;
 
-public class RegisterRequest
+public class RegisterRequest: RequestDTO
 {
     public string? Username { get; set; }
     public string? Password { get; set; }
@@ -21,10 +21,15 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password can not be null.")
+            .MinimumLength(3).WithMessage("Password should be at least 5 characters.")
             .MaximumLength(100).WithMessage("Password should can be maximum 100 characters.");
 
         RuleFor(x => x.Mail)
             .EmailAddress().WithMessage("Geçerli bir email adresi giriniz.");
 
+        RuleFor(x => x.NameSurname)
+            .NotEmpty().WithMessage("Name & surname can not be null.")
+            .MinimumLength(5).WithMessage("NameSurname should be at least 5 characters.")
+            .MaximumLength(100).WithMessage("NameSurname should can be maximum 100 characters.");
     }
 }
