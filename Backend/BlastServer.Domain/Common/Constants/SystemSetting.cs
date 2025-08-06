@@ -11,5 +11,12 @@ namespace BlastServer.Domain.Common.Constants
         public static readonly string ORGANIZATION = "ORGANIZATION";
         public static readonly string REGISTER_USER_ACCOUNT_STATUS = "REGISTER_USER_ACCOUNT_STATUS";
         public static readonly string REGISTER_USER_ROLE = "REGISTER_USER_ROLE";
+
+        public static readonly string[] ALL =
+        {
+            SystemSetting.ORGANIZATION,
+            SystemSetting.REGISTER_USER_ACCOUNT_STATUS,
+            SystemSetting.REGISTER_USER_ROLE,
+        };
     }
 }

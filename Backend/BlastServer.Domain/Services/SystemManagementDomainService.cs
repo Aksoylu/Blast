@@ -14,13 +14,15 @@ namespace BlastServer.Domain.Services
     public class SystemManagementDomainService: ISystemManagementDomainService
     {
         private readonly ISystemSettingRepository systemSettingRepository;
-
+        private readonly ISystemSettingCacheProvider systemSettingCacheProvider;
 
         public SystemManagementDomainService(
-            ISystemSettingRepository _systemSettingRepository
+            ISystemSettingRepository _systemSettingRepository,
+            ISystemSettingCacheProvider _systemSettingCacheProvider
         )
         {
             this.systemSettingRepository = _systemSettingRepository;
+            this.systemSettingCacheProvider = _systemSettingRepositoryCacheProvider;
         }
 
         public void MigrateDefaults()
@@ -36,5 +38,7 @@ namespace BlastServer.Domain.Services
 
             return new GetSystemSettingsResult { Items = allSettings };
         }
+
+        // @todo: SetSystemSetting
     }
 }

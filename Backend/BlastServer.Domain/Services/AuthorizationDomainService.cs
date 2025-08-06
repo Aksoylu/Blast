@@ -93,7 +93,7 @@ namespace BlastServer.Domain.Services
                 throw new Exception($"Mail address '{input.Mail}' is already used by another user");
             }
 
-            GetSystemSettingsResult systemSettings = this.systemManagementDomainService.GetSystemSettings();
+            GetSystemSettingsResult systemSettings = await this.systemManagementDomainService.GetSystemSettings();
 
             string? organization = systemSettings.GetValue<string>(SystemSetting.ORGANIZATION);
             UserRoleEnum registerUserRole = systemSettings.GetValue<UserRoleEnum>(SystemSetting.ORGANIZATION);
