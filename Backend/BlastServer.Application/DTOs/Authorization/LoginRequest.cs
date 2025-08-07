@@ -14,11 +14,13 @@ namespace BlastServer.Application.DTOs.Authorization
         {
             RuleFor(x => x.Username)
                 .NotEmpty().WithMessage("Username can not be null")
-                .MinimumLength(3).WithMessage("Username should be at least 3 characters.");
+                .MinimumLength(3).WithMessage("Username should be at least 3 characters.")
+                .MaximumLength(100).WithMessage("Username should be at least 100 characters.");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Email boş olamaz.")
-                .EmailAddress().WithMessage("Geçerli bir email adresi giriniz.");
+                .NotEmpty().WithMessage("Password can not be null")
+                .MinimumLength(5).WithMessage("Password should be at least 3 characters.")
+                .MaximumLength(100).WithMessage("Password should be at least 100 characters.");
         }
     }
 }

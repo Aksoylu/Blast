@@ -10,5 +10,6 @@ namespace BlastServer.Domain.Interfaces.Repositories
     public interface ISystemSettingRepository
     {
         public Task<List<ESystemSetting>> ListAll();
+        public Task SetAll(List<ESystemSetting> settings);
     }
 }

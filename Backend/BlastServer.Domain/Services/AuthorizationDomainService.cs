@@ -24,7 +24,7 @@ namespace BlastServer.Domain.Services
             ICryptService _cryptService,
             IJwtService _jwtService, 
             IAuthSessionCacheProvider _authSessionCacheProvider,
-            SystemManagementDomainService _systemManagementDomainService
+            ISystemManagementDomainService _systemManagementDomainService
         )
         {
             this.userRepository = _userRepository;
@@ -96,7 +96,7 @@ namespace BlastServer.Domain.Services
             GetSystemSettingsResult systemSettings = await this.systemManagementDomainService.GetSystemSettings();
 
             string? organization = systemSettings.GetValue<string>(SystemSetting.ORGANIZATION);
-            UserRoleEnum registerUserRole = systemSettings.GetValue<UserRoleEnum>(SystemSetting.ORGANIZATION);
+            UserRoleEnum registerUserRole = systemSettings.GetValue<UserRoleEnum>(SystemSetting.REGISTER_USER_ROLE);
             AccountStatusEnum registerUserAccountStatus = systemSettings.GetValue<AccountStatusEnum>(SystemSetting.REGISTER_USER_ACCOUNT_STATUS);
 
             EUser user = new EUser
@@ -109,6 +109,8 @@ namespace BlastServer.Domain.Services
                 Role = registerUserRole,
                 AccountStatus = registerUserAccountStatus,
             };
+
+            await this.userRepository.Create(user);
 
             string token = this.jwtService.GenerateToken(user.Username);
 

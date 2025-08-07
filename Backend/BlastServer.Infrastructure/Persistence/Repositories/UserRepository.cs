@@ -1,8 +1,8 @@
-﻿using MongoDB.Driver;
-
-using BlastServer.Domain.Entities;
+﻿using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.Abstractions;
 using BlastServer.Domain.Interfaces.Repositories;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 
 namespace BlastServer.Infrastructure.Persistence.Repository;
@@ -23,6 +23,7 @@ public class UserRepository : IUserRepository
 
     public async Task Create(EUser user)
     {
+        user._id = ObjectId.GenerateNewId().ToString();
         await this.userCollection.InsertOneAsync(user);
     }
 

@@ -11,18 +11,18 @@ namespace BlastServer.Infrastructure.Cache.Providers
 {
     public class SystemSettingCacheProvider : ISystemSettingCacheProvider
     {
-        ICacheService<SystemSettingCacheItem> cacheService;
-        public SystemSettingCacheProvider(ICacheService<SystemSettingCacheItem> _cacheService)
+        ICacheService<SystemSettingItem> cacheService;
+        public SystemSettingCacheProvider(ICacheService<SystemSettingItem> _cacheService)
         {
             this.cacheService = _cacheService;
         }
 
-        public List<SystemSettingCacheItem> GetAll()
+        public List<SystemSettingItem> GetAll()
         {
-            List< SystemSettingCacheItem> systemSettingCacheItemList = new List<SystemSettingCacheItem> ();
+            List< SystemSettingItem> systemSettingCacheItemList = new List<SystemSettingItem> ();
             foreach(string eachKey in SystemSetting.ALL)
             {
-                SystemSettingCacheItem? item = this.cacheService.Get($"systemsetting->{eachKey}");
+                SystemSettingItem? item = this.cacheService.Get($"systemsetting->{eachKey}");
                 if(item != null )
                 {
                     systemSettingCacheItemList.Add(item);
@@ -34,16 +34,16 @@ namespace BlastServer.Infrastructure.Cache.Providers
 
         public void CleanAll()
         {
-            List<SystemSettingCacheItem> systemSettingCacheItemList = new List<SystemSettingCacheItem>();
+            List<SystemSettingItem> systemSettingCacheItemList = new List<SystemSettingItem>();
             foreach (string eachKey in SystemSetting.ALL)
             {
                 this.cacheService.Delete($"systemsetting->{eachKey}");
             }
         }
 
-        public void SetAll(List<SystemSettingCacheItem> cacheItems)
+        public void SetAll(List<SystemSettingItem> cacheItems)
         {
-            foreach (SystemSettingCacheItem eachItem in cacheItems)
+            foreach (SystemSettingItem eachItem in cacheItems)
             {
                 this.cacheService.Set($"systemsetting->{eachItem.Key}", eachItem);
             }

@@ -32,5 +32,15 @@ namespace BlastServer.Infrastructure.Persistence.Repositories
 
             await systemSettingCollection.UpdateOneAsync(filter, update, options);
         }
+
+        public async Task SetAll(List<ESystemSetting> settings)
+        {
+            await systemSettingCollection.DeleteManyAsync(FilterDefinition<ESystemSetting>.Empty);
+
+            if (settings != null && settings.Any())
+            {
+                await systemSettingCollection.InsertManyAsync(settings);
+            }
+        }
     }
 }
