@@ -1,4 +1,7 @@
-﻿using BlastServer.Domain.DomainObjects.SystemManagement;
+﻿using AutoMapper;
+using BlastServer.Domain.CacheItems;
+using BlastServer.Domain.Common.Constants;
+using BlastServer.Domain.DomainObjects.SystemManagement;
 using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.Abstractions;
 using BlastServer.Domain.Interfaces.DomainServices;
@@ -11,34 +14,47 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Domain.Services
 {
-    public class SystemManagementDomainService: ISystemManagementDomainService
+    public class SystemManagementDomainService : ISystemManagementDomainService
     {
         private readonly ISystemSettingRepository systemSettingRepository;
         private readonly ISystemSettingCacheProvider systemSettingCacheProvider;
+        private readonly IMapper mapper;
 
         public SystemManagementDomainService(
             ISystemSettingRepository _systemSettingRepository,
-            ISystemSettingCacheProvider _systemSettingCacheProvider
+            ISystemSettingCacheProvider _systemSettingCacheProvider,
+            IMapper _mapper
         )
         {
             this.systemSettingRepository = _systemSettingRepository;
             this.systemSettingCacheProvider = _systemSettingCacheProvider;
+            this.mapper = _mapper;
         }
 
-        public void MigrateDefaults()
+        public async Task RestoreDefaults()
         {
-            // REGISTER_USER_ROLE = UserRoleEnum.User
-            // ORGANIZATION = "Blast Mainnet"
-            // REGISTER_USER_ACCOUNT_STATUS = AccountStatusEnum.WaitingActivation
+            await this.systemSettingRepository.SetAll(SystemSetting.DEFAULTS);
         }
 
         public async Task<GetSystemSettingsResult> GetSystemSettings()
         {
-            List <ESystemSetting>  allSettings = await this.systemSettingRepository.ListAll();
+            List <SystemSettingItem> cachedSystemSettings =  this.systemSettingCacheProvider.GetAll();
+            if(cachedSystemSettings.Count > 0)
+            {
+                return new GetSystemSettingsResult{ Items = cachedSystemSettings};
+            }
 
-            return new GetSystemSettingsResult { Items = allSettings };
+            List<ESystemSetting> dbStoredSettings = await this.systemSettingRepository.ListAll();
+            
+            cachedSystemSettings = this.mapper.Map<List<SystemSettingItem>>(dbStoredSettings);
+            this.systemSettingCacheProvider.SetAll(cachedSystemSettings);
+
+            return new GetSystemSettingsResult { Items = cachedSystemSettings };
         }
 
-        // @todo: SetSystemSetting
+        public async Task SetSystemSettings(List<ESystemSetting> settings)
+        {
+            await this.systemSettingRepository.SetAll(settings);
+        }
     }
 }

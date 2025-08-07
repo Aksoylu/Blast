@@ -51,9 +51,12 @@ namespace BlastServer.API.Middleware
                 {
                     if (arg is RequestDTO dto)
                     {
-                        dto.Token = token;
-                        dto.UserName = sessionInfo.UserName;
-                        dto.Role = sessionInfo.Role;
+                        dto.RequestContext = new RequestContext
+                        {
+                            Token = token,
+                            UserName = sessionInfo.UserName,
+                            Role = sessionInfo.Role
+                        };
                     }
                 }
                 await next();

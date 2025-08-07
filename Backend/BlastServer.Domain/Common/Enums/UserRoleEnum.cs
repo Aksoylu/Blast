@@ -8,7 +8,8 @@ namespace BlastServer.Domain.Common.Enums
 {
     public enum UserRoleEnum
     {
+        None,
         User,
-        SysAdmin
+        Admin
     }
 }

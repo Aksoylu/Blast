@@ -8,6 +8,7 @@ namespace BlastServer.Domain.Entities
 {
     public class ESystemSetting
     {
+
         public object? _id { get; set; }
         public string? Key { get; set; }
         public object? Value { get; set; }

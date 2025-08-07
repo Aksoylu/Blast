@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlastServer.Application.DTOs.Authorization
+namespace BlastServer.Application.Services
 {
-    public class LogoutRequest : RequestDTO
+    public interface ISystemManagementAppService
     {
     }
 }

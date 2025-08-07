@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlastServer.Domain.Common.Enums;
+using BlastServer.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +14,31 @@ namespace BlastServer.Domain.Common.Constants
         public static readonly string REGISTER_USER_ACCOUNT_STATUS = "REGISTER_USER_ACCOUNT_STATUS";
         public static readonly string REGISTER_USER_ROLE = "REGISTER_USER_ROLE";
 
+
         public static readonly string[] ALL =
         {
             SystemSetting.ORGANIZATION,
             SystemSetting.REGISTER_USER_ACCOUNT_STATUS,
             SystemSetting.REGISTER_USER_ROLE,
+        };
+
+        public static readonly List<ESystemSetting> DEFAULTS = new List<ESystemSetting>
+        {
+            new ESystemSetting
+            {
+                Key = SystemSetting.ORGANIZATION,
+                Value = "Blast Mainnet"
+            },
+            new ESystemSetting
+            {
+                Key = SystemSetting.REGISTER_USER_ACCOUNT_STATUS,
+                Value = AccountStatusEnum.WaitingActivation
+            },
+            new ESystemSetting
+            {
+                Key = SystemSetting.REGISTER_USER_ROLE,
+                Value = UserRoleEnum.User
+            }
         };
     }
 }

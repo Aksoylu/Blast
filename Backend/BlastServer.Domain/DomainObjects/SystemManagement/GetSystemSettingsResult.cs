@@ -1,4 +1,5 @@
-﻿using BlastServer.Domain.Entities;
+﻿using BlastServer.Domain.CacheItems;
+using BlastServer.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,45 @@ namespace BlastServer.Domain.DomainObjects.SystemManagement
 {
     public class GetSystemSettingsResult
     {
-        public List<ESystemSetting> Items { get; set; }
+        public required List<SystemSettingItem> Items { get; set; }
 
-        public ESystemSetting? Get(string key)
+  
+        public SystemSettingItem? Get(string key)
         {
             return this.Items.Where(item => item.Key == key).FirstOrDefault();
         }
 
+        public List<SystemSettingItem> ToList()
+        {
+            return this.Items;
+        }
+        public void Remove (string key)
+        {
+            SystemSettingItem? item =  this.Items.Where(item => item.Key == key).FirstOrDefault();
+            if (item != null)
+            {
+                this.Items.Remove(item);
+            }
+        }
+
+        public void Set<T>(string key, T value)
+        {
+            bool isExist = this.Items.Where(item => item.Key == key).Any();
+            if(isExist)
+            {
+                this.Remove(key);
+            }
+
+            this.Items.Add(new SystemSettingItem
+            {
+                Key = key,
+                Value = value
+            });
+        }
+
         public T? GetValue<T>(string key)
         {
-            ESystemSetting? setting = this.Items.Where(item => item.Key == key).ToList().FirstOrDefault();
+            SystemSettingItem? setting = this.Items.Where(item => item.Key == key).ToList().FirstOrDefault();
 
             if (setting?.Value is T typedValue)
             {

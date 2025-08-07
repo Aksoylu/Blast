@@ -6,6 +6,8 @@ namespace BlastServer.Domain.Interfaces.DomainServices
 {
     public interface ISystemManagementDomainService
     {
-        Task<GetSystemSettingsResult> GetSystemSettings();
+        public Task<GetSystemSettingsResult> GetSystemSettings();
+        public Task SetSystemSettings(List<ESystemSetting> settings);
+        public Task RestoreDefaults();
     }
 }

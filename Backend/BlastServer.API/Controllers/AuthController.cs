@@ -27,17 +27,12 @@
 
             [HttpPost("Logout")]
             [Secured]
-            public LogoutResponse Logout()
+            public LogoutResponse Logout([FromBody] LogoutRequest request)
             {
-                string? authToken = HttpContext.Items["token"] as string;
-              
-                LogoutRequest logoutRequest = new LogoutRequest { AuthToken = authToken };
-
-                return  authorizationAppService.Logout(logoutRequest);
+                return  authorizationAppService.Logout(request);
             }
 
             [HttpPost("Register")]
-            [Secured]
             public async Task<RegisterResponse> Register([FromBody] RegisterRequest request)
             {
                 return await authorizationAppService.Register(request);

@@ -9,8 +9,8 @@ namespace BlastServer.Domain.Interfaces.Abstractions
 {
     public interface ISystemSettingCacheProvider
     {
-        public List<SystemSettingCacheItem> GetAll();
+        public List<SystemSettingItem> GetAll();
         public void CleanAll();
-        public void SetAll(List<SystemSettingCacheItem> cacheItems);
+        public void SetAll(List<SystemSettingItem> cacheItems);
     }
 }

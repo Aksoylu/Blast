@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using BlastServer.Domain.Entities;
+using BlastServer.Application.DTOs.Authorization;
+using BlastServer.Domain.DomainObjects.Authorization;
 
 namespace BlastServer.Application.Mappings
 {
@@ -7,6 +8,8 @@ namespace BlastServer.Application.Mappings
     {
         public AuthMappingProfile()
         {
+            CreateMap<RegisterRequest, RegisterInput>().ReverseMap();
+            CreateMap<RegisterResponse, RegisterResult>().ReverseMap();
         }
     }
 }

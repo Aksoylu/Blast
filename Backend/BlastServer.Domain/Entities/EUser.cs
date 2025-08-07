@@ -6,7 +6,7 @@ namespace BlastServer.Domain.Entities;
 
 public class EUser
 {
-    public object? _id { get; set; }
+    public object? _id { get; set; } 
 
     public string? Username { get; set; }
     public string? Organization { get; set; }
