@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlastServer.Application.DTOs.SystemManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace BlastServer.Application.Services
 {
     public interface ISystemManagementAppService
     {
+        public Task<GetSystemSettingsResponse> GetSystemSettings();
     }
 }

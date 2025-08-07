@@ -1,23 +1,28 @@
-﻿using BlastServer.Application.DTOs.Authorization;
+﻿using BlastServer.API.Middleware;
+using BlastServer.Application.DTOs.Authorization;
+using BlastServer.Application.DTOs.SystemManagement;
 using BlastServer.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlastServer.API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class SystemManagementController : ControllerBase
     {
 
-        private readonly IAuthorizationAppService authorizationAppService;
+        private readonly ISystemManagementAppService systemManagementAppService;
 
-        public SystemManagementController(IAuthorizationAppService _authorizationService)
+        public SystemManagementController(ISystemManagementAppService _systemManagementAppService)
         {
-            this.authorizationAppService = _authorizationService;
+            this.systemManagementAppService = _systemManagementAppService;
         }
 
-        [HttpGet]
-        public async Task<LoginResponse> SystemSettings([FromBody] LoginRequest request)
+        [HttpGet("SystemSettings")]
+        [Secured]
+        public async Task<GetSystemSettingsResponse> SystemSettings()
         {
-            return await authorizationAppService.Login(request);
+            return await systemManagementAppService.GetSystemSettings();
         }
     }
 }
