@@ -17,7 +17,7 @@ namespace BlastServer.Application.Services
             this.mapper = _mapper;
         }
 
-        public async Task<GetSystemSettingsResponse> GetSystemSettings(LoginRequest request)
+        public async Task<GetSystemSettingsResponse> GetSystemSettings()
         {
             GetSystemSettingsResult result = await this.systemManagementDomainService.GetSystemSettings();
 
