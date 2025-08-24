@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Application.DTOs.SystemManagement
 {
-    public class GetSystemSettingsResponse: ResponseDTO
+    public class SetSystemSettingsRequest: RequestDTO
     {
         public required List<SystemSettingItem> Items { get; set; }
     }

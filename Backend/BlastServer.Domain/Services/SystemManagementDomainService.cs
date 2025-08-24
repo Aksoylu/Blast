@@ -52,9 +52,19 @@ namespace BlastServer.Domain.Services
             return new GetSystemSettingsResult { Items = cachedSystemSettings };
         }
 
-        public async Task SetSystemSettings(List<ESystemSetting> settings)
+        public async Task<bool> SetSystemSettings(List<SystemSettingItem> settings)
         {
-            await this.systemSettingRepository.SetAll(settings);
+            try
+            {
+                List<ESystemSetting> entityItems = this.mapper.Map<List<ESystemSetting>>(settings);
+                await this.systemSettingRepository.SetAll(entityItems);
+                this.systemSettingCacheProvider.SetAll(settings);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

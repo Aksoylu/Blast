@@ -10,5 +10,7 @@ namespace BlastServer.Application.Services
     public interface ISystemManagementAppService
     {
         public Task<GetSystemSettingsResponse> GetSystemSettings();
+        public Task<SetSystemSettingsResponse> SetSystemSettings(SetSystemSettingsRequest request);
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BlastServer.Application.DTOs.Authorization;
 using BlastServer.Application.DTOs.SystemManagement;
 using BlastServer.Domain.DomainObjects.SystemManagement;
 using BlastServer.Domain.Interfaces.DomainServices;
@@ -24,5 +23,11 @@ namespace BlastServer.Application.Services
             return new GetSystemSettingsResponse { Items = result.Items };
         }
 
+        public async Task<SetSystemSettingsResponse> SetSystemSettings(SetSystemSettingsRequest request)
+        {
+            bool operationResult = await this.systemManagementDomainService.SetSystemSettings(request.Items);
+
+            return new SetSystemSettingsResponse { IsSuccess = operationResult };
+        }
     }
 }
