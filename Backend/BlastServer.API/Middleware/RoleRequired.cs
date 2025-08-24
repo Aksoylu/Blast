@@ -10,22 +10,32 @@ namespace BlastServer.API.Middleware
 {
     public class RoleRequired : TypeFilterAttribute
     {
-        public RoleRequired() : base(typeof(RoleRequiredImplementation)) { }
+        public RoleRequired(UserRoleEnum[] requiredRoleArray) : base(typeof(RoleRequiredImplementation)) {
+            Arguments = new object[] { requiredRoleArray };
+        }
 
         private class RoleRequiredImplementation : IAsyncActionFilter
         {
-            private readonly IAuthSessionCacheProvider authSessionCacheProvider;
+            UserRoleEnum[] requiredRoleArray;
 
-            public RoleRequiredImplementation(IAuthSessionCacheProvider _authSessionCacheProvider)
+            public RoleRequiredImplementation(UserRoleEnum[] _requiredRoleArray)
             {
-                this.authSessionCacheProvider = _authSessionCacheProvider;
+                this.requiredRoleArray = _requiredRoleArray;
             }
 
             public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
             {
                 var httpContext = context.HttpContext;
+                
+                string? username = httpContext.Items["username"] as string;
+                if(String.IsNullOrEmpty(username))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+
                 UserRoleEnum userRole = (UserRoleEnum) (httpContext.Items["role"] ?? UserRoleEnum.None);
-                if(userRole == UserRoleEnum.None)
+                if(!this.requiredRoleArray.Contains(userRole))
                 {
                     context.Result = new UnauthorizedResult();
                     return;
