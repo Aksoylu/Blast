@@ -1,4 +1,5 @@
-﻿using BlastServer.Domain.DomainObjects.UserManagement;
+﻿using BlastServer.Domain.CacheItems;
+using BlastServer.Domain.DomainObjects.UserManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;

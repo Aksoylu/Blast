@@ -31,18 +31,21 @@ InfrastructureAssembly.InjectCache(ref builder);
 #region Repositoryies
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 #endregion
 
 #region App Services
 builder.Services.AddScoped<IAuthorizationAppService, AuthorizationAppService>();
 builder.Services.AddScoped<ISystemManagementAppService, SystemManagementAppService>();
+builder.Services.AddScoped<ITeamManagementAppService, TeamManagementAppService>();
 
 #endregion
 
 #region Domain Services
 builder.Services.AddScoped<IAuthorizationDomainService, AuthorizationDomainService>();
 builder.Services.AddScoped<ISystemManagementDomainService, SystemManagementDomainService>();
+builder.Services.AddScoped<ITeamManagementDomainService, TeamManagementDomainService>();
 
 #endregion
 

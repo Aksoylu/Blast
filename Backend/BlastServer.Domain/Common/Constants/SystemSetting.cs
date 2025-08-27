@@ -13,13 +13,14 @@ namespace BlastServer.Domain.Common.Constants
         public static readonly string ORGANIZATION = "ORGANIZATION";
         public static readonly string REGISTER_USER_ACCOUNT_STATUS = "REGISTER_USER_ACCOUNT_STATUS";
         public static readonly string REGISTER_USER_ROLE = "REGISTER_USER_ROLE";
-
+        public static readonly string TEAM_GENERATION_ALLOWED_USER_ROLES = "TEAM_GENERATION_ALLOWED_USER_ROLES";
 
         public static readonly string[] ALL =
         {
             SystemSetting.ORGANIZATION,
             SystemSetting.REGISTER_USER_ACCOUNT_STATUS,
             SystemSetting.REGISTER_USER_ROLE,
+            SystemSetting.TEAM_GENERATION_ALLOWED_USER_ROLES
         };
 
         public static readonly List<ESystemSetting> DEFAULTS = new List<ESystemSetting>
@@ -38,6 +39,11 @@ namespace BlastServer.Domain.Common.Constants
             {
                 Key = SystemSetting.REGISTER_USER_ROLE,
                 Value = UserRoleEnum.User
+            },
+            new ESystemSetting
+            {
+                Key = SystemSetting.TEAM_GENERATION_ALLOWED_USER_ROLES,
+                Value = new UserRoleEnum[] { UserRoleEnum.User, UserRoleEnum.Admin }
             }
         };
     }
