@@ -8,5 +8,6 @@ namespace BlastServer.Application.DTOs.TeamManagement
 {
     public class QuitTeamRequest: RequestDTO
     {
+        public required string TeamName { get; set; }
     }
 }

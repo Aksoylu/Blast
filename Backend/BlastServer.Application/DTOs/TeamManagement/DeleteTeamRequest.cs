@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Application.DTOs.TeamManagement
 {
-    public class DeleteTeamRequest
+    public class DeleteTeamRequest: RequestDTO
     {
         public required string TeamName { get; set; }
     }

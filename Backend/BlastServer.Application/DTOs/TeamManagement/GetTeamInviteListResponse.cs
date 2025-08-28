@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Application.DTOs.TeamManagement
 {
-    public class GetTeamInviteListResponse
+    public class GetTeamInviteListResponse: ResponseDTO
     {
         public List<ETeamInvite> Items { get; set; }
     }

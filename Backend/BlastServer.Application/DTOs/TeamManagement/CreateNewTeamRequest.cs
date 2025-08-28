@@ -8,7 +8,7 @@ namespace BlastServer.Application.DTOs.TeamManagement
 {
     public class CreateNewTeamRequest: RequestDTO
     {
-        public string? TeamName { get; set; }
-        public string? Description { get; set; }
+        public required string TeamName { get; set; }
+        public required string Description { get; set; }
     }
 }

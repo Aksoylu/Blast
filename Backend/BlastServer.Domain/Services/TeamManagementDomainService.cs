@@ -13,45 +13,44 @@ namespace BlastServer.Domain.Services
     {
         public TeamManagementDomainService() { }
 
-        
-        public async Task<List<ETeam>> GetTeamList(string username, string organization)
+        public Task<bool> CreateNewTeam(string? username, string? organization, string teamName, string description)
         {
-           
+            throw new NotImplementedException();
         }
 
-
-        public async Task<bool> CreateNewTeam()
+        public Task<bool> DeleteTeam(string username, string organization, string teamName)
         {
-
-        }
-        public async Task<bool> DeleteTeam()
-        {
-
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> TransferTeamOwnership()
+        public Task<List<ETeamInvite>> GetReceivedTeamInviteList(string username, string organization)
         {
-
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> InviteNewUserToTeam()
+        public Task<List<ETeamInvite>> GetSentTeamInviteList(string username, string organization, string teamName)
         {
-
-        }
-        public async Task<List<UserInfo>> GetReceivedTeamInviteList()
-        {
-
+            throw new NotImplementedException();
         }
 
-
-        public async Task<List<UserInfo>> GetSentTeamInviteList()
+        public Task<List<ETeam>> GetTeamList(string username, string organization)
         {
-
+            throw new NotImplementedException();
         }
 
-        public async Task<List<UserInfo>> QuitTeam()
+        public Task<bool> InviteNewUserToTeam(string username, string organization, string teamName, string description, string receiverUsername)
         {
+            throw new NotImplementedException();
+        }
 
+        public Task<bool> QuitTeam(string username, string organization, string teamName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> TransferTeamOwnership(string username, string organization, string teamName, string newOwner)
+        {
+            throw new NotImplementedException();
         }
     }
 }

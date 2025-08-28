@@ -13,9 +13,9 @@ namespace BlastServer.Domain.Interfaces.DomainServices
         Task<bool> CreateNewTeam(string username, string organization, string teamName, string description);
         Task<bool> DeleteTeam(string username, string organization, string teamName);
         Task<bool> TransferTeamOwnership(string username, string organization, string teamName, string newOwner);
-        Task<bool> InviteNewUserToTeam(string username, string organization, string teamName, string description, string receiverUsername);
+        Task<bool> InviteNewUserToTeam(string username, string organization, string teamName, string? description, string receiverUsername);
         Task<List<ETeamInvite>> GetReceivedTeamInviteList(string username, string organization);
         Task<List<ETeamInvite>> GetSentTeamInviteList(string username, string organization, string teamName);
-        Task<QuitTeamResponse> QuitTeam(QuitTeamRequest request);
+        Task<bool> QuitTeam(string username, string organization, string teamName);
     }
 }

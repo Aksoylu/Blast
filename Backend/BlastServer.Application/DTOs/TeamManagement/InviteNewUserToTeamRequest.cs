@@ -8,8 +8,9 @@ namespace BlastServer.Application.DTOs.TeamManagement
 {
     public class InviteNewUserToTeamRequest: RequestDTO
     {
-        public string? TeamName { get; set; }
-        public string? TeamDescription { get; set; }
-        public string? ReceiverUsername { get; set; }
+        public required string TeamName { get; set; }
+        public required string ReceiverUsername { get; set; }
+        public string? InviteDescription { get; set; }
+
     }
 }

@@ -8,7 +8,7 @@ namespace BlastServer.Application.DTOs.TeamManagement
 {
     public class TransferTeamOwnershipRequest: RequestDTO
     {
-        public string? TeamName { get; set; }
-        public string? NewTeamOwner { get; set; }
+        public required string TeamName { get; set; }
+        public required string NewTeamOwner { get; set; }
     }
 }
