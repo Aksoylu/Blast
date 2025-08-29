@@ -2,7 +2,7 @@
 {
     using BlastServer.API.Middleware;
     using BlastServer.Application.DTOs.Authorization;
-    using BlastServer.Application.Services;
+    using BlastServer.Application.Interfaces;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Application.DTOs.TeamManagement
 {
-    public class InviteNewUserToTeamResponse: ResponseDTO
+    public class KickUserFromTeamRequest: RequestDTO
     {
+        public required string TeamName { get; set; }
+        public required string UserToKick { get; set; }
     }
 }

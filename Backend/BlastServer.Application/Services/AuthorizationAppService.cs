@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlastServer.Application.DTOs.Authorization;
 using BlastServer.Application.Extensions;
+using BlastServer.Application.Interfaces;
 using BlastServer.Domain.DomainObjects.Authorization;
 using BlastServer.Domain.Interfaces.DomainService;
 

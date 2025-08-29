@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BlastServer.Application.DTOs.SystemManagement;
+using BlastServer.Application.DTOs.TeamInviteManagement;
 using BlastServer.Application.DTOs.TeamManagement;
 using BlastServer.Application.Extensions;
+using BlastServer.Application.Interfaces;
 using BlastServer.Domain.DomainObjects.SystemManagement;
 using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.DomainServices;
@@ -22,6 +24,16 @@ namespace BlastServer.Application.Services
         {
             this.teamManagementDomainService = _teamManagementDomainService;
             this.mapper = _mapper;
+        }
+
+        public async Task<GetTeamListResponse> GetTeamList(GetTeamListRequest request)
+        {
+            List<ETeam> getTeamList = await this.teamManagementDomainService.GetTeamList(
+                request.RequestContext.GetUsername(),
+                request.RequestContext.GetOrganization()
+            );
+
+            return new GetTeamListResponse { Items = getTeamList };
         }
 
         public async Task<CreateNewTeamResponse> CreateNewTeam(CreateNewTeamRequest request)
@@ -47,50 +59,6 @@ namespace BlastServer.Application.Services
             return new DeleteTeamResponse { IsSuccess = result };
         }
 
-        public async Task<GetTeamInviteListResponse> GetReceivedTeamInviteList(GetTeamInviteListRequest request)
-        {
-            List<ETeamInvite> receivedTeamInviteList = await this.teamManagementDomainService.GetReceivedTeamInviteList(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization()
-            );   
-
-            return new GetTeamInviteListResponse { Items = receivedTeamInviteList };
-        }
-
-        public async Task<GetTeamInviteListResponse> GetSentTeamInviteList(GetSentTeamInviteListRequest request)
-        {
-            List<ETeamInvite> receivedTeamInviteList = await this.teamManagementDomainService.GetSentTeamInviteList(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName
-            );
-
-            return new GetTeamInviteListResponse { Items = receivedTeamInviteList };
-        }
-
-        public async Task<GetTeamListResponse> GetTeamList(GetTeamListRequest request)
-        {
-            List<ETeam> getTeamList = await this.teamManagementDomainService.GetTeamList(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization()
-            );
-
-            return new GetTeamListResponse { Items = getTeamList };
-        }
-
-        public async Task<InviteNewUserToTeamResponse> InviteNewUserToTeam(InviteNewUserToTeamRequest request)
-        {
-            bool result = await this.teamManagementDomainService.InviteNewUserToTeam(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName,
-                request.InviteDescription,
-                request.ReceiverUsername
-            );
-
-            return new InviteNewUserToTeamResponse { IsSuccess = result };
-        }
-
         public async Task<QuitTeamResponse> QuitTeam(QuitTeamRequest request)
         {
             bool result = await this.teamManagementDomainService.QuitTeam(
@@ -113,5 +81,17 @@ namespace BlastServer.Application.Services
             
             return new TransferTeamOwnershipResponse { IsSuccess = result };
         }
+
+        public async Task<KickUserFromTeamResponse> KickUserFromTeam(KickUserFromTeamRequest request)
+        {
+            bool resul = await this.teamManagementDomainService.KickUserFromTeam(
+                request.RequestContext.GetUsername(),
+                request.RequestContext.GetOrganization(),
+                request.TeamName,
+                request.UserToKick
+            );
+
+            return new KickUserFromTeamResponse { IsSuccess = resul };
+            }
     }
 }

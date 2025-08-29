@@ -13,7 +13,7 @@ namespace BlastServer.Domain.Services
     {
         public TeamManagementDomainService() { }
 
-        public Task<bool> CreateNewTeam(string? username, string? organization, string teamName, string description)
+        public Task<bool> CreateNewTeam(string? username, string organization, string teamName, string description)
         {
             throw new NotImplementedException();
         }
@@ -39,6 +39,11 @@ namespace BlastServer.Domain.Services
         }
 
         public Task<bool> InviteNewUserToTeam(string username, string organization, string teamName, string description, string receiverUsername)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> KickUserFromTeam(string username, string organization, string teamName, string userToKick)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,6 @@
 using BlastServer.API.Middleware;
 using BlastServer.Application.DTOs.Authorization;
+using BlastServer.Application.Interfaces;
 using BlastServer.Application.Mappings;
 using BlastServer.Application.Services;
 using BlastServer.Domain.Interfaces.Abstractions;

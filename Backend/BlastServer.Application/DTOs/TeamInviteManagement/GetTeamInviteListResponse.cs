@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlastServer.Application.DTOs.TeamManagement
+namespace BlastServer.Application.DTOs.TeamInviteManagement
 {
-    public class GetSentTeamInviteListResponse: ResponseDTO
+    public class GetTeamInviteListResponse: ResponseDTO
     {
-        public List<ETeamInvite> Items {  get; set; }
+        public List<ETeamInvite> Items { get; set; }
     }
 }
