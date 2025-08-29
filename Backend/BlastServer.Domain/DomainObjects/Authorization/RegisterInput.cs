@@ -8,9 +8,9 @@ namespace BlastServer.Domain.DomainObjects.Authorization
 {
     public class RegisterInput
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Mail { get; set; }
-        public string NameSurname { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public required string Mail { get; set; }
+        public required string NameSurname { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BlastServer.Application.DTOs.Authorization;
+using BlastServer.Application.Extensions;
+using BlastServer.Application.Interfaces;
 using BlastServer.Domain.DomainObjects.Authorization;
 using BlastServer.Domain.Interfaces.DomainService;
 
@@ -30,7 +32,7 @@ namespace BlastServer.Application.Services
 
         public LogoutResponse Logout (LogoutRequest request)
         {
-            LogoutResult result = this.authorizationDomainService.Logout(request.RequestContext.Token);
+            LogoutResult result = this.authorizationDomainService.Logout(request.RequestContext.GetToken());
             
             return new LogoutResponse
             {

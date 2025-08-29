@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BlastServer.Application.DTOs.SystemManagement;
+using BlastServer.Application.Interfaces;
 using BlastServer.Domain.DomainObjects.SystemManagement;
 using BlastServer.Domain.Interfaces.DomainServices;
 
