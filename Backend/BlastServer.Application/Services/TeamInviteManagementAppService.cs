@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Application.Services
 {
-    internal class TeamInviteManagementAppService
+    public class TeamInviteManagementAppService: ITeamInviteManagementAppService
     {
         private readonly ITeamInviteManagementDomainService teamInviteManagementDomainService;
 

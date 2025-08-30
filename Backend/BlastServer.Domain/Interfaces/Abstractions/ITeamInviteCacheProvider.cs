@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlastServer.Domain.Common.Enums
+namespace BlastServer.Domain.Interfaces.Abstractions
 {
-    public enum TeamInviteStatusEnum
+    public interface ITeamInviteCacheProvider
     {
-        Sent,
-        Accepted,
-        Rejected
     }
 }

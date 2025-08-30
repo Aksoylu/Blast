@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
-using BlastServer.Application.DTOs.SystemManagement;
-using BlastServer.Application.DTOs.TeamInviteManagement;
 using BlastServer.Application.DTOs.TeamManagement;
 using BlastServer.Application.Extensions;
 using BlastServer.Application.Interfaces;
-using BlastServer.Domain.DomainObjects.SystemManagement;
+using BlastServer.Domain.DomainObjects.TeamManagement;
 using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.DomainServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BlastServer.Application.Services
 {
@@ -28,70 +22,86 @@ namespace BlastServer.Application.Services
 
         public async Task<GetTeamListResponse> GetTeamList(GetTeamListRequest request)
         {
-            List<ETeam> getTeamList = await this.teamManagementDomainService.GetTeamList(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization()
-            );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = string.Empty
+            };
+
+            List<ETeam> getTeamList = await this.teamManagementDomainService.GetTeamList(input);
 
             return new GetTeamListResponse { Items = getTeamList };
         }
 
         public async Task<CreateNewTeamResponse> CreateNewTeam(CreateNewTeamRequest request)
         {
-            bool result = await this.teamManagementDomainService.CreateNewTeam(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName,
-                request.Description
-            );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = request.TeamName
+            };
+
+            bool result = await this.teamManagementDomainService.CreateNewTeam(input, request.Description);
 
             return new CreateNewTeamResponse { IsSuccess = result };
         }
 
         public async Task<DeleteTeamResponse> DeleteTeam(DeleteTeamRequest request)
         {
-            bool result = await this.teamManagementDomainService.DeleteTeam(
-                 request.RequestContext.GetUsername(),
-                 request.RequestContext.GetOrganization(),
-                 request.TeamName
-             );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = request.TeamName
+            };
+
+            bool result = await this.teamManagementDomainService.DeleteTeam(input);
 
             return new DeleteTeamResponse { IsSuccess = result };
         }
 
         public async Task<QuitTeamResponse> QuitTeam(QuitTeamRequest request)
         {
-            bool result = await this.teamManagementDomainService.QuitTeam(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName
-            );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = request.TeamName
+            };
+
+            bool result = await this.teamManagementDomainService.QuitTeam(input);
             
             return new QuitTeamResponse { IsSuccess = result };
         }
 
         public async Task<TransferTeamOwnershipResponse> TransferTeamOwnership(TransferTeamOwnershipRequest request)
         {
-            bool result = await this.teamManagementDomainService.TransferTeamOwnership(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName,
-                request.NewTeamOwner
-            );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = request.TeamName
+            };
+
+            bool result = await this.teamManagementDomainService.TransferTeamOwnership(input, request.NewTeamOwner);
             
             return new TransferTeamOwnershipResponse { IsSuccess = result };
         }
 
         public async Task<KickUserFromTeamResponse> KickUserFromTeam(KickUserFromTeamRequest request)
         {
-            bool resul = await this.teamManagementDomainService.KickUserFromTeam(
-                request.RequestContext.GetUsername(),
-                request.RequestContext.GetOrganization(),
-                request.TeamName,
-                request.UserToKick
-            );
+            TeamManagementInput input = new TeamManagementInput
+            {
+                Username = request.RequestContext.GetUsername(),
+                Organization = request.RequestContext.GetOrganization(),
+                TeamName = request.TeamName
+            };
+
+            bool resul = await this.teamManagementDomainService.KickUserFromTeam(input, request.UserToKick);
 
             return new KickUserFromTeamResponse { IsSuccess = resul };
-            }
+        }
     }
 }

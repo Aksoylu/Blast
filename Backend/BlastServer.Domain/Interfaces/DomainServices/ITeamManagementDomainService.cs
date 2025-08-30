@@ -1,4 +1,5 @@
-﻿using BlastServer.Domain.Entities;
+﻿using BlastServer.Domain.DomainObjects.TeamManagement;
+using BlastServer.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace BlastServer.Domain.Interfaces.DomainServices
 {
     public interface ITeamManagementDomainService
     {
-        Task<List<ETeam>> GetTeamList(string username, string organization);
-        Task<bool> CreateNewTeam(string username, string organization, string teamName, string description);
-        Task<bool> DeleteTeam(string username, string organization, string teamName);
-        Task<bool> TransferTeamOwnership(string username, string organization, string teamName, string newOwner);
-        Task<bool> QuitTeam(string username, string organization, string teamName);
-        Task<bool> KickUserFromTeam(string username, string organization, string teamName, string userToKick);
+        Task<List<ETeam>> GetTeamList(TeamManagementInput input);
+        Task<bool> CreateNewTeam(TeamManagementInput input, string description);
+        Task<bool> DeleteTeam(TeamManagementInput input);
+        Task<bool> TransferTeamOwnership(TeamManagementInput input, string newOwner);
+        Task<bool> QuitTeam(TeamManagementInput input);
+        Task<bool> KickUserFromTeam(TeamManagementInput input, string userToKick);
     }
 }
