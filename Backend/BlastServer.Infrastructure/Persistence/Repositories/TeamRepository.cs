@@ -21,12 +21,12 @@ namespace BlastServer.Infrastructure.Persistence.Repositories
             this.teamCollection = _mongoDbService.GetCollection<ETeam>("Teams");
         }
 
-        public async Task<object?> Create(ETeam team)
+        public async Task<ETeam> Create(ETeam team)
         {
             team._id = ObjectId.GenerateNewId().ToString();
             await this.teamCollection.InsertOneAsync(team);
 
-            return team._id;
+            return team;
         }
 
         public async Task<bool> DeleteById(object? objectId)

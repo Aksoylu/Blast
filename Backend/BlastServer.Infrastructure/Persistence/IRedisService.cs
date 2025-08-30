@@ -10,5 +10,6 @@ namespace BlastServer.Infrastructure.Persistence
     public interface IRedisService
     {
         IDatabase GetDatabase();
+        IServer GetServer();
     }
 }

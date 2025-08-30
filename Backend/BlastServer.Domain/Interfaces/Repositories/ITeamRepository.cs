@@ -9,7 +9,7 @@ namespace BlastServer.Domain.Interfaces.Repositories
 {
     public interface ITeamRepository
     {
-        Task<object?> Create(ETeam team);
+        Task<ETeam> Create(ETeam team);
         Task<bool> DeleteById(object? objectId);
         Task<object?> GetById(object? objectId);
         Task<bool> UpdateTeam(ETeam team);

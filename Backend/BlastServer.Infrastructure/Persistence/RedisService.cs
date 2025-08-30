@@ -17,5 +17,11 @@ namespace BlastServer.Infrastructure.Persistence
         }
 
         public IDatabase GetDatabase() => _connectionMultiplexer.GetDatabase();
+
+        public IServer GetServer()
+        {
+            var endpoint = _connectionMultiplexer.GetEndPoints().First();
+            return _connectionMultiplexer.GetServer(endpoint);
+        }
     }
 }
