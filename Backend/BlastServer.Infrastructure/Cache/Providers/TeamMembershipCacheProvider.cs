@@ -24,7 +24,7 @@ namespace BlastServer.Infrastructure.Cache.Providers
 
         public void SetTeamMembership(TeamMembershipInfo teamMembershipInfo)
         {
-            string cacheKey = this.buildKey(teamMembershipInfo.Organization, teamMembershipInfo.TeamName, teamMembershipInfo.UserName);
+            string cacheKey = this.buildKey(teamMembershipInfo.Organization, teamMembershipInfo.TeamName, teamMembershipInfo.Username);
             this.cacheService.Set(cacheKey, teamMembershipInfo);
         }
 

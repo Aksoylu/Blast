@@ -10,11 +10,11 @@ namespace BlastServer.Domain.Entities
     public class ETeamInvite
     {
         public object? _id { get; set; }
-        public string? Organization { get; set; }
-        public string? TeamName { get; set; }
-        public string? SenderUserName { get; set; }
-        public string? ReceiverUserName { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public TeamInviteStatusEnum? Status { get; set; }
+        public required string Organization { get; set; }
+        public required string TeamName { get; set; }
+        public required string SenderUserName { get; set; }
+        public required string ReceiverUserName { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public TeamInviteStatusEnum Status { get; set; }
     }
 }

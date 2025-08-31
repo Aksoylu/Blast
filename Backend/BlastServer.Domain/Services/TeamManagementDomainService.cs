@@ -6,11 +6,6 @@ using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.Abstractions;
 using BlastServer.Domain.Interfaces.DomainServices;
 using BlastServer.Domain.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlastServer.Domain.Services
 {
@@ -37,7 +32,7 @@ namespace BlastServer.Domain.Services
         public async Task<bool> CreateNewTeam(TeamManagementInput input, string description)
         {
             // Check team existence
-            ETeam? existingTeam = await this.teamRepository.GetByOrganizationAndTeamName(input.Organization, input.TeamName);
+            ETeam? existingTeam = await this.getTeam(input.Organization, input.TeamName);
             if(existingTeam != null)
             {
                 throw new Exception($"Team {input.TeamName} is already exist in organization: {input.Organization}");
@@ -79,14 +74,19 @@ namespace BlastServer.Domain.Services
         public async Task<bool> DeleteTeam(TeamManagementInput input)
         {
             // Check team existence
-            ETeam? existingTeam = await this.teamRepository.GetByOrganizationAndTeamName(input.Organization, input.TeamName);
+            ETeam? existingTeam = await this.getTeam(input.Organization, input.TeamName);
             if (existingTeam == null)
             {
                 throw new Exception($"Team {input.TeamName} is already not exist in organization: {input.Organization}");
             }
 
             // Deleting team info on DB & Cache
-            bool result = await this.teamRepository.DeleteById(existingTeam._id);
+            bool result = await this.teamRepository.DeleteByFilter(new TeamFilter
+            {
+                Organization = input.Organization,
+                TeamName = input.TeamName
+            });
+
             if(result)
             {
                 this.teamInfoCacheProvider.RemoveTeamInfo(input.Organization, input.TeamName);
@@ -106,10 +106,10 @@ namespace BlastServer.Domain.Services
         public async Task<bool> TransferTeamOwnership(TeamManagementInput input, string newOwner)
         {
             // Check team existence
-            ETeam? existingTeam = await this.teamRepository.GetByOrganizationAndTeamName(input.Organization, input.TeamName);
+            ETeam? existingTeam = await this.getTeam(input.Organization, input.TeamName);
             if (existingTeam == null)
             {
-                throw new Exception($"Team {input.TeamName} is not exist in organization: {input.Organization}");
+                throw new Exception($"Team {input.TeamName} is already exist in organization: {input.Organization}");
             }
 
             // Update team owner on DB & Cache
@@ -148,7 +148,7 @@ namespace BlastServer.Domain.Services
         public async Task<bool> QuitTeam(TeamManagementInput input)
         {
             // Check team existence
-            ETeam? existingTeam = await this.teamRepository.GetByOrganizationAndTeamName(input.Organization, input.TeamName);
+            ETeam? existingTeam = await this.getTeam(input.Organization, input.TeamName);
             if (existingTeam == null)
             {
                 throw new Exception($"Team {input.TeamName} is not exist in organization: {input.Organization}");
@@ -184,31 +184,70 @@ namespace BlastServer.Domain.Services
             List<TeamInfo> teamInfoList = new List<TeamInfo>();
             foreach(TeamMembershipInfo membership in membershipList)
             {
-                // Try get from cache first
-                TeamInfo? teamInfo = this.teamInfoCacheProvider.GetTeamInfo(input.Organization, membership.TeamName);
-                if(teamInfo != null)
+                ETeam? teamEntity = await this.getTeam(input.Organization, input.TeamName);
+                if(teamEntity == null)
                 {
-                    teamInfoList.Add(teamInfo);
+                    // Clean up invalid cache
+                    this.teamMembershipCacheProvider.RemoveTeamMembership(input.Organization, membership.TeamName, input.Username);
                     continue;
                 }
 
-                // Fallback to DB
-                ETeam? teamEntity = await this.teamRepository.GetByOrganizationAndTeamName(input.Organization, membership.TeamName);
-                if (teamEntity != null)
-                {
-                    teamInfo = this.mapper.Map<TeamInfo>(teamEntity);
-                    this.teamInfoCacheProvider.SetTeamInfo(teamInfo);
-                }
+                TeamInfo teamInfo = this.mapper.Map<TeamInfo>(teamEntity);
+                teamInfoList.Add(teamInfo);
             }
 
             return teamInfoList;
         }
 
-        public Task<bool> KickUserFromTeam(TeamManagementInput input, string userToKick)
+        public async Task<bool> KickUserFromTeam(TeamManagementInput input, string userToKick)
         {
-            throw new NotImplementedException();
+            // Check team existence
+            ETeam? existingTeam = await this.getTeam(input.Organization, input.TeamName);
+            if (existingTeam == null)
+            {
+                throw new Exception($"Team {input.TeamName} is not exist in organization: {input.Organization}");
+            }
+
+            if (existingTeam.AdminUsername != input.Username)
+            {
+                throw new Exception("Only team admin can kick user from team");
+            }
+
+            // Remove user from team member list
+            existingTeam.MemberUsernameList.Remove(input.Username);
+            bool result = await this.teamRepository.UpdateTeam(existingTeam);
+            if (!result)
+            {
+                throw new Exception("Failed on db transaction");
+            }
+
+            // Update team info on cache
+            TeamInfo cacheItem = this.mapper.Map<TeamInfo>(existingTeam);
+            this.teamInfoCacheProvider.SetTeamInfo(cacheItem);
+
+            // Remove membership cache
+            this.teamMembershipCacheProvider.RemoveTeamMembership(input.Organization, input.TeamName, input.Username);
+
+            return true;
         }
 
-     
+        private async Task<ETeam?> getTeam(string organization, string teamName)
+        {
+            // Try to get from cache first
+            TeamInfo? teamInfo = this.teamInfoCacheProvider.GetTeamInfo(organization, teamName);
+            if(teamInfo != null)
+            {
+                return this.mapper.Map<ETeam>(teamInfo);
+            }
+
+            // Fallback to DB
+            ETeam? dbTeamEntity = await this.teamRepository.GetByOrganizationAndTeamName(organization, teamName);
+            
+            TeamInfo cacheItem = this.mapper.Map<TeamInfo>(dbTeamEntity);
+            this.teamInfoCacheProvider.SetTeamInfo(cacheItem);
+
+            return dbTeamEntity;
+        }
+
     }
 }
