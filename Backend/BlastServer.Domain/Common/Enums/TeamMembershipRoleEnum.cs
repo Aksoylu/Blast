@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Domain.Common.Enums
 {
-    public enum TeamInviteStatusEnum
+    public enum TeamMembershipRoleEnum
     {
-        Sent,
-        Accepted,
-        Rejected
+        ReadOnly,
+        Member,
+        Admin
     }
 }

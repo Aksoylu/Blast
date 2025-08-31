@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace BlastServer.Domain.Entities
 {
-    public class ETeamInvite
+    public class ETeamMembership
     {
         public object? _id { get; set; }
         public required string Organization { get; set; }
         public required string TeamName { get; set; }
-        public required string SenderUserName { get; set; }
-        public required string ReceiverUserName { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public TeamInviteStatusEnum Status { get; set; }
+        public required string UserName { get; set; }
+        public required DateTime CreatedAt { get; set; }
+        public required TeamMembershipRoleEnum Role { get; set; }
     }
 }

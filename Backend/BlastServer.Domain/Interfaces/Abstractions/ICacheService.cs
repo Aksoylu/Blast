@@ -11,5 +11,7 @@ namespace BlastServer.Domain.Interfaces.Abstractions
         void Set(string key, T value, TimeSpan? expiration = null);
         T? Get(string key);
         void Delete(string key);
+        IEnumerable<string> GetKeys(string pattern);
+        IEnumerable<T?> GetMany(IEnumerable<string> keys);
     }
 }

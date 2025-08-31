@@ -1,14 +1,11 @@
-﻿using BlastServer.Domain.Entities;
+﻿using BlastServer.Domain.DomainObjects.TeamInviteManagement;
+using BlastServer.Domain.DomainObjects.TeamManagement;
+using BlastServer.Domain.Entities;
 using BlastServer.Domain.Interfaces.Abstractions;
 using BlastServer.Domain.Interfaces.Repositories;
+using Microsoft.AspNetCore.Components.Forms;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlastServer.Infrastructure.Persistence.Repositories
 {
@@ -21,35 +18,27 @@ namespace BlastServer.Infrastructure.Persistence.Repositories
             this.teamCollection = _mongoDbService.GetCollection<ETeam>("Teams");
         }
 
-        public async Task<object?> Create(ETeam team)
+        public async Task<ETeam> Create(ETeam team)
         {
             team._id = ObjectId.GenerateNewId().ToString();
             await this.teamCollection.InsertOneAsync(team);
 
-            return team._id;
+            return team;
         }
 
-        public async Task<bool> DeleteById(object? objectId)
+        public async Task<bool> DeleteByFilter(TeamFilter inputFilter)
         {
-            DeleteResult result = await this.teamCollection.DeleteOneAsync(t => t._id == objectId);
+            FilterDefinition<ETeam> filter = this.buildFilter(inputFilter);
+
+            DeleteResult result = await this.teamCollection.DeleteOneAsync(filter);
             return (result.DeletedCount > 0);
         }
 
-        public async Task<object?> GetById(object? objectId)
+        public async Task<bool> UpdateByFilter(TeamFilter inputFilter, ETeam team)
         {
-            return await this.teamCollection.Find(t => t._id == objectId).FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> UpdateTeam(ETeam team)
-        {
-            var filterBuilder = Builders<ETeam>.Filter;
+            FilterDefinition<ETeam> filter = this.buildFilter(inputFilter);
+            
             var updateBuilder = Builders<ETeam>.Update;
-
-            var filter = filterBuilder.And(
-                    filterBuilder.Eq(t => t.Organization, team.Organization),
-                    filterBuilder.Eq(t => t.TeamName, team.TeamName)
-            );
-
             var updateCommand = updateBuilder
                 .Set(updated => updated.AdminUsername, team.AdminUsername)
                 .Set(updated => updated.MemberUsernameList, team.MemberUsernameList)
@@ -61,43 +50,61 @@ namespace BlastServer.Infrastructure.Persistence.Repositories
             return (result.ModifiedCount > 0);
         }
 
-        public async Task<ETeam> GetByOrganizationAndTeamName(string organizationName, string teamName)
+    
+        public async Task<ETeam?> GetByFilter(TeamFilter inputFilter)
         {
-            ETeam? foundTeam =  await this.teamCollection
-                .Find(t => t.Organization == organizationName && t.TeamName == teamName)
+            FilterDefinition<ETeam> filter = this.buildFilter(inputFilter);
+            ETeam? team = await this.teamCollection
+                .Find(filter)
                 .FirstOrDefaultAsync();
 
-            return foundTeam;
-        }
-        public async Task<List<ETeam>> ListByOrganizationWithPagination(string organizationName, int page, int pageSize)
-        {
-            var filterBuilder = Builders<ETeam>.Filter;
-            var filter = filterBuilder.Eq(t => t.Organization, organizationName);
-
-            int skip = (page - 1) * pageSize;
-
-            List<ETeam> teamList = await this.teamCollection
-                .Find(filter)
-                .Skip(skip)
-                .Limit(pageSize)
-                .ToListAsync();
-                
-            return teamList;
+            return team;
         }
 
-        public async Task<List<ETeam>> ListByOrganizationAndAdminUsername(string organizationName, string adminUsername)
+        public async Task<List<ETeam>> ListByFilter(TeamFilter inputFilter)
         {
-            var filterBuilder = Builders<ETeam>.Filter;
-            var filter = filterBuilder.And(
-                filterBuilder.Eq(t => t.Organization , organizationName),
-                filterBuilder.Eq(t => t.AdminUsername, adminUsername)
-            );
-
+            FilterDefinition<ETeam> filter = this.buildFilter(inputFilter);
             List<ETeam> teamList = await this.teamCollection
                 .Find(filter)
                 .ToListAsync();
 
             return teamList;
         }
+
+        private FilterDefinition<ETeam> buildFilter(TeamFilter inputFilter)
+        {
+            FilterDefinitionBuilder<ETeam> filterBuilder = Builders<ETeam>.Filter;
+            List<FilterDefinition<ETeam>> filters = new List<FilterDefinition<ETeam>> { };
+
+            if (inputFilter.Id != null)
+            {
+                filters.Add(filterBuilder.Eq(team => team._id, inputFilter.Id));
+            }
+
+            if (!string.IsNullOrEmpty(inputFilter.Organization))
+            {
+                filters.Add(filterBuilder.Eq(team => team.Organization, inputFilter.Organization));
+            }
+
+            if (!string.IsNullOrEmpty(inputFilter.TeamName))
+            {
+                filters.Add(filterBuilder.Eq(teamInvite => teamInvite.TeamName, inputFilter.TeamName));
+            }
+
+            if (!string.IsNullOrEmpty(inputFilter.AdminUsername))
+            {
+                filters.Add(filterBuilder.Eq(teamInvite => teamInvite.AdminUsername, inputFilter.AdminUsername));
+            }
+
+            if (!string.IsNullOrEmpty(inputFilter.Description))
+            {
+                filters.Add(filterBuilder.Eq(teamInvite => teamInvite.Description, inputFilter.Description));
+            }
+
+            FilterDefinition<ETeam> filter = filterBuilder.And(filters);
+
+            return filter;
+        }
+
     }
 }

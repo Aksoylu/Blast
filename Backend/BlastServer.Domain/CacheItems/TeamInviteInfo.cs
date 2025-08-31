@@ -5,16 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlastServer.Domain.Entities
+namespace BlastServer.Domain.CacheItems
 {
-    public class ETeamInvite
+    public class TeamInviteInfo
     {
-        public object? _id { get; set; }
         public required string Organization { get; set; }
         public required string TeamName { get; set; }
         public required string SenderUserName { get; set; }
         public required string ReceiverUserName { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public TeamInviteStatusEnum Status { get; set; }
+        public required TeamInviteStatusEnum Status { get; set; }
     }
 }
